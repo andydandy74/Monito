@@ -136,10 +136,10 @@
     <Compile Include="_PlayerInputs\PlayerInputsWindow.xaml.cs">
       <DependentUpon>PlayerInputsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="_InCanvasSearch\SearchInWorkspaceWindow.xaml.cs">
+    <Compile Include="_SearchInWorkspace\SearchInWorkspaceWindow.xaml.cs">
       <DependentUpon>SearchInWorkspaceWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="_InCanvasSearch\SearchInWorkspaceViewModel.cs" />
+    <Compile Include="_SearchInWorkspace\SearchInWorkspaceViewModel.cs" />
     <Compile Include="_About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -152,7 +152,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="_InCanvasSearch\SearchInWorkspaceWindow.xaml">
+    <Page Include="_SearchInWorkspace\SearchInWorkspaceWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

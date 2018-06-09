@@ -39,7 +39,8 @@
             Padding="5" 
             TextAlignment="Center">          
             <Hyperlink 
-                NavigateUri="http://www.badmonkeys.net">
+                NavigateUri="http://www.badmonkeys.net" 
+                RequestNavigate="Hyperlink_RequestNavigate">
                 http://www.badmonkeys.net
             </Hyperlink>
         </TextBlock>
