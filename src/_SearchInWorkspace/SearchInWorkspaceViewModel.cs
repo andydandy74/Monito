@@ -35,7 +35,6 @@ namespace Monito
             set
             {
                 searchTerm = value;
-                searchInWorkspace(searchTerm);
                 RaisePropertyChanged(nameof(SearchResults));
             }
         }
@@ -48,26 +47,19 @@ namespace Monito
         {
             get
             {
-                return searchResults;
-            }
-        }
-
-        /// <summary>
-        /// The actual search function. Will update search results.
-        /// </summary>
-       private void searchInWorkspace(string searchTerm)
-        {
-            searchResults.Clear();
-            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-            {
-                // Basic search. We can expand on this later, e.g. add node descriptions & values, text note content & group titles
-                // This is how we can get notes and groups:
-                // viewModel.Model.CurrentWorkspace.Notes
-                // viewModel.Model.CurrentWorkspace.Annotations
-                if (node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                searchResults.Clear();
+                foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                 {
-                    searchResults.Add(new SearchResult("[Node] " + node.NickName, node.GUID.ToString()));
+                    // Basic search. We can expand on this later, e.g. add node descriptions & values, text note content & group titles
+                    // This is how we can get notes and groups:
+                    // viewModel.Model.CurrentWorkspace.Notes
+                    // viewModel.Model.CurrentWorkspace.Annotations
+                    if (node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    {
+                        searchResults.Add(new SearchResult("[Node] " + node.NickName, node.GUID.ToString()));
+                    }
                 }
+                return searchResults;
             }
         }
 
