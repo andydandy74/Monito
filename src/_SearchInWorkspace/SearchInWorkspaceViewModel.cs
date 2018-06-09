@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using Dynamo.ViewModels;
 using System.Windows;
 using System.Linq;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Notes;
 
 namespace Monito
 {
@@ -50,15 +52,27 @@ namespace Monito
                 searchResults.Clear();
                 foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                 {
-                    // Basic search. We can expand on this later, e.g. add node descriptions & values, text note content & group titles
-                    // This is how we can get notes and groups:
-                    // viewModel.Model.CurrentWorkspace.Notes
-                    // viewModel.Model.CurrentWorkspace.Annotations
+                    // Basic search. We can expand on this later (issue #5)
                     if (node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                     {
                         searchResults.Add(new SearchResult("[Node] " + node.NickName, node.GUID.ToString()));
                     }
                 }
+               /* foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
+                {
+                    if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    {
+                        searchResults.Add(new SearchResult("[Text Note] " + note.Text, note.GUID.ToString()));
+                    }
+                }
+                foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
+                {
+                    if (anno.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    {
+                        searchResults.Add(new SearchResult("[Group] " + anno.Text, anno.GUID.ToString()));
+                    }
+                    searchResults.Add(new SearchResult("[Group] " + anno.Text, anno.GUID.ToString()));
+                }*/
                 return searchResults;
             }
         }
