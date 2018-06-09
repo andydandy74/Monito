@@ -8,8 +8,8 @@
     mc:Ignorable="d" 
     d:DesignHeight="300" 
     d:DesignWidth="300" 
-    Width="300" 
-    Height="150" 
+    Width="350" 
+    Height="180" 
     Title="About DynaMonito">
     <StackPanel 
         Name="aboutPanel" 
@@ -28,20 +28,28 @@
             Padding="10" 
             Foreground="LightGray" 
             TextAlignment="Center" >
-                <Run 
-                    Text="A collection of useful tools for Dynamo"/>
-                <LineBreak/>
-                <Run 
-                    Text="© 2018 Bad Monkeys"/>
-        </TextBlock>
-        <TextBlock 
-            FontFamily="Arial" 
-            Padding="5" 
-            TextAlignment="Center">          
+            <Run 
+                Text="A collection of useful tools for Dynamo"/>
+            <LineBreak/>
+            <Run 
+                Text="© 2018 Bad Monkeys"/>
+            <LineBreak/>
             <Hyperlink 
                 NavigateUri="http://www.badmonkeys.net" 
                 RequestNavigate="Hyperlink_RequestNavigate">
                 http://www.badmonkeys.net
+            </Hyperlink>
+        </TextBlock>
+        <TextBlock 
+            FontFamily="Arial" 
+            Padding="10" 
+            Foreground="LightGray" 
+            TextAlignment="Center">
+            Repository: 
+            <Hyperlink 
+                NavigateUri="https://github.com/andydandy74/Monito" 
+                RequestNavigate="Hyperlink_RequestNavigate">
+                https://github.com/andydandy74/Monito
             </Hyperlink>
         </TextBlock>
     </StackPanel>
