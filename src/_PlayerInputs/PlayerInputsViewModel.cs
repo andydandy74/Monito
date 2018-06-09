@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using Dynamo.ViewModels;
 using System.Windows;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Monito
 {
@@ -67,19 +68,23 @@ namespace Monito
 
         private void updateCurrentInputs()
         {
-            string output = "";
+            List<string> inputNodes = new List<string>();
             foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
             {
                 if (node.IsSetAsInput)
                 {
-                    output += node.NickName + "\n";
+                    inputNodes.Add(node.NickName);
                 }
             }
-            if (output == "")
+            inputNodes.Sort();
+            if (inputNodes.Count > 0)
             {
-                output = "Currently no nodes are set as inputs...";
+                AllInputs = String.Join("\n", inputNodes.ToArray());
             }
-            AllInputs = output;
+            else
+            {
+                AllInputs = "Currently no nodes are set as inputs...";
+            }
         }
 
         private void resetAll()
