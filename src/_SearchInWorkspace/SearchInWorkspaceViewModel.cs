@@ -8,6 +8,7 @@ using System.Windows;
 using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
+using System.Collections.Generic;
 
 namespace Monito
 {
@@ -50,29 +51,95 @@ namespace Monito
             get
             {
                 searchResults.Clear();
+                List<ObjectInWorkspace> unorderedResults = new List<ObjectInWorkspace>();
+                Char[] separators = new Char[] { ' ', '.', ',', ':', '(', ')', '!' };
+                string[] searchTermParts = searchTerm.Split(separators, StringSplitOptions.RemoveEmptyEntries);
                 foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                 {
-                    // Basic search. We can expand on this later (issue #5)
+                    // ToDo: search in tags and input values
+                    int score = 0;
                     if (node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                     {
-                        searchResults.Add(new ObjectInWorkspace("[Node] " + node.NickName, node.GUID.ToString()));
+                        score += 10;
+                    }
+                    if (node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    {
+                        score += 10;
+                    }
+                    if (node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    {
+                        score += 10;
+                    }
+                    if (node.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    {
+                        score += 10;
+                    }
+                    foreach (string part in searchTermParts)
+                    {
+                        if (node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                        {
+                            score += 2;
+                        }
+                        if (node.Category.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                        {
+                            score += 1;
+                        }
+                        if (node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                        {
+                            score += 2;
+                        }
+                        if (node.Description.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                        {
+                            score += 1;
+                        }
+                    }
+                    if (score > 0)
+                    {
+                        unorderedResults.Add(new ObjectInWorkspace(node.NickName + " [Node, Score="+ score.ToString() + "]", node.GUID.ToString(), score));
                     }
                 }
-               /* foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
+               foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
                 {
+                    int score = 0;
                     if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                     {
-                        searchResults.Add(new SearchResult("[Text Note] " + note.Text, note.GUID.ToString()));
+                        score += 10;
+                    }
+                    foreach (string part in searchTermParts)
+                    {
+                        if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                        {
+                            score += 1;
+                        }
+                    }
+                    if (score > 0)
+                    {
+                        unorderedResults.Add(new ObjectInWorkspace(note.Text + " [Text Note, Score=" + score.ToString() + "]", note.GUID.ToString(), score));
                     }
                 }
                 foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
                 {
-                    if (anno.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                    int score = 0;
+                    if (anno.AnnotationText.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                     {
-                        searchResults.Add(new SearchResult("[Group] " + anno.Text, anno.GUID.ToString()));
+                        score += 10;
                     }
-                    searchResults.Add(new SearchResult("[Group] " + anno.Text, anno.GUID.ToString()));
-                }*/
+                    foreach (string part in searchTermParts)
+                    {
+                        if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                        {
+                            score += 1;
+                        }
+                    }
+                    if (score > 0)
+                    {
+                        unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText + " [Group, Score=" + score.ToString() + "]", anno.GUID.ToString(), score));
+                    }
+                }
+                foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name))
+                {
+                    searchResults.Add(item);
+                }
                 return searchResults;
             }
         }
@@ -90,34 +157,57 @@ namespace Monito
             set
             {
                 zoomGUID = value;
-                ZoomToNode(value);
+                ZoomToObject(value);
             }
         }
 
         /// <summary>
-        /// Zoom in on the node with the given GUID.
+        /// Zoom in on the object with the given GUID.
         /// </summary>
-        private void ZoomToNode(string guid)
+        private void ZoomToObject(string guid)
         {
             try
             {
                 // Clear current selection and select our node
-                
                 foreach (var item in readyParams.CurrentWorkspaceModel.Nodes)
                 {
                     item.Deselect();
                     item.IsSelected = false;
                 }
-                var node = readyParams.CurrentWorkspaceModel.Nodes.First(x => x.GUID.ToString() == guid);
+
+                bool isNode = readyParams.CurrentWorkspaceModel.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
+                bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
+                bool isAnno = viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0;
+
                 // Zoom in on our node and deselect it again
-                viewModel.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
-                viewModel.AddToSelectionCommand.Execute(node);
-                viewModel.FitViewCommand.Execute(null);
                 // BUG: Apparently this does NOT remove the node from the selection again
                 // so each time we click on another button we add one more node to our selection
                 // which results in only the first zoom operation being successful
-                node.Deselect();
-                node.IsSelected = false;                
+                viewModel.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
+                if (isNode)
+                {
+                    var zoomNode = readyParams.CurrentWorkspaceModel.Nodes.First(x => x.GUID.ToString() == guid);
+                    viewModel.AddToSelectionCommand.Execute(zoomNode);
+                    viewModel.FitViewCommand.Execute(null);
+                    zoomNode.Deselect();
+                    zoomNode.IsSelected = false;
+                }
+                else if (isNote)
+                {
+                    var zoomNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
+                    viewModel.AddToSelectionCommand.Execute(zoomNote);
+                    viewModel.FitViewCommand.Execute(null);
+                    zoomNote.Deselect();
+                    zoomNote.IsSelected = false;
+                }
+                else if (isAnno)
+                {
+                    var zoomAnno = viewModel.Model.CurrentWorkspace.Annotations.First(x => x.GUID.ToString() == guid);
+                    viewModel.AddToSelectionCommand.Execute(zoomAnno);
+                    viewModel.FitViewCommand.Execute(null);
+                    zoomAnno.Deselect();
+                    zoomAnno.IsSelected = false;
+                }
             }
             catch (Exception ex)
             {

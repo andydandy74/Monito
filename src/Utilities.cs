@@ -7,11 +7,13 @@
     {
         private string objectName;
         private string objectGUID;
+        private int objectScore;
 
-        public ObjectInWorkspace(string name, string guid)
+        public ObjectInWorkspace(string name, string guid, int score = 0)
         {
             this.objectName = name;
             this.objectGUID = guid;
+            this.objectScore = score;
         }
 
         public string Name
@@ -22,6 +24,11 @@
         public string GUID
         {
             get { return objectGUID; }
+        }
+
+        public int Score
+        {
+            get { return objectScore; }
         }
     }
 
