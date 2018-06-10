@@ -41,11 +41,11 @@ namespace Monito
             }
         }
 
-        private ObservableCollection<SearchResult> searchResults = new ObservableCollection<SearchResult>();
+        private ObservableCollection<ObjectInWorkspace> searchResults = new ObservableCollection<ObjectInWorkspace>();
         /// <summary>
         /// The search results as a list representation
         /// </summary>
-        public ObservableCollection<SearchResult> SearchResults
+        public ObservableCollection<ObjectInWorkspace> SearchResults
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Monito
                     // Basic search. We can expand on this later (issue #5)
                     if (node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                     {
-                        searchResults.Add(new SearchResult("[Node] " + node.NickName, node.GUID.ToString()));
+                        searchResults.Add(new ObjectInWorkspace("[Node] " + node.NickName, node.GUID.ToString()));
                     }
                 }
                /* foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
@@ -123,31 +123,6 @@ namespace Monito
             {
                 MessageBox.Show(ex.ToString());
             }
-        }
-    }
-
-    /// <summary>
-    /// Class for structured storage of search results.
-    /// </summary>
-    class SearchResult
-    {
-        private string nodeName;
-        private string nodeGUID;
-
-        public SearchResult(string name, string guid)
-        {
-            this.nodeName = name;
-            this.nodeGUID = guid;
-        }
-
-        public string NodeName
-        {
-            get { return nodeName; }
-        }
-
-        public string NodeGUID
-        {
-            get { return nodeGUID; }
         }
     }
 }

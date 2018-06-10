@@ -34,14 +34,14 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button
-                            Tag="{Binding Path=NodeGUID}"
+                            Tag="{Binding Path=GUID}"
                             Height="25"
                             Margin="5"
                             Click="button_Click"
                             Background="#2d2d2d"
                             Foreground="LightGray"
                             HorizontalContentAlignment="Left"
-                            Content="{Binding Path=NodeName}" />
+                            Content="{Binding Path=Name}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
