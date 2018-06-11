@@ -7,7 +7,7 @@ using System.Windows;
 namespace Monito
 {
     /// <summary>
-    /// Shared utility functions
+    /// Shared utility functions for view models
     /// </summary>
     class ViewModelUtils
     {
@@ -73,7 +73,23 @@ namespace Monito
             }
         }
     }
-      
+
+    /// <summary>
+    /// Shared general utility functions
+    /// </summary>
+    static class GeneralUtils
+    {
+        public static string Abbreviate(this String str)
+        {
+            str = str.Replace(Environment.NewLine, " ");
+            if (str.Length > 60)
+            {
+                str = str.Substring(0, 60) + "...";
+            }
+            return str;
+        }
+    }
+
     /// <summary>
     /// Class for structured storage of objects in workspace (nodes, text notes, groups).
     /// </summary>

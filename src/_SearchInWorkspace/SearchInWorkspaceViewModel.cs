@@ -200,7 +200,7 @@ namespace Monito
                             }
                             if (score > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(node.NickName + " [Node]", node.GUID.ToString(), score));
+                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), score));
                             }
                         }
                     }
@@ -222,7 +222,7 @@ namespace Monito
                             }
                             if (score > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(note.Text + " [Text Note]", note.GUID.ToString(), score));
+                                unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), score));
                             }
                         }
                     }
@@ -244,7 +244,7 @@ namespace Monito
                             }
                             if (score > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText + " [Group]", anno.GUID.ToString(), score));
+                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), score));
                             }
                         }
                     }
