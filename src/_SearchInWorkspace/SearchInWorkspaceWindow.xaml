@@ -67,7 +67,12 @@
                             Background="#2d2d2d"
                             Foreground="LightGray"
                             HorizontalContentAlignment="Left"
-                            Content="{Binding Path=Name}" />
+                            Content="{Binding Path=Name}">
+                            <Button.ToolTip>
+                                <ToolTip 
+                                    Content="{Binding Path=Details}" />
+                            </Button.ToolTip>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

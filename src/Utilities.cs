@@ -98,12 +98,14 @@ namespace Monito
         private string objectName;
         private string objectGUID;
         private int objectScore;
+        private string objectDetails;
 
-        public ObjectInWorkspace(string name, string guid, int score = 0)
+        public ObjectInWorkspace(string name, string guid, int score = 0, string details = "")
         {
             this.objectName = name;
             this.objectGUID = guid;
             this.objectScore = score;
+            this.objectDetails = details;
         }
 
         public string Name
@@ -119,6 +121,11 @@ namespace Monito
         public int Score
         {
             get { return objectScore; }
+        }
+
+        public string Details
+        {
+            get { return objectDetails; }
         }
     }
 }

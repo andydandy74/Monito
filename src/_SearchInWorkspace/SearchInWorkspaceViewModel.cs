@@ -200,7 +200,20 @@ namespace Monito
                             }
                             if (score > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), score));
+                                string toolTip = "Nickname: " + node.NickName + "\n";
+                                if (node.CreationName != node.NickName && node.CreationName != "")
+                                {
+                                    toolTip += "Original name: " + node.CreationName + "\n";
+                                }
+                                if (node.Category != "")
+                                {
+                                    toolTip += "Category: " + node.Category + "\n";
+                                }
+                                if (node.Description != "")
+                                {
+                                    toolTip += "Description: " + node.Description + "\n";
+                                }
+                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), score, toolTip));
                             }
                         }
                     }
@@ -222,7 +235,7 @@ namespace Monito
                             }
                             if (score > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), score));
+                                unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), score, note.Text));
                             }
                         }
                     }
@@ -244,7 +257,7 @@ namespace Monito
                             }
                             if (score > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), score));
+                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), score, anno.AnnotationText));
                             }
                         }
                     }
@@ -274,7 +287,5 @@ namespace Monito
                 VMU.ZoomToObject(value);
             }
         }
-
-        
     }
 }
