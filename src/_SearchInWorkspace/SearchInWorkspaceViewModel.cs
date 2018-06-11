@@ -152,104 +152,107 @@ namespace Monito
             get
             {
                 searchResults.Clear();
-                List<ObjectInWorkspace> unorderedResults = new List<ObjectInWorkspace>();
-                Char[] separators = new Char[] { ' ', '.', ',', ':', '(', ')', '!' };
-                string[] searchTermParts = searchTerm.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                if (searchInNicknames || searchInOriginalNames || searchInCategories || searchInDescriptions)
+                if (searchTerm != "" && searchTerm != " ")
                 {
-                    foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+                    List<ObjectInWorkspace> unorderedResults = new List<ObjectInWorkspace>();
+                    Char[] separators = new Char[] { ' ', '.', ',', ':', '(', ')', '!' };
+                    string[] searchTermParts = searchTerm.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                    if (searchInNicknames || searchInOriginalNames || searchInCategories || searchInDescriptions)
                     {
-                        // ToDo: search in tags and input values
-                        int score = 0;
-                        if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                        foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                         {
-                            score += 10;
-                        }
-                        if (searchInCategories && node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                        {
-                            score += 10;
-                        }
-                        if (searchInOriginalNames && node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                        {
-                            score += 10;
-                        }
-                        if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                        {
-                            score += 10;
-                        }
-                        foreach (string part in searchTermParts)
-                        {
-                            if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                            // ToDo: search in tags and input values
+                            int score = 0;
+                            if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 2;
+                                score += 10;
                             }
-                            if (searchInCategories && node.Category.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                            if (searchInCategories && node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 1;
+                                score += 10;
                             }
-                            if (searchInOriginalNames && node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                            if (searchInOriginalNames && node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 2;
+                                score += 10;
                             }
-                            if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                            if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 1;
+                                score += 10;
                             }
-                        }
-                        if (score > 0)
-                        {
-                            unorderedResults.Add(new ObjectInWorkspace(node.NickName + " [Node]", node.GUID.ToString(), score));
+                            foreach (string part in searchTermParts)
+                            {
+                                if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                {
+                                    score += 2;
+                                }
+                                if (searchInCategories && node.Category.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                {
+                                    score += 1;
+                                }
+                                if (searchInOriginalNames && node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                {
+                                    score += 2;
+                                }
+                                if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                {
+                                    score += 1;
+                                }
+                            }
+                            if (score > 0)
+                            {
+                                unorderedResults.Add(new ObjectInWorkspace(node.NickName + " [Node]", node.GUID.ToString(), score));
+                            }
                         }
                     }
-                }           
-                if (searchInNotes)
-                {
-                    foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
+                    if (searchInNotes)
                     {
-                        int score = 0;
-                        if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                        foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
                         {
-                            score += 10;
-                        }
-                        foreach (string part in searchTermParts)
-                        {
-                            if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                            int score = 0;
+                            if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 1;
+                                score += 10;
+                            }
+                            foreach (string part in searchTermParts)
+                            {
+                                if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                {
+                                    score += 1;
+                                }
+                            }
+                            if (score > 0)
+                            {
+                                unorderedResults.Add(new ObjectInWorkspace(note.Text + " [Text Note]", note.GUID.ToString(), score));
                             }
                         }
-                        if (score > 0)
+                    }
+                    if (searchInAnnotations)
+                    {
+                        foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
                         {
-                            unorderedResults.Add(new ObjectInWorkspace(note.Text + " [Text Note]", note.GUID.ToString(), score));
+                            int score = 0;
+                            if (anno.AnnotationText.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                            {
+                                score += 10;
+                            }
+                            foreach (string part in searchTermParts)
+                            {
+                                if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                {
+                                    score += 1;
+                                }
+                            }
+                            if (score > 0)
+                            {
+                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText + " [Group]", anno.GUID.ToString(), score));
+                            }
                         }
+                    }
+                    foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name))
+                    {
+                        searchResults.Add(item);
                     }
                 }               
-                if (searchInAnnotations)
-                {
-                    foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
-                    {
-                        int score = 0;
-                        if (anno.AnnotationText.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                        {
-                            score += 10;
-                        }
-                        foreach (string part in searchTermParts)
-                        {
-                            if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                            {
-                                score += 1;
-                            }
-                        }
-                        if (score > 0)
-                        {
-                            unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText + " [Group]", anno.GUID.ToString(), score));
-                        }
-                    }
-                }               
-                foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name))
-                {
-                    searchResults.Add(item);
-                }
                 return searchResults;
             }
         }
