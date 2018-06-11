@@ -133,10 +133,6 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Monito.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="_ExplodeCustomNode\ExplodeCustomNodeViewModel.cs" />
-    <Compile Include="_ExplodeCustomNode\ExplodeCustomNodeWindow.xaml.cs">
-      <DependentUpon>ExplodeCustomNodeWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="_PlayerInputs\PlayerInputsViewModel.cs" />
     <Compile Include="_PlayerInputs\PlayerInputsWindow.xaml.cs">
       <DependentUpon>PlayerInputsWindow.xaml</DependentUpon>
@@ -153,10 +149,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="_ExplodeCustomNode\ExplodeCustomNodeWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="_PlayerInputs\PlayerInputsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
