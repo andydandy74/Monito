@@ -4,7 +4,6 @@ using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using System.Collections.ObjectModel;
 using Dynamo.ViewModels;
-using System.Windows;
 using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
@@ -199,7 +198,7 @@ namespace Monito
                         }
                         if (score > 0)
                         {
-                            unorderedResults.Add(new ObjectInWorkspace(node.NickName + " [Node, Score=" + score.ToString() + "]", node.GUID.ToString(), score));
+                            unorderedResults.Add(new ObjectInWorkspace(node.NickName + " [Node]", node.GUID.ToString(), score));
                         }
                     }
                 }           
@@ -221,7 +220,7 @@ namespace Monito
                         }
                         if (score > 0)
                         {
-                            unorderedResults.Add(new ObjectInWorkspace(note.Text + " [Text Note, Score=" + score.ToString() + "]", note.GUID.ToString(), score));
+                            unorderedResults.Add(new ObjectInWorkspace(note.Text + " [Text Note]", note.GUID.ToString(), score));
                         }
                     }
                 }               
@@ -243,7 +242,7 @@ namespace Monito
                         }
                         if (score > 0)
                         {
-                            unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText + " [Group, Score=" + score.ToString() + "]", anno.GUID.ToString(), score));
+                            unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText + " [Group]", anno.GUID.ToString(), score));
                         }
                     }
                 }               
@@ -268,62 +267,11 @@ namespace Monito
             set
             {
                 zoomGUID = value;
-                ZoomToObject(value);
+                var VMU = new ViewModelUtils(readyParams, viewModel);
+                VMU.ZoomToObject(value);
             }
         }
 
-        /// <summary>
-        /// Zoom in on the object with the given GUID.
-        /// </summary>
-        private void ZoomToObject(string guid)
-        {
-            try
-            {
-                // Clear current selection and select our node
-                foreach (var item in readyParams.CurrentWorkspaceModel.Nodes)
-                {
-                    item.Deselect();
-                    item.IsSelected = false;
-                }
-
-                bool isNode = readyParams.CurrentWorkspaceModel.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
-                bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
-                bool isAnno = viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0;
-
-                // Zoom in on our node and deselect it again
-                // BUG: Apparently this does NOT remove the node from the selection again
-                // so each time we click on another button we add one more node to our selection
-                // which results in only the first zoom operation being successful
-                viewModel.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
-                if (isNode)
-                {
-                    var zoomNode = readyParams.CurrentWorkspaceModel.Nodes.First(x => x.GUID.ToString() == guid);
-                    viewModel.AddToSelectionCommand.Execute(zoomNode);
-                    viewModel.FitViewCommand.Execute(null);
-                    zoomNode.Deselect();
-                    zoomNode.IsSelected = false;
-                }
-                else if (isNote)
-                {
-                    var zoomNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
-                    viewModel.AddToSelectionCommand.Execute(zoomNote);
-                    viewModel.FitViewCommand.Execute(null);
-                    zoomNote.Deselect();
-                    zoomNote.IsSelected = false;
-                }
-                else if (isAnno)
-                {
-                    var zoomAnno = viewModel.Model.CurrentWorkspace.Annotations.First(x => x.GUID.ToString() == guid);
-                    viewModel.AddToSelectionCommand.Execute(zoomAnno);
-                    viewModel.FitViewCommand.Execute(null);
-                    zoomAnno.Deselect();
-                    zoomAnno.IsSelected = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
+        
     }
 }
