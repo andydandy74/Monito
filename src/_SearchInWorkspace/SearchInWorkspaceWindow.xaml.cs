@@ -1,6 +1,4 @@
-﻿using Dynamo.ViewModels;
-using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace Monito
@@ -14,6 +12,7 @@ namespace Monito
         public SearchInWorkspaceWindow()
         {
             InitializeComponent();
+            searchQuery.Focus();
         }
 
         void button_Click(object sender, RoutedEventArgs e)
