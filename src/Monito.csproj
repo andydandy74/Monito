@@ -133,6 +133,10 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Monito.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_Playground\PlaygroundViewModel.cs" />
+    <Compile Include="_Playground\PlaygroundWindow.xaml.cs">
+      <DependentUpon>PlaygroundWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="_PlayerInputs\PlayerInputsViewModel.cs" />
     <Compile Include="_PlayerInputs\PlayerInputsWindow.xaml.cs">
       <DependentUpon>PlayerInputsWindow.xaml</DependentUpon>
@@ -149,6 +153,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="_Playground\PlaygroundWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="_PlayerInputs\PlayerInputsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -165,7 +173,6 @@
   <ItemGroup>
     <Folder Include="_ExtractPython\" />
     <Folder Include="_FindUngrouped\" />
-    <Folder Include="_PackageUpdates\" />
     <Folder Include="_RequiredPackages\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
