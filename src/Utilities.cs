@@ -13,64 +13,52 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        private Window dynWindow;
         
-        public ViewModelUtils(ReadyParams p, DynamoViewModel vm)
+        public ViewModelUtils(ReadyParams p, DynamoViewModel vm, Window dw)
         {
             readyParams = p;
             viewModel = vm;
+            dynWindow = dw;
         }
         /// <summary>
         /// Zoom in on the object with the given GUID.
         /// </summary>
         public void ZoomToObject(string guid)
         {
-            try
+            bool isNode = readyParams.CurrentWorkspaceModel.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
+            bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
+            bool isAnno = viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0;
+            double objectCenterX = 0;
+            double objectCenterY = 0;
+            if (isNode)
             {
-                // Clear current selection and select our node
-                foreach (var item in readyParams.CurrentWorkspaceModel.Nodes)
-                {
-                    item.Deselect();
-                    item.IsSelected = false;
-                }
-
-                bool isNode = readyParams.CurrentWorkspaceModel.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
-                bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
-                bool isAnno = viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0;
-
-                // Zoom in on our node and deselect it again
-                // BUG: Apparently this does NOT remove the node from the selection again
-                // so each time we click on another button we add one more node to our selection
-                // which results in only the first zoom operation being successful
-                viewModel.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
-                if (isNode)
-                {
-                    var zoomNode = readyParams.CurrentWorkspaceModel.Nodes.First(x => x.GUID.ToString() == guid);
-                    viewModel.AddToSelectionCommand.Execute(zoomNode);
-                    viewModel.FitViewCommand.Execute(null);
-                    zoomNode.Deselect();
-                    zoomNode.IsSelected = false;
-                }
-                else if (isNote)
-                {
-                    var zoomNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
-                    viewModel.AddToSelectionCommand.Execute(zoomNote);
-                    viewModel.FitViewCommand.Execute(null);
-                    zoomNote.Deselect();
-                    zoomNote.IsSelected = false;
-                }
-                else if (isAnno)
-                {
-                    var zoomAnno = viewModel.Model.CurrentWorkspace.Annotations.First(x => x.GUID.ToString() == guid);
-                    viewModel.AddToSelectionCommand.Execute(zoomAnno);
-                    viewModel.FitViewCommand.Execute(null);
-                    zoomAnno.Deselect();
-                    zoomAnno.IsSelected = false;
-                }
+                var zoomNode = readyParams.CurrentWorkspaceModel.Nodes.First(x => x.GUID.ToString() == guid);
+                objectCenterX = zoomNode.CenterX;
+                objectCenterY = zoomNode.CenterY;
             }
-            catch (Exception ex)
+            else if (isNote)
             {
-                MessageBox.Show(ex.ToString());
+                var zoomNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
+                objectCenterX = zoomNote.CenterX;
+                objectCenterY = zoomNote.CenterY;
             }
+            else if (isAnno)
+            {
+                var zoomAnno = viewModel.Model.CurrentWorkspace.Annotations.First(x => x.GUID.ToString() == guid);
+                objectCenterX = zoomAnno.CenterX;
+                objectCenterY = zoomAnno.CenterY;
+            }
+            var maxZoom = 4d;
+            var corrX = -objectCenterX * maxZoom + dynWindow.ActualWidth / 2.2;
+            var corrY = -objectCenterY * maxZoom + dynWindow.ActualHeight / 2.2;
+            viewModel.CurrentSpace.Zoom = maxZoom;
+            viewModel.CurrentSpace.X = corrX;
+            viewModel.CurrentSpace.Y = corrY;
+            if (objectCenterX != 0 || objectCenterY !=0)
+            {
+                viewModel.ZoomInCommand.Execute(null);
+            }           
         }
     }
 
@@ -102,10 +90,10 @@ namespace Monito
 
         public ObjectInWorkspace(string name, string guid, int score = 0, string details = "")
         {
-            this.objectName = name;
-            this.objectGUID = guid;
-            this.objectScore = score;
-            this.objectDetails = details;
+            objectName = name;
+            objectGUID = guid;
+            objectScore = score;
+            objectDetails = details;
         }
 
         public string Name
