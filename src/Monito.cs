@@ -41,8 +41,7 @@ namespace Monito
                 window.Show();
             };
             // monitoMenuItem.Items.Add(monitoPlaygroundMenuItem);
-
-            #endregion PACKAGE_UPDATES
+            #endregion PLAYGROUND
 
             #region PLAYER_INPUTS
             monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
@@ -79,7 +78,6 @@ namespace Monito
             #endregion SEARCH_IN_WORKSPACE
 
             #region ABOUT
-            // Specify the text displayed on the menu item
             monitoAboutMenuItem = new MenuItem { Header = "About Monito" };
             monitoAboutMenuItem.Click += (sender, args) =>
             {
