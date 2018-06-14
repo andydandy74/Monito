@@ -85,10 +85,10 @@ namespace Monito
     {
         private string objectName;
         private string objectGUID;
-        private int objectScore;
+        private double objectScore;
         private string objectDetails;
 
-        public ObjectInWorkspace(string name, string guid, int score = 0, string details = "")
+        public ObjectInWorkspace(string name, string guid, double score = 0, string details = "")
         {
             objectName = name;
             objectGUID = guid;
@@ -106,7 +106,7 @@ namespace Monito
             get { return objectGUID; }
         }
 
-        public int Score
+        public double Score
         {
             get { return objectScore; }
         }

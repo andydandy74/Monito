@@ -160,53 +160,79 @@ namespace Monito
                     List<ObjectInWorkspace> unorderedResults = new List<ObjectInWorkspace>();
                     Char[] separators = new Char[] { ' ', '.', ',', ':', '(', ')', '!' };
                     string[] searchTermParts = searchTerm.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                    int nodesScoreFactor = 0;
+                    if (searchInNicknames) { nodesScoreFactor += 1; }
+                    if (searchInOriginalNames) { nodesScoreFactor += 1; }
+                    if (searchInCategories) { nodesScoreFactor += 1; }
+                    if (searchInDescriptions) { nodesScoreFactor += 1; }
                     if (searchInNicknames || searchInOriginalNames || searchInCategories || searchInDescriptions)
                     {
                         foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                         {
                             // ToDo: search in tags and input values
-                            int score = 0;
+                            int rawScore = 0;
+                            double weightedScore = 0;
                             if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 10;
+                                rawScore += 10;
                             }
                             if (searchInCategories && node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 10;
+                                rawScore += 10;
                             }
-                            if (searchInOriginalNames && node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                            if (searchInOriginalNames)
                             {
-                                score += 10;
+                                if (node.GetType().Name == "DSFunction" && node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                                {
+                                    rawScore += 10;
+                                }
+                                else if (node.GetType().Name != "DSFunction" && node.GetType().Name.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                                {
+                                    rawScore += 10;
+                                }
+                                // Still haven't found out how to access original custom node names
                             }
                             if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 10;
+                                rawScore += 10;
                             }
                             foreach (string part in searchTermParts)
                             {
                                 if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
                                 {
-                                    score += 2;
+                                    rawScore += 2;
                                 }
                                 if (searchInCategories && node.Category.ToLowerInvariant().Contains(part.ToLowerInvariant()))
                                 {
-                                    score += 1;
+                                    rawScore += 1;
                                 }
-                                if (searchInOriginalNames && node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                if (searchInOriginalNames) 
                                 {
-                                    score += 2;
+                                    if (node.GetType().Name == "DSFunction" && node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                    {
+                                        rawScore += 2;
+                                    }
+                                    else if (node.GetType().Name != "DSFunction" && node.GetType().Name.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                    {
+                                        rawScore += 2;
+                                    }
                                 }
                                 if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(part.ToLowerInvariant()))
                                 {
-                                    score += 1;
+                                    rawScore += 1;
                                 }
                             }
-                            if (score > 0)
+                            weightedScore = rawScore / (10d + searchTermParts.Length) / nodesScoreFactor;
+                            if (rawScore > 0)
                             {
-                                string toolTip = "Nickname: " + node.NickName + "\n";
-                                if (node.CreationName != node.NickName && node.CreationName != "")
+                                string toolTip = "Search score: " + weightedScore.ToString() + "\nNickname: " + node.NickName + "\n";
+                                if (node.GetType().Name == "DSFunction" && node.CreationName != node.NickName && node.CreationName != "")
                                 {
                                     toolTip += "Original name: " + node.CreationName + "\n";
+                                }
+                                else if (node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.NickName && node.GetType().Name != "")
+                                {
+                                    toolTip += "Original name: " + node.GetType().Name + "\n";
                                 }
                                 if (node.Category != "")
                                 {
@@ -216,7 +242,7 @@ namespace Monito
                                 {
                                     toolTip += "Description: " + node.Description + "\n";
                                 }
-                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), score, toolTip));
+                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
                             }
                         }
                     }
@@ -224,21 +250,23 @@ namespace Monito
                     {
                         foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
                         {
-                            int score = 0;
+                            int rawScore = 0;
+                            double weightedScore = 0;
                             if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 10;
+                                rawScore += 10;
                             }
                             foreach (string part in searchTermParts)
                             {
                                 if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant()))
                                 {
-                                    score += 1;
+                                    rawScore += 1;
                                 }
                             }
-                            if (score > 0)
+                            weightedScore = rawScore / (10d + searchTermParts.Length);
+                            if (rawScore > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), score, note.Text));
+                                unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + note.Text));
                             }
                         }
                     }
@@ -246,21 +274,23 @@ namespace Monito
                     {
                         foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
                         {
-                            int score = 0;
+                            int rawScore = 0;
+                            double weightedScore = 0;
                             if (anno.AnnotationText.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
-                                score += 10;
+                                rawScore += 10;
                             }
                             foreach (string part in searchTermParts)
                             {
                                 if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant()))
                                 {
-                                    score += 1;
+                                    rawScore += 1;
                                 }
                             }
-                            if (score > 0)
+                            weightedScore = rawScore / (10d + searchTermParts.Length);
+                            if (rawScore > 0)
                             {
-                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), score, anno.AnnotationText));
+                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText));
                             }
                         }
                     }
