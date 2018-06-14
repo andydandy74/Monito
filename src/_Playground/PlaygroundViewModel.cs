@@ -9,6 +9,7 @@ using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Monito
 {
@@ -16,11 +17,13 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        private Window dynWindow;
 
-        public PlaygroundViewModel(ReadyParams p, DynamoViewModel vm)
+        public PlaygroundViewModel(ReadyParams p, DynamoViewModel vm, Window dw)
         {
             readyParams = p;
             viewModel = vm;
+            dynWindow = dw;
         }
 
         public void Dispose() { }

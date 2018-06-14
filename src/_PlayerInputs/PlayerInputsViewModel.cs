@@ -4,6 +4,7 @@ using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Monito
 {
@@ -11,11 +12,13 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        private Window dynWindow;
 
-        public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
+        public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm, Window dw)
         {
             readyParams = p;
             viewModel = vm;
+            dynWindow = dw;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
         }

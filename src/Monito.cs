@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.ViewModels;
 
@@ -30,7 +28,7 @@ namespace Monito
             monitoPlaygroundMenuItem = new MenuItem { Header = "Playground" };
             monitoPlaygroundMenuItem.Click += (sender, args) =>
             {
-                var viewModel = new PlaygroundViewModel(p, VM);
+                var viewModel = new PlaygroundViewModel(p, VM, p.DynamoWindow);
                 var window = new PlaygroundWindow
                 {
                     PlaygroundPanel = { DataContext = viewModel },
@@ -40,14 +38,14 @@ namespace Monito
                 window.Top = window.Owner.Top + 200;
                 window.Show();
             };
-            // monitoMenuItem.Items.Add(monitoPlaygroundMenuItem);
+            //monitoMenuItem.Items.Add(monitoPlaygroundMenuItem);
             #endregion PLAYGROUND
 
             #region PLAYER_INPUTS
             monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
             monitoPlayerInputsMenuItem.Click += (sender, args) =>
             {
-                var viewModel = new PlayerInputsViewModel(p, VM);
+                var viewModel = new PlayerInputsViewModel(p, VM, p.DynamoWindow);
                 var window = new PlayerInputsWindow
                 {
                     playerInputsPanel = { DataContext = viewModel },
