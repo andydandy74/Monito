@@ -70,7 +70,12 @@
                             Content="{Binding Path=Name}">
                             <Button.ToolTip>
                                 <ToolTip 
-                                    Content="{Binding Path=Details}" />
+                                    MaxWidth="400">
+                                    <TextBlock
+                                        TextWrapping="Wrap"
+                                        Text="{Binding Path=Details}">
+                                    </TextBlock>
+                                </ToolTip>
                             </Button.ToolTip>
                         </Button>
                     </DataTemplate>
