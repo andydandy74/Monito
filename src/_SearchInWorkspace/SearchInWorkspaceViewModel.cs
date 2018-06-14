@@ -225,22 +225,22 @@ namespace Monito
                             weightedScore = rawScore / (10d + searchTermParts.Length) / nodesScoreFactor;
                             if (rawScore > 0)
                             {
-                                string toolTip = "Search score: " + weightedScore.ToString() + "\nNickname: " + node.NickName + "\n";
+                                string toolTip = "Search score: " + weightedScore.ToString();
                                 if (node.GetType().Name == "DSFunction" && node.CreationName != node.NickName && node.CreationName != "")
                                 {
-                                    toolTip += "Original name: " + node.CreationName + "\n";
+                                    toolTip += "\nOriginal name: " + node.CreationName;
                                 }
                                 else if (node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.NickName && node.GetType().Name != "")
                                 {
-                                    toolTip += "Original name: " + node.GetType().Name + "\n";
+                                    toolTip += "\nOriginal name: " + node.GetType().Name;
                                 }
                                 if (node.Category != "")
                                 {
-                                    toolTip += "Category: " + node.Category + "\n";
+                                    toolTip += "\nCategory: " + node.Category;
                                 }
                                 if (node.Description != "")
                                 {
-                                    toolTip += "Description: " + node.Description + "\n";
+                                    toolTip += "\nDescription: " + node.Description;
                                 }
                                 unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
                             }
