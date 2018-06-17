@@ -112,6 +112,23 @@ namespace Monito
             }
         }
 
+        private bool searchInTags = true;
+        /// <summary>
+        /// Include node tags in search?
+        /// </summary>
+        public bool SearchInTags
+        {
+            get
+            {
+                return searchInTags;
+            }
+            set
+            {
+                searchInTags = value;
+                RaisePropertyChanged(nameof(SearchResults));
+            }
+        }
+
         private bool searchInNotes = true;
         /// <summary>
         /// Include text notes in search?
@@ -196,6 +213,23 @@ namespace Monito
                             {
                                 rawScore += 10;
                             }
+                            if (searchInTags)
+                            {
+                                foreach (string tag in node.Tags)
+                                {
+                                    if (tag.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                                    {
+                                        rawScore += 2;
+                                    }
+                                    foreach (string part in searchTermParts)
+                                    {
+                                        if (tag.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                        {
+                                            rawScore += 1;
+                                        }
+                                    }
+                                }
+                            }   
                             foreach (string part in searchTermParts)
                             {
                                 if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
@@ -226,21 +260,30 @@ namespace Monito
                             if (rawScore > 0)
                             {
                                 string toolTip = "Search score: " + weightedScore.ToString();
-                                if (node.GetType().Name == "DSFunction" && node.CreationName != node.NickName && node.CreationName != "")
+                                if (searchInOriginalNames && node.GetType().Name == "DSFunction" && node.CreationName != node.NickName && node.CreationName != "")
                                 {
                                     toolTip += "\nOriginal name: " + node.CreationName;
                                 }
-                                else if (node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.NickName && node.GetType().Name != "")
+                                else if (searchInOriginalNames && node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.NickName && node.GetType().Name != "")
                                 {
                                     toolTip += "\nOriginal name: " + node.GetType().Name;
                                 }
-                                if (node.Category != "")
+                                if (searchInCategories && node.Category != "")
                                 {
                                     toolTip += "\nCategory: " + node.Category;
                                 }
-                                if (node.Description != "")
+                                if (searchInDescriptions && node.Description != "")
                                 {
                                     toolTip += "\nDescription: " + node.Description;
+                                }
+                                if (searchInTags && node.Tags.Count > 0)
+                                {
+                                    toolTip += "\nTags: " + String.Join(", ", node.Tags.ToArray());
+                                    toolTip = toolTip.TrimEnd();
+                                    if (toolTip[toolTip.Length-1] == ',')
+                                    {
+                                        toolTip = toolTip.Remove(toolTip.Length - 1);
+                                    }
                                 }
                                 unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
                             }
