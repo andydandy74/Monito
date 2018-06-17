@@ -32,18 +32,33 @@
                 Name="InputAction"
                 Visibility="Collapsed"
                 Text="{Binding InputAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox
+                Name="clickedGUID" 
+                Text="{Binding ZoomGUID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                Visibility="Collapsed"/>
             <TextBlock 
-            FontFamily="Arial" 
-            Padding="10" 
-            Foreground="LightGray" 
-            TextAlignment="Left" >
-                <Run 
-                    Text="All Dynamo Player inputs in current workspace:" 
-                    FontWeight="Bold"/>
-                <LineBreak/>
-                <Run 
-                    Text="{Binding AllInputs}"/>
-            </TextBlock>
+                FontFamily="Arial" 
+                Padding="10" 
+                Foreground="LightGray" 
+                TextAlignment="Left" 
+                Text="All Dynamo Player inputs in current workspace:" 
+                FontWeight="Bold"/>
+            <ItemsControl 
+                ItemsSource="{Binding CurrentInputs}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Tag="{Binding Path=GUID}"
+                            Height="25"
+                            Margin="5"
+                            Click="button_Click"
+                            Background="#2d2d2d"
+                            Foreground="LightGray"
+                            HorizontalContentAlignment="Left"
+                            Content="{Binding Path=Name}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
     </ScrollViewer>
 </Window>

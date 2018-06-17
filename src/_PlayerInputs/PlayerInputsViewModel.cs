@@ -5,6 +5,8 @@ using Dynamo.Graph.Nodes;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
 using System.Windows;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Monito
 {
@@ -29,37 +31,28 @@ namespace Monito
             readyParams.CurrentWorkspaceModel.NodeRemoved -= CurrentWorkspaceModel_NodesChanged;
         }
 
-        private string allInputs;
+        private ObservableCollection<ObjectInWorkspace> currentInputs = new ObservableCollection<ObjectInWorkspace>();
         /// <summary>
-        /// All nodes that currently have IsInput set to true, as a string.
+        /// The search results as a list representation
         /// </summary>
-        public string AllInputs
+        public ObservableCollection<ObjectInWorkspace> CurrentInputs
         {
             get
             {
-                List<string> inputNodes = new List<string>();
+                List<ObjectInWorkspace> unorderedInputs = new List<ObjectInWorkspace>();
                 foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                 {
                     if (node.IsSetAsInput)
                     {
-                        inputNodes.Add(node.NickName);
+                        unorderedInputs.Add(new ObjectInWorkspace(node.NickName, node.GUID.ToString()));
                     }
                 }
-                inputNodes.Sort();
-                if (inputNodes.Count > 0)
+                currentInputs.Clear();
+                foreach (ObjectInWorkspace item in unorderedInputs.OrderBy(x => x.Name))
                 {
-                    allInputs = String.Join("\n", inputNodes.ToArray());
+                    currentInputs.Add(item);
                 }
-                else
-                {
-                    allInputs = "Currently no nodes are set as inputs...";
-                }
-                return allInputs;
-            }
-            set
-            {
-                allInputs = value;
-                RaisePropertyChanged(nameof(AllInputs));
+                return currentInputs;
             }
         }
 
@@ -106,13 +99,31 @@ namespace Monito
                         }
                     }
                 }
-                RaisePropertyChanged(nameof(AllInputs));
+                RaisePropertyChanged(nameof(CurrentInputs));
+            }
+        }
+
+        private string zoomGUID;
+        /// <summary>
+        /// The GUID of the node that was selected from the search results. Triggered by button click.
+        /// </summary>
+        public string ZoomGUID
+        {
+            get
+            {
+                return zoomGUID;
+            }
+            set
+            {
+                zoomGUID = value;
+                var VMU = new ViewModelUtils(readyParams, viewModel, dynWindow);
+                VMU.ZoomToObject(value);
             }
         }
 
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
         {
-            RaisePropertyChanged(nameof(AllInputs));
+            RaisePropertyChanged(nameof(CurrentInputs));
         }
     }
 }

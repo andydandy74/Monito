@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Monito
 {
@@ -26,6 +27,11 @@ namespace Monito
         void click_SetSelectedAsInput(object sender, RoutedEventArgs e)
         {
             InputAction.Text = "SetSelectedAsInput";
+        }
+
+        void button_Click(object sender, RoutedEventArgs e)
+        {
+            clickedGUID.Text = "" + ((Button)sender).Tag;
         }
     }
 }
