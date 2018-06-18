@@ -9,26 +9,24 @@
         Width="500" 
         Height="500" 
         Title="DynaMonito - Search in Workspace">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Monito;component/Shared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <ScrollViewer 
         VerticalScrollBarVisibility="Auto">
         <StackPanel 
-            Name="searchPanel" 
-            Background="#2d2d2d" 
-            HorizontalAlignment="Stretch" 
-            VerticalAlignment="Stretch">
+            Style="{StaticResource MonitoStackPanelMain}"
+            Name="searchPanel">
             <TextBox 
+                Style="{StaticResource MonitoTextBox}"
                 Name="searchQuery" 
-                Margin="5" 
-                Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                Height="20" 
-                VerticalAlignment="Top" 
-                HorizontalAlignment="Stretch"
-                Background="Black" 
-                Foreground="LightGray"/>
+                Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Expander
-                Header="Search Scope"
-                Margin="5"
-                Background="LightGray">
+                Header="Search Scope">
                 <StackPanel
                     Margin="5">
                     <CheckBox 
@@ -64,12 +62,8 @@
                     <DataTemplate>
                         <Button
                             Tag="{Binding Path=GUID}"
-                            Height="25"
-                            Margin="5"
                             Click="button_Click"
-                            Background="#2d2d2d"
-                            Foreground="LightGray"
-                            HorizontalContentAlignment="Left"
+                            Style="{StaticResource MonitoButtonResults}"
                             Content="{Binding Path=Name}">
                             <Button.ToolTip>
                                 <ToolTip 

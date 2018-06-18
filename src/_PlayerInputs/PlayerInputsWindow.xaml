@@ -9,25 +9,27 @@
         Width="500" 
         Height="500" 
         Title="DynaMonito - Manage Dynamo Player Inputs">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Monito;component/Shared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <ScrollViewer 
         VerticalScrollBarVisibility="Auto">
         <StackPanel 
-            Name="playerInputsPanel" 
-            Background="#2d2d2d" 
-            HorizontalAlignment="Stretch" 
-            VerticalAlignment="Stretch">
+            Style="{StaticResource MonitoStackPanelMain}"
+            Name="playerInputsPanel">
             <Button 
                 Content="Reset all inputs" 
-                Click="click_ResetAll"
-                Margin="5"/>
+                Click="click_ResetAll"/>
             <Button 
                 Content="Reset selected" 
-                Click="click_ResetSelected"
-                Margin="5"/>
+                Click="click_ResetSelected"/>
             <Button 
                 Content="Set selected as input" 
-                Click="click_SetSelectedAsInput"
-                Margin="5"/>
+                Click="click_SetSelectedAsInput"/>
             <TextBox
                 Name="InputAction"
                 Visibility="Collapsed"
@@ -37,9 +39,6 @@
                 Text="{Binding ZoomGUID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                 Visibility="Collapsed"/>
             <TextBlock 
-                FontFamily="Arial" 
-                Padding="10" 
-                Foreground="LightGray" 
                 TextAlignment="Left" 
                 Text="All Dynamo Player inputs in current workspace:" 
                 FontWeight="Bold"/>
@@ -49,12 +48,8 @@
                     <DataTemplate>
                         <Button
                             Tag="{Binding Path=GUID}"
-                            Height="25"
-                            Margin="5"
+                            Style="{StaticResource MonitoButtonResults}"
                             Click="button_Click"
-                            Background="#2d2d2d"
-                            Foreground="LightGray"
-                            HorizontalContentAlignment="Left"
                             Content="{Binding Path=Name}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

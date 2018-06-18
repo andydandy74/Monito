@@ -11,22 +11,21 @@
     Width="350" 
     Height="180" 
     Title="About DynaMonito">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Monito;component/Shared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <StackPanel 
-        Name="aboutPanel" 
-        Background="#2d2d2d" 
-        HorizontalAlignment="Stretch" 
-        VerticalAlignment="Stretch">
+        Style="{StaticResource MonitoStackPanelMain}"
+        Name="aboutPanel">
         <TextBlock 
-            FontFamily="Arial" 
-            Padding="10" 
-            Foreground="LightGray" 
             TextAlignment="Center"
             FontSize="18" 
             Text="DynaMonito"/>
         <TextBlock 
-            FontFamily="Arial" 
-            Padding="10" 
-            Foreground="LightGray" 
             TextAlignment="Center" >
             <Run 
                 Text="A collection of useful tools for Dynamo"/>
@@ -41,9 +40,6 @@
             </Hyperlink>
         </TextBlock>
         <TextBlock 
-            FontFamily="Arial" 
-            Padding="10" 
-            Foreground="LightGray" 
             TextAlignment="Center">
             Repository: 
             <Hyperlink 
