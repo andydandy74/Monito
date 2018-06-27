@@ -25,6 +25,7 @@ namespace Monito
 
             #region PLAYER_INPUTS
             monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
+            monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
             monitoPlayerInputsMenuItem.Click += (sender, args) =>
             {
                 var viewModel = new PlayerInputsViewModel(p, VM, p.DynamoWindow);
@@ -42,6 +43,7 @@ namespace Monito
 
             #region SEARCH_IN_WORKSPACE
             monitoSearchInWorkspaceMenuItem = new MenuItem { Header = "Search in Workspace" };
+            monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
             monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
             {
                 var viewModel = new SearchInWorkspaceViewModel(p, VM, p.DynamoWindow);
@@ -58,7 +60,7 @@ namespace Monito
             #endregion SEARCH_IN_WORKSPACE
 
             #region ABOUT
-            monitoAboutMenuItem = new MenuItem { Header = "About Monito" };
+            monitoAboutMenuItem = new MenuItem { Header = "About DynaMonito" };
             monitoAboutMenuItem.Click += (sender, args) =>
             {
                 var window = new AboutWindow
