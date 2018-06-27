@@ -1,6 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Dynamo.ViewModels;
+using System.Configuration;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Monito
 {
@@ -13,10 +15,23 @@ namespace Monito
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
+        private KeyValueConfigurationCollection monitoSettings;
+        private bool monitoSettingsLoaded = false;
 
         public void Dispose() { }
 
-        public void Startup(ViewStartupParams p) { }
+        public void Startup(ViewStartupParams p)
+        {
+            string configPath = this.GetType().Assembly.Location;
+            try
+            {
+                Configuration myDllConfig = ConfigurationManager.OpenExeConfiguration(configPath);
+                AppSettingsSection myDllConfigAppSettings = (AppSettingsSection)myDllConfig.GetSection("appSettings");
+                monitoSettings = myDllConfigAppSettings.Settings;
+                monitoSettingsLoaded = true;
+            }
+            catch { MessageBox.Show("Couldn't find, load or read config file at " + configPath); }
+        }
 
         public void Loaded(ViewLoadedParams p)
         {
@@ -24,39 +39,45 @@ namespace Monito
             var VM = p.DynamoWindow.DataContext as DynamoViewModel;
 
             #region PLAYER_INPUTS
-            monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
-            monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
-            monitoPlayerInputsMenuItem.Click += (sender, args) =>
+            if (monitoSettingsLoaded && monitoSettings["EnablePlayerInputs"] != null && monitoSettings["EnablePlayerInputs"].Value == "1")
             {
-                var viewModel = new PlayerInputsViewModel(p, VM, p.DynamoWindow);
-                var window = new PlayerInputsWindow
+                monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
+                monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
+                monitoPlayerInputsMenuItem.Click += (sender, args) =>
                 {
-                    playerInputsPanel = { DataContext = viewModel },
-                    Owner = p.DynamoWindow
+                    var viewModel = new PlayerInputsViewModel(p, VM, p.DynamoWindow);
+                    var window = new PlayerInputsWindow
+                    {
+                        playerInputsPanel = { DataContext = viewModel },
+                        Owner = p.DynamoWindow
+                    };
+                    window.Left = window.Owner.Left + 400;
+                    window.Top = window.Owner.Top + 200;
+                    window.Show();
                 };
-                window.Left = window.Owner.Left + 400;
-                window.Top = window.Owner.Top + 200;
-                window.Show();
-            };
-            monitoMenuItem.Items.Add(monitoPlayerInputsMenuItem);
+                monitoMenuItem.Items.Add(monitoPlayerInputsMenuItem);
+            }
             #endregion PLAYER INPUTS
 
             #region SEARCH_IN_WORKSPACE
-            monitoSearchInWorkspaceMenuItem = new MenuItem { Header = "Search in Workspace" };
-            monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
-            monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
+            if (monitoSettingsLoaded && monitoSettings["EnableSearchInWorkspace"] != null && monitoSettings["EnableSearchInWorkspace"].Value == "1")
             {
-                var viewModel = new SearchInWorkspaceViewModel(p, VM, p.DynamoWindow);
-                var window = new SearchInWorkspaceWindow
+                monitoSearchInWorkspaceMenuItem = new MenuItem { Header = "Search in Workspace" };
+                monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
+                monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
                 {
-                    searchPanel = { DataContext = viewModel },
-                    Owner = p.DynamoWindow
+                    var viewModel = new SearchInWorkspaceViewModel(p, VM, p.DynamoWindow);
+                    var window = new SearchInWorkspaceWindow
+                    {
+                        searchPanel = { DataContext = viewModel },
+                        Owner = p.DynamoWindow
+                    };
+                    window.Left = window.Owner.Left + 400;
+                    window.Top = window.Owner.Top + 200;
+                    window.Show();
                 };
-                window.Left = window.Owner.Left + 400;
-                window.Top = window.Owner.Top + 200;
-                window.Show();
-            };
-            monitoMenuItem.Items.Add(monitoSearchInWorkspaceMenuItem);
+                monitoMenuItem.Items.Add(monitoSearchInWorkspaceMenuItem);
+            }
             #endregion SEARCH_IN_WORKSPACE
 
             #region ABOUT
@@ -72,7 +93,10 @@ namespace Monito
                 window.Top = window.Owner.Top + 200;
                 window.Show();
             };
-            monitoMenuItem.Items.Add(new Separator());
+            if (monitoMenuItem.Items.Count > 0)
+            {
+                monitoMenuItem.Items.Add(new Separator());
+            }
             monitoMenuItem.Items.Add(monitoAboutMenuItem);
             #endregion ABOUT
 
