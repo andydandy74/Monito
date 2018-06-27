@@ -10,7 +10,6 @@ namespace Monito
     public class MonitoViewExtension : IViewExtension
     {
         private MenuItem monitoMenuItem;
-        private MenuItem monitoPlaygroundMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
@@ -23,23 +22,6 @@ namespace Monito
         {
             monitoMenuItem = new MenuItem { Header = "DynaMonito" };
             var VM = p.DynamoWindow.DataContext as DynamoViewModel;
-
-            #region PLAYGROUND
-            monitoPlaygroundMenuItem = new MenuItem { Header = "Playground" };
-            monitoPlaygroundMenuItem.Click += (sender, args) =>
-            {
-                var viewModel = new PlaygroundViewModel(p, VM, p.DynamoWindow);
-                var window = new PlaygroundWindow
-                {
-                    PlaygroundPanel = { DataContext = viewModel },
-                    Owner = p.DynamoWindow
-                };
-                window.Left = window.Owner.Left + 400;
-                window.Top = window.Owner.Top + 200;
-                window.Show();
-            };
-            //monitoMenuItem.Items.Add(monitoPlaygroundMenuItem);
-            #endregion PLAYGROUND
 
             #region PLAYER_INPUTS
             monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
