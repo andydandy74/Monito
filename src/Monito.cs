@@ -1,6 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Dynamo.ViewModels;
+using System;
+using System.Configuration;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Monito
 {
@@ -13,16 +16,29 @@ namespace Monito
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
+        private KeyValueConfigurationCollection monitoSettings;
 
         public void Dispose() { }
 
-        public void Startup(ViewStartupParams p) { }
+        public void Startup(ViewStartupParams p)
+        {
+            try
+            {
+                Configuration myDllConfig = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+                AppSettingsSection myDllConfigAppSettings = (AppSettingsSection)myDllConfig.GetSection("appSettings");
+                monitoSettings = myDllConfigAppSettings.Settings;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
 
         public void Loaded(ViewLoadedParams p)
         {
             monitoMenuItem = new MenuItem { Header = "DynaMonito" };
             var VM = p.DynamoWindow.DataContext as DynamoViewModel;
-
+            MessageBox.Show(monitoSettings.Count.ToString() + " Settings found");
             #region PLAYER_INPUTS
             monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
             monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
