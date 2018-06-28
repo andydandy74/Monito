@@ -1,6 +1,8 @@
 ﻿using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,9 +14,11 @@ namespace Monito
     public class MonitoViewExtension : IViewExtension
     {
         private MenuItem monitoMenuItem;
+        private MenuItem monitoPackageDirectoriesMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
+        private ViewStartupParams startupParams;
         private KeyValueConfigurationCollection monitoSettings;
         private bool monitoSettingsLoaded = false;
 
@@ -22,6 +26,7 @@ namespace Monito
 
         public void Startup(ViewStartupParams p)
         {
+            startupParams = p;
             string configPath = this.GetType().Assembly.Location;
             try
             {
@@ -58,6 +63,29 @@ namespace Monito
                 monitoMenuItem.Items.Add(monitoPlayerInputsMenuItem);
             }
             #endregion PLAYER INPUTS
+
+            #region PACKAGE_DIRECTORIES
+            if (monitoSettingsLoaded && monitoSettings["EnablePackageDirectories"] != null && monitoSettings["EnablePackageDirectories"].Value == "1")
+            {
+                monitoPackageDirectoriesMenuItem = new MenuItem { Header = "Package Directories" };
+                monitoPackageDirectoriesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your package directories..." };
+                foreach (string packageDir in startupParams.Preferences.CustomPackageFolders)
+                {
+                    if (Directory.Exists(packageDir))
+                    {
+                        MenuItem monitoPackageDirMenuItem = new MenuItem { Header = packageDir };
+                        monitoPackageDirMenuItem.ToolTip = new ToolTip { Content = "Show contents of " + packageDir + " ..." };
+                        monitoPackageDirMenuItem.Click += (sender, args) =>
+                        {
+                            if (Directory.Exists(packageDir)) { Process.Start(@"" + packageDir); }
+                            else { MessageBox.Show("Directory " + packageDir + " has been moved, renamed or deleted..."); }
+                        };
+                        monitoPackageDirectoriesMenuItem.Items.Add(monitoPackageDirMenuItem);
+                    }
+                }
+                monitoMenuItem.Items.Add(monitoPackageDirectoriesMenuItem);
+            }          
+            #endregion PACKAGE_DIRECTORIES
 
             #region SEARCH_IN_WORKSPACE
             if (monitoSettingsLoaded && monitoSettings["EnableSearchInWorkspace"] != null && monitoSettings["EnableSearchInWorkspace"].Value == "1")
@@ -107,18 +135,12 @@ namespace Monito
 
         public string UniqueId
         {
-            get
-            {
-                return "d8fcfe56-81e0-4e95-84af-d945ebd6478b";
-            }
+            get { return "d8fcfe56-81e0-4e95-84af-d945ebd6478b"; }
         }
 
         public string Name
         {
-            get
-            {
-                return "DynaMonito";
-            }
+            get { return "DynaMonito"; }
         }
 
     }
