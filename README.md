@@ -3,6 +3,7 @@ A view extension for the Dynamo visual programming environment.
 Still very much a work in progress.
 Currently includes the following tools:
 * Manage Dynamo Player Inputs
+* Package Directories
 * Search in Workspace
 
 ## Instructions for Dynamo 1.3.x
