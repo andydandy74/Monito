@@ -189,7 +189,7 @@ namespace Monito
                             // ToDo: search in tags and input values
                             int rawScore = 0;
                             double weightedScore = 0;
-                            if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
+                            if (searchInNicknames && node.Name.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
                             {
                                 rawScore += 10;
                             }
@@ -232,7 +232,7 @@ namespace Monito
                             }   
                             foreach (string part in searchTermParts)
                             {
-                                if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
+                                if (searchInNicknames && node.Name.ToLowerInvariant().Contains(part.ToLowerInvariant()))
                                 {
                                     rawScore += 2;
                                 }
@@ -260,11 +260,11 @@ namespace Monito
                             if (rawScore > 0)
                             {
                                 string toolTip = "Search score: " + weightedScore.ToString();
-                                if (searchInOriginalNames && node.GetType().Name == "DSFunction" && node.CreationName != node.NickName && node.CreationName != "")
+                                if (searchInOriginalNames && node.GetType().Name == "DSFunction" && node.CreationName != node.Name && node.CreationName != "")
                                 {
                                     toolTip += "\nOriginal name: " + node.CreationName;
                                 }
-                                else if (searchInOriginalNames && node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.NickName && node.GetType().Name != "")
+                                else if (searchInOriginalNames && node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.Name && node.GetType().Name != "")
                                 {
                                     toolTip += "\nOriginal name: " + node.GetType().Name;
                                 }
@@ -285,7 +285,7 @@ namespace Monito
                                         toolTip = toolTip.Remove(toolTip.Length - 1);
                                     }
                                 }
-                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
+                                unorderedResults.Add(new ObjectInWorkspace(node.Name.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
                             }
                         }
                     }

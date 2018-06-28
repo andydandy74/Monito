@@ -44,7 +44,7 @@ namespace Monito
                 {
                     if (node.IsSetAsInput)
                     {
-                        unorderedInputs.Add(new ObjectInWorkspace(node.NickName, node.GUID.ToString()));
+                        unorderedInputs.Add(new ObjectInWorkspace(node.Name, node.GUID.ToString()));
                     }
                 }
                 currentInputs.Clear();
