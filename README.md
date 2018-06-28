@@ -14,7 +14,7 @@ Currently includes the following tools:
 * Copy ```src/bin/Debug/Monito.dll.config``` to ```C:\Program Files\Dynamo\Dynamo Core\1.3```
 * After launching Dynamo you should see a new menu item ```DynaMonito```
 
-## Instructions for Dynamo 2.x (NOT TESTED)
+## Instructions for Dynamo 2.x
 
 * Build in Visual Studio from ```Dynamo_2.0.1``` branch
 * Copy ```src/Monito_ViewExtensionDefinition.xml``` to ```C:\Program Files\Dynamo\Dynamo Core\2\viewExtensions```
