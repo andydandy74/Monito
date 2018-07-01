@@ -8,7 +8,7 @@ Currently includes the following tools:
 
 ## Instructions for Dynamo 1.3.x
 
-* Build in Visual Studio from ```Dynamo_1.3``` branch
+* Build in Visual Studio from ```Dynamo_1.3``` or ```master``` branch
 * Copy ```src/Monito_ViewExtensionDefinition.xml``` to ```C:\Program Files\Dynamo\Dynamo Core\1.3\viewExtensions```
 * Copy ```src/bin/Debug/Monito.dll``` to ```C:\Program Files\Dynamo\Dynamo Core\1.3```
 * Copy ```src/bin/Debug/Monito.dll.config``` to ```C:\Program Files\Dynamo\Dynamo Core\1.3```
@@ -21,3 +21,7 @@ Currently includes the following tools:
 * Copy ```src/bin/Debug/Monito.dll``` to ```C:\Program Files\Dynamo\Dynamo Core\2```
 * Copy ```src/bin/Debug/Monito.dll.config``` to ```C:\Program Files\Dynamo\Dynamo Core\2```
 * After launching Dynamo you should see a new menu item ```DynaMonito```
+
+## Work in progress ##
+
+All WIP branches should be built against Dynamo 1.3
