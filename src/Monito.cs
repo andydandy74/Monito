@@ -121,10 +121,7 @@ namespace Monito
                 window.Top = window.Owner.Top + 200;
                 window.Show();
             };
-            if (monitoMenuItem.Items.Count > 0)
-            {
-                monitoMenuItem.Items.Add(new Separator());
-            }
+            if (monitoMenuItem.Items.Count > 0) { monitoMenuItem.Items.Add(new Separator()); }
             monitoMenuItem.Items.Add(monitoAboutMenuItem);
             #endregion ABOUT
 
