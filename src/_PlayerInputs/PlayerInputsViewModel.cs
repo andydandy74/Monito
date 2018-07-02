@@ -42,16 +42,10 @@ namespace Monito
                 List<ObjectInWorkspace> unorderedInputs = new List<ObjectInWorkspace>();
                 foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                 {
-                    if (node.IsSetAsInput)
-                    {
-                        unorderedInputs.Add(new ObjectInWorkspace(node.Name, node.GUID.ToString()));
-                    }
+                    if (node.IsSetAsInput) { unorderedInputs.Add(new ObjectInWorkspace(node.Name, node.GUID.ToString())); }
                 }
                 currentInputs.Clear();
-                foreach (ObjectInWorkspace item in unorderedInputs.OrderBy(x => x.Name))
-                {
-                    currentInputs.Add(item);
-                }
+                foreach (ObjectInWorkspace item in unorderedInputs.OrderBy(x => x.Name)) { currentInputs.Add(item); }
                 return currentInputs;
             }
         }
@@ -62,10 +56,7 @@ namespace Monito
         /// </summary>
         public string InputAction
         {
-            get
-            {
-                return inputAction;
-            }
+            get { return inputAction; }
             set
             {
                 inputAction = value;
@@ -73,30 +64,21 @@ namespace Monito
                 {
                     foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
                     {
-                        if (node.IsSetAsInput)
-                        {
-                            node.IsSetAsInput = false;
-                        }
+                        if (node.IsSetAsInput) { node.IsSetAsInput = false; }
                     }
                 }
                 else if (value == "ResetSelected")
                 {
                     foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
                     {
-                        if (item.IsSetAsInput)
-                        {
-                            item.IsSetAsInput = false;
-                        }
+                        if (item.IsSetAsInput) { item.IsSetAsInput = false; }
                     }
                 }
                 else if (value == "SetSelectedAsInput")
                 {
                     foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
                     {
-                        if (!item.IsSetAsInput)
-                        {
-                            item.IsSetAsInput = true;
-                        }
+                        if (!item.IsSetAsInput) { item.IsSetAsInput = true; }
                     }
                 }
                 RaisePropertyChanged(nameof(CurrentInputs));
@@ -109,10 +91,7 @@ namespace Monito
         /// </summary>
         public string ZoomGUID
         {
-            get
-            {
-                return zoomGUID;
-            }
+            get { return zoomGUID; }
             set
             {
                 zoomGUID = value;

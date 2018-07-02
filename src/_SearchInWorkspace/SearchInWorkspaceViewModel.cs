@@ -33,10 +33,7 @@ namespace Monito
         /// </summary>
         public string SearchTerm
         {
-            get
-            {
-                return searchTerm;
-            }
+            get { return searchTerm; }
             set
             {
                 searchTerm = value;
@@ -50,10 +47,7 @@ namespace Monito
         /// </summary>
         public bool SearchInNicknames
         {
-            get
-            {
-                return searchInNicknames;
-            }
+            get { return searchInNicknames; }
             set
             {
                 searchInNicknames = value;
@@ -67,10 +61,7 @@ namespace Monito
         /// </summary>
         public bool SearchInOriginalNames
         {
-            get
-            {
-                return searchInOriginalNames;
-            }
+            get { return searchInOriginalNames; }
             set
             {
                 searchInOriginalNames = value;
@@ -84,10 +75,7 @@ namespace Monito
         /// </summary>
         public bool SearchInCategories
         {
-            get
-            {
-                return searchInCategories;
-            }
+            get { return searchInCategories; }
             set
             {
                 searchInCategories = value;
@@ -101,10 +89,7 @@ namespace Monito
         /// </summary>
         public bool SearchInDescriptions
         {
-            get
-            {
-                return searchInDescriptions;
-            }
+            get { return searchInDescriptions; }
             set
             {
                 searchInDescriptions = value;
@@ -118,10 +103,7 @@ namespace Monito
         /// </summary>
         public bool SearchInTags
         {
-            get
-            {
-                return searchInTags;
-            }
+            get { return searchInTags; }
             set
             {
                 searchInTags = value;
@@ -135,10 +117,7 @@ namespace Monito
         /// </summary>
         public bool SearchInNotes
         {
-            get
-            {
-                return searchInNotes;
-            }
+            get { return searchInNotes; }
             set
             {
                 searchInNotes = value;
@@ -152,10 +131,7 @@ namespace Monito
         /// </summary>
         public bool SearchInAnnotations
         {
-            get
-            {
-                return searchInAnnotations;
-            }
+            get { return searchInAnnotations; }
             set
             {
                 searchInAnnotations = value;
@@ -189,72 +165,36 @@ namespace Monito
                             // ToDo: search in tags and input values
                             int rawScore = 0;
                             double weightedScore = 0;
-                            if (searchInNicknames && node.Name.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                            {
-                                rawScore += 10;
-                            }
-                            if (searchInCategories && node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                            {
-                                rawScore += 10;
-                            }
+                            if (searchInNicknames && node.Name.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
+                            if (searchInCategories && node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                             if (searchInOriginalNames)
                             {
-                                if (node.GetType().Name == "DSFunction" && node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                                {
-                                    rawScore += 10;
-                                }
-                                else if (node.GetType().Name != "DSFunction" && node.GetType().Name.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                                {
-                                    rawScore += 10;
-                                }
+                                if (node.GetType().Name == "DSFunction" && node.CreationName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
+                                else if (node.GetType().Name != "DSFunction" && node.GetType().Name.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                                 // Still haven't found out how to access original custom node names
                             }
-                            if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                            {
-                                rawScore += 10;
-                            }
+                            if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                             if (searchInTags)
                             {
                                 foreach (string tag in node.Tags)
                                 {
-                                    if (tag.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                                    {
-                                        rawScore += 2;
-                                    }
+                                    if (tag.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 2; }
                                     foreach (string part in searchTermParts)
                                     {
-                                        if (tag.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                        {
-                                            rawScore += 1;
-                                        }
+                                        if (tag.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                                     }
                                 }
                             }   
                             foreach (string part in searchTermParts)
                             {
-                                if (searchInNicknames && node.Name.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                {
-                                    rawScore += 2;
-                                }
-                                if (searchInCategories && node.Category.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                {
-                                    rawScore += 1;
-                                }
+                                if (searchInNicknames && node.Name.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 2; }
+                                if (searchInCategories && node.Category.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                                 if (searchInOriginalNames) 
                                 {
-                                    if (node.GetType().Name == "DSFunction" && node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                    {
-                                        rawScore += 2;
-                                    }
-                                    else if (node.GetType().Name != "DSFunction" && node.GetType().Name.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                    {
-                                        rawScore += 2;
-                                    }
+                                    if (node.GetType().Name == "DSFunction" && node.CreationName.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 2; }
+                                    else if (node.GetType().Name != "DSFunction" && node.GetType().Name.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 2; }
                                 }
-                                if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                {
-                                    rawScore += 1;
-                                }
+                                if (searchInDescriptions && node.Description.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                             }
                             weightedScore = rawScore / (10d + searchTermParts.Length) / nodesScoreFactor;
                             if (rawScore > 0)
@@ -268,22 +208,13 @@ namespace Monito
                                 {
                                     toolTip += "\nOriginal name: " + node.GetType().Name;
                                 }
-                                if (searchInCategories && node.Category != "")
-                                {
-                                    toolTip += "\nCategory: " + node.Category;
-                                }
-                                if (searchInDescriptions && node.Description != "")
-                                {
-                                    toolTip += "\nDescription: " + node.Description;
-                                }
+                                if (searchInCategories && node.Category != "") { toolTip += "\nCategory: " + node.Category; }
+                                if (searchInDescriptions && node.Description != "") { toolTip += "\nDescription: " + node.Description; }
                                 if (searchInTags && node.Tags.Count > 0)
                                 {
                                     toolTip += "\nTags: " + String.Join(", ", node.Tags.ToArray());
                                     toolTip = toolTip.TrimEnd();
-                                    if (toolTip[toolTip.Length-1] == ',')
-                                    {
-                                        toolTip = toolTip.Remove(toolTip.Length - 1);
-                                    }
+                                    if (toolTip[toolTip.Length-1] == ',') { toolTip = toolTip.Remove(toolTip.Length - 1); }
                                 }
                                 unorderedResults.Add(new ObjectInWorkspace(node.Name.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
                             }
@@ -295,22 +226,13 @@ namespace Monito
                         {
                             int rawScore = 0;
                             double weightedScore = 0;
-                            if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                            {
-                                rawScore += 10;
-                            }
+                            if (note.Text.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                             foreach (string part in searchTermParts)
                             {
-                                if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                {
-                                    rawScore += 1;
-                                }
+                                if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                             }
                             weightedScore = rawScore / (10d + searchTermParts.Length);
-                            if (rawScore > 0)
-                            {
-                                unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + note.Text));
-                            }
+                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + note.Text)); }
                         }
                     }
                     if (searchInAnnotations)
@@ -319,28 +241,16 @@ namespace Monito
                         {
                             int rawScore = 0;
                             double weightedScore = 0;
-                            if (anno.AnnotationText.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant()))
-                            {
-                                rawScore += 10;
-                            }
+                            if (anno.AnnotationText.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                             foreach (string part in searchTermParts)
                             {
-                                if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant()))
-                                {
-                                    rawScore += 1;
-                                }
+                                if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                             }
                             weightedScore = rawScore / (10d + searchTermParts.Length);
-                            if (rawScore > 0)
-                            {
-                                unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText));
-                            }
+                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText)); }
                         }
                     }
-                    foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name))
-                    {
-                        searchResults.Add(item);
-                    }
+                    foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name)) { searchResults.Add(item); }
                 }               
                 return searchResults;
             }
@@ -352,10 +262,7 @@ namespace Monito
         /// </summary>
         public string ZoomGUID
         {
-            get
-            {
-                return zoomGUID;
-            }
+            get { return zoomGUID; }
             set
             {
                 zoomGUID = value;
