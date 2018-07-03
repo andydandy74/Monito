@@ -14,6 +14,7 @@ namespace Monito
     public class MonitoViewExtension : IViewExtension
     {
         private MenuItem monitoMenuItem;
+        private MenuItem monitoIsolateInPreviewMenuItem;
         private MenuItem monitoPackageDirectoriesMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
@@ -42,6 +43,27 @@ namespace Monito
         {
             monitoMenuItem = new MenuItem { Header = "DynaMonito" };
             var VM = p.DynamoWindow.DataContext as DynamoViewModel;
+
+            #region ISOLATE_IN_GEOMETRY_PREVIEW
+            if (monitoSettingsLoaded && monitoSettings["EnableIsolateInGeometryPreview"] != null && monitoSettings["EnableIsolateInGeometryPreview"].Value == "1")
+            {
+                monitoIsolateInPreviewMenuItem = new MenuItem { Header = "Isolate in Geometry Preview" };
+                monitoIsolateInPreviewMenuItem.ToolTip = new ToolTip { Content = "Quickly isolate the current selection in geometry preview..." };
+                monitoIsolateInPreviewMenuItem.Click += (sender, args) =>
+                {
+                    var viewModel = new IsolateInPreviewViewModel(p, VM, p.DynamoWindow);
+                    var window = new IsolateInPreviewWindow
+                    {
+                        isolatePreviewPanel = { DataContext = viewModel },
+                        Owner = p.DynamoWindow
+                    };
+                    window.Left = window.Owner.Left + 400;
+                    window.Top = window.Owner.Top + 200;
+                    window.Show();
+                };
+                monitoMenuItem.Items.Add(monitoIsolateInPreviewMenuItem);
+            }
+            #endregion ISOLATE_IN_GEOMETRY_PREVIEW
 
             #region PLAYER_INPUTS
             if (monitoSettingsLoaded && monitoSettings["EnablePlayerInputs"] != null && monitoSettings["EnablePlayerInputs"].Value == "1")
