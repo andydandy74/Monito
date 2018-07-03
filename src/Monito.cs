@@ -1,5 +1,7 @@
 ﻿using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -15,12 +17,14 @@ namespace Monito
     {
         private MenuItem monitoMenuItem;
         private MenuItem monitoPackageDirectoriesMenuItem;
+        private MenuItem monitoMyGraphsMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
         private ViewStartupParams startupParams;
         private KeyValueConfigurationCollection monitoSettings;
         private bool monitoSettingsLoaded = false;
+        private List<string> myGraphsRaw = new List<string>();
 
         public void Dispose() { }
 
@@ -63,6 +67,19 @@ namespace Monito
                 monitoMenuItem.Items.Add(monitoPlayerInputsMenuItem);
             }
             #endregion PLAYER INPUTS
+
+            #region MY_GRAPHS
+            if (monitoSettingsLoaded && monitoSettings["EnableMyGraphs"] != null && monitoSettings["EnableMyGraphs"].Value == "1")
+            {
+                monitoMyGraphsMenuItem = new MenuItem { Header = "My Graphs" };
+                monitoMyGraphsMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
+                var topDirs = monitoSettings["MyGraphsDirectoryPaths"].Value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (topDirs.Length > 0)
+                {
+
+                }
+            }
+            #endregion MY_GRAPHS
 
             #region PACKAGE_DIRECTORIES
             if (monitoSettingsLoaded && monitoSettings["EnablePackageDirectories"] != null && monitoSettings["EnablePackageDirectories"].Value == "1")
@@ -140,5 +157,18 @@ namespace Monito
             get { return "DynaMonito"; }
         }
 
+        public MenuItem buildMyGraphsMenu(string dir, MenuItem menuItem)
+        {
+            try
+            {
+                foreach (string d in Directory.GetDirectories(dir))
+                {
+                    foreach (string f in Directory.GetFiles(d, "*.dyn")) { myGraphsRaw.Add(f); }
+                    searchMyGraphs(d);
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+            return menuItem;
+        }
     }
 }
