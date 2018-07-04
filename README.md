@@ -22,6 +22,10 @@ Currently includes the following tools:
 * Copy ```src/bin/Debug/Monito.dll.config``` to ```C:\Program Files\Dynamo\Dynamo Core\2```
 * After launching Dynamo you should see a new menu item ```DynaMonito```
 
+## Customization
+
+Look at ```Monito.dll.config``` for some options to customize the view extension (currently mostly turning things off/on).
+
 ## Work in progress ##
 
 All WIP branches should be built against Dynamo 1.3
