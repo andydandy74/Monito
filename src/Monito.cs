@@ -71,13 +71,30 @@ namespace Monito
             #region MY_GRAPHS
             if (monitoSettingsLoaded && monitoSettings["EnableMyGraphs"] != null && monitoSettings["EnableMyGraphs"].Value == "1")
             {
-                monitoMyGraphsMenuItem = new MenuItem { Header = "My Graphs" };
-                monitoMyGraphsMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
+                
                 var topDirs = monitoSettings["MyGraphsDirectoryPaths"].Value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 if (topDirs.Length > 0)
                 {
-
+                    monitoMyGraphsMenuItem = new MenuItem { Header = "My Graphs" };
+                    monitoMyGraphsMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
+                    if (topDirs.Length == 1)
+                    {
+                        monitoMyGraphsMenuItem = buildMyGraphsMenu(topDirs[0], monitoMyGraphsMenuItem);
+                    }
+                    else
+                    {
+                        foreach(string topDir in topDirs)
+                        {
+                            string topDirName = Path.GetFileName(topDir);
+                            MenuItem topDirMenuItem = new MenuItem { Header = topDirName };
+                            topDirMenuItem.ToolTip = new ToolTip { Content = topDir };
+                            topDirMenuItem = buildMyGraphsMenu(topDir, topDirMenuItem);
+                            monitoMyGraphsMenuItem.Items.Add(topDirMenuItem);
+                        }
+                    }
+                    monitoMenuItem.Items.Add(monitoMyGraphsMenuItem);
                 }
+                    
             }
             #endregion MY_GRAPHS
 
@@ -161,14 +178,53 @@ namespace Monito
         {
             try
             {
+                List<MenuItem> tempMenuItems = new List<MenuItem>();
                 foreach (string d in Directory.GetDirectories(dir))
                 {
-                    foreach (string f in Directory.GetFiles(d, "*.dyn")) { myGraphsRaw.Add(f); }
-                    searchMyGraphs(d);
+                    string dirName = Path.GetFileName(d);
+                    if (dirName != "backup")
+                    {
+                        MenuItem dirMenu = new MenuItem { Header = dirName };
+                        dirMenu.ToolTip = new ToolTip { Content = d };
+                        dirMenu = buildMyGraphsMenu(d, dirMenu);
+                        if (dirMenu != null) { tempMenuItems.Add(dirMenu); }                       
+                    }
                 }
+                var files = Directory.GetFiles(dir, "*.dyn");
+                if (files.Length > 0)
+                {
+                    foreach (string f in files)
+                    {
+                        string graphName = Path.GetFileNameWithoutExtension(f);
+                        MenuItem graphMenu = new MenuItem { Header = graphName };
+                        graphMenu.ToolTip = new ToolTip { Content = f };
+                        graphMenu.Click += (sender, args) =>
+                        {
+                            if (File.Exists(f))
+                            {
+                                MessageBox.Show(graphName);
+                            }
+                            else { MessageBox.Show("Graph " + graphName + " has been moved, renamed or deleted..."); }
+                        };
+                        tempMenuItems.Add(new MenuItem { Header = graphMenu });
+                    }
+                }
+                if (tempMenuItems.Count > 0)
+                {
+                    foreach (MenuItem tempMenuItem in tempMenuItems)
+                    {
+                        menuItem.Items.Add(tempMenuItem);
+                    }
+                    return menuItem;
+                }
+                else { return null; }
+                
             }
-            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
-            return menuItem;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
         }
     }
 }
