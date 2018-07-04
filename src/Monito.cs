@@ -79,7 +79,7 @@ namespace Monito
                     monitoMyGraphsMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
                     if (topDirs.Length == 1)
                     {
-                        monitoMyGraphsMenuItem = buildMyGraphsMenu(topDirs[0], monitoMyGraphsMenuItem);
+                        monitoMyGraphsMenuItem = buildMyGraphsMenu(topDirs[0], monitoMyGraphsMenuItem, VM);
                     }
                     else
                     {
@@ -88,11 +88,11 @@ namespace Monito
                             string topDirName = Path.GetFileName(topDir);
                             MenuItem topDirMenuItem = new MenuItem { Header = topDirName };
                             topDirMenuItem.ToolTip = new ToolTip { Content = topDir };
-                            topDirMenuItem = buildMyGraphsMenu(topDir, topDirMenuItem);
+                            topDirMenuItem = buildMyGraphsMenu(topDir, topDirMenuItem, VM);
                             monitoMyGraphsMenuItem.Items.Add(topDirMenuItem);
                         }
                     }
-                    monitoMenuItem.Items.Add(monitoMyGraphsMenuItem);
+                    if (monitoMyGraphsMenuItem != null) { monitoMenuItem.Items.Add(monitoMyGraphsMenuItem); }
                 }
                     
             }
@@ -174,7 +174,7 @@ namespace Monito
             get { return "DynaMonito"; }
         }
 
-        public MenuItem buildMyGraphsMenu(string dir, MenuItem menuItem)
+        public MenuItem buildMyGraphsMenu(string dir, MenuItem menuItem, DynamoViewModel vm)
         {
             try
             {
@@ -186,7 +186,7 @@ namespace Monito
                     {
                         MenuItem dirMenu = new MenuItem { Header = dirName };
                         dirMenu.ToolTip = new ToolTip { Content = d };
-                        dirMenu = buildMyGraphsMenu(d, dirMenu);
+                        dirMenu = buildMyGraphsMenu(d, dirMenu, vm);
                         if (dirMenu != null) { tempMenuItems.Add(dirMenu); }                       
                     }
                 }
@@ -202,7 +202,8 @@ namespace Monito
                         {
                             if (File.Exists(f))
                             {
-                                MessageBox.Show(graphName);
+                                vm.CloseHomeWorkspaceCommand.Execute(null);
+                                vm.OpenCommand.Execute(f);
                             }
                             else { MessageBox.Show("Graph " + graphName + " has been moved, renamed or deleted..."); }
                         };
