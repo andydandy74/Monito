@@ -34,4 +34,5 @@ All WIP branches should be built against Dynamo 1.3
 
 ## Known issues
 
-Templates files need to be saved more or less in the same version as the current Dynamo version used.
+* Template files need to be saved more or less in the same version as the current Dynamo version used.
+* Zooming into groups from Search in Workspace or Manage Dynamo Player Inputs does not center the screen exactly on the selected group
