@@ -31,3 +31,7 @@ Look at ```Monito.dll.config``` for some options to customize the view extension
 ## Work in progress ##
 
 All WIP branches should be built against Dynamo 1.3
+
+## Known issues
+
+Templates files need to be saved more or less in the same version as the current Dynamo version used.
