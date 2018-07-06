@@ -4,6 +4,7 @@ Still very much a work in progress.
 Currently includes the following tools:
 * Manage Dynamo Player Inputs
 * My Graphs (quick access to graph directories)
+* New Graph from Template
 * Package Directories
 * Search in Workspace
 
@@ -16,6 +17,7 @@ Currently includes the following tools:
 * After launching Dynamo you should see a new menu item ```DynaMonito```
 
 ## Instructions for Dynamo 2.x
+I currently work mainly in Dynamo 1.3.x so some of the functionality may not have been tested thoroughly for Dynamo 2.x ...
 
 * Build in Visual Studio from ```Dynamo_2.0.1``` branch
 * Copy ```src/Monito_ViewExtensionDefinition.xml``` to ```C:\Program Files\Dynamo\Dynamo Core\2\viewExtensions```
@@ -30,3 +32,8 @@ Look at ```Monito.dll.config``` for some options to customize the view extension
 ## Work in progress ##
 
 All WIP branches should be built against Dynamo 1.3
+
+## Known issues
+
+* Template files need to be saved more or less in the same version as the current Dynamo version used.
+* Zooming into groups from Search in Workspace or Manage Dynamo Player Inputs does not center the screen exactly on the selected group
