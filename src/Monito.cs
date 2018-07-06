@@ -127,6 +127,7 @@ namespace Monito
                                 }
                                 VM.CopyCommand.Execute(null);
                                 VM.NewHomeWorkspaceCommand.Execute(null);
+                                VM.CurrentSpaceViewModel.RunSettingsViewModel.SelectedRunTypeItem.RunType = Dynamo.Models.RunType.Manual;
                                 VM.Model.Paste();
                                 foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations)
                                 {
