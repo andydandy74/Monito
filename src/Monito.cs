@@ -18,6 +18,7 @@ namespace Monito
         private MenuItem monitoMenuItem;
         private MenuItem monitoPackageDirectoriesMenuItem;
         private MenuItem monitoMyGraphsMenuItem;
+        private MenuItem monitoMyTemplatesMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
@@ -97,6 +98,59 @@ namespace Monito
                     
             }
             #endregion MY_GRAPHS
+
+            #region MY_TEMPLATES
+            if (monitoSettingsLoaded && monitoSettings["EnableMyTemplates"] != null && monitoSettings["EnableMyTemplates"].Value == "1")
+            {
+                var tplDir = monitoSettings["MyTemplatesDirectoryPath"].Value;
+                if (Directory.Exists(tplDir))
+                {
+                    List<MenuItem> tempMenuItems = new List<MenuItem>();
+                    var templates = Directory.GetFiles(tplDir, "*.dyn");
+                    foreach (string t in templates)
+                    {
+                        string tplName = Path.GetFileNameWithoutExtension(t);
+                        MenuItem tplMenu = new MenuItem { Header = tplName };
+                        tplMenu.ToolTip = new ToolTip { Content = t };
+                        tplMenu.Click += (sender, args) =>
+                        {
+                            if (File.Exists(t))
+                            {
+                                VM.CloseHomeWorkspaceCommand.Execute(null);
+                                VM.OpenCommand.Execute(t);
+                                // Select all nodes and notes
+                                VM.SelectAllCommand.Execute(null);
+                                // Need to copy groups as well
+                                foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations)
+                                {
+                                    VM.AddToSelectionCommand.Execute(anno);
+                                }
+                                VM.CopyCommand.Execute(null);
+                                VM.NewHomeWorkspaceCommand.Execute(null);
+                                VM.CurrentSpaceViewModel.RunSettingsViewModel.SelectedRunTypeItem.RunType = Dynamo.Models.RunType.Manual;
+                                VM.Model.Paste();
+                                foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations)
+                                {
+                                    anno.Deselect();
+                                }
+                            }
+                            else { MessageBox.Show("Template " + tplName + " has been moved, renamed or deleted..."); }
+                        };
+                        tempMenuItems.Add(tplMenu);
+                    }
+                    monitoMyTemplatesMenuItem = new MenuItem { Header = "My Templates" };
+                    monitoMyTemplatesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your templates..." };
+                    if (tempMenuItems.Count > 0)
+                    {
+                        foreach (MenuItem tempMenuItem in tempMenuItems)
+                        {
+                            monitoMyTemplatesMenuItem.Items.Add(tempMenuItem);
+                        }
+                        monitoMenuItem.Items.Add(monitoMyTemplatesMenuItem);
+                    }
+                }
+            }
+            #endregion MY_TEMPLATES
 
             #region PACKAGE_DIRECTORIES
             if (monitoSettingsLoaded && monitoSettings["EnablePackageDirectories"] != null && monitoSettings["EnablePackageDirectories"].Value == "1")
@@ -178,6 +232,7 @@ namespace Monito
         {
             try
             {
+                if (!Directory.Exists(dir)) { return null; }
                 List<MenuItem> tempMenuItems = new List<MenuItem>();
                 foreach (string d in Directory.GetDirectories(dir))
                 {
@@ -191,24 +246,21 @@ namespace Monito
                     }
                 }
                 var files = Directory.GetFiles(dir, "*.dyn");
-                if (files.Length > 0)
+                foreach (string f in files)
                 {
-                    foreach (string f in files)
+                    string graphName = Path.GetFileNameWithoutExtension(f);
+                    MenuItem graphMenu = new MenuItem { Header = graphName };
+                    graphMenu.ToolTip = new ToolTip { Content = f };
+                    graphMenu.Click += (sender, args) =>
                     {
-                        string graphName = Path.GetFileNameWithoutExtension(f);
-                        MenuItem graphMenu = new MenuItem { Header = graphName };
-                        graphMenu.ToolTip = new ToolTip { Content = f };
-                        graphMenu.Click += (sender, args) =>
+                        if (File.Exists(f))
                         {
-                            if (File.Exists(f))
-                            {
-                                vm.CloseHomeWorkspaceCommand.Execute(null);
-                                vm.OpenCommand.Execute(f);
-                            }
-                            else { MessageBox.Show("Graph " + graphName + " has been moved, renamed or deleted..."); }
-                        };
-                        tempMenuItems.Add(new MenuItem { Header = graphMenu });
-                    }
+                            vm.CloseHomeWorkspaceCommand.Execute(null);
+                            vm.OpenCommand.Execute(f);
+                        }
+                        else { MessageBox.Show("Graph " + graphName + " has been moved, renamed or deleted..."); }
+                    };
+                    tempMenuItems.Add(graphMenu);
                 }
                 if (tempMenuItems.Count > 0)
                 {
