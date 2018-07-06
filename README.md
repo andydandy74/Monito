@@ -17,6 +17,7 @@ Currently includes the following tools:
 * After launching Dynamo you should see a new menu item ```DynaMonito```
 
 ## Instructions for Dynamo 2.x
+I currently work mainly in Dynamo 1.3.x so some of the functionality may not have been tested thoroughly for Dynamo 2.x ...
 
 * Build in Visual Studio from ```Dynamo_2.0.1``` branch
 * Copy ```src/Monito_ViewExtensionDefinition.xml``` to ```C:\Program Files\Dynamo\Dynamo Core\2\viewExtensions```
