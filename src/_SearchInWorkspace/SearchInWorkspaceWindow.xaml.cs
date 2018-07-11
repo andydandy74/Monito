@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Dynamo.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Monito
@@ -17,7 +18,11 @@ namespace Monito
 
         void button_Click(object sender, RoutedEventArgs e)
         {
-            clickedGUID.Text = "" + ((Button)sender).Tag;
+            var dynWindow = this.Owner;
+            var vm = dynWindow.DataContext as DynamoViewModel;
+            string guid = "" + ((Button)sender).Tag;
+            var VMU = new ViewModelUtils(vm, dynWindow);
+            VMU.ZoomToObject(guid);
         }
     }
 }

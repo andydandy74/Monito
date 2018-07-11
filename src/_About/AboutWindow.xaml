@@ -9,7 +9,7 @@
     d:DesignHeight="300" 
     d:DesignWidth="300" 
     Width="350" 
-    Height="180" 
+    Height="150" 
     Title="About DynaMonito">
     <Window.Resources>
         <ResourceDictionary>
@@ -28,20 +28,11 @@
         <TextBlock 
             TextAlignment="Center" >
             <Run 
-                Text="A collection of useful tools for Dynamo"/>
+                Text="A collection of (hopefully) useful tools for Dynamo"/>
             <LineBreak/>
             <Run 
-                Text="© 2018 Bad Monkeys"/>
+                Text="© 2018 Andreas Dieckmann"/>
             <LineBreak/>
-            <Hyperlink 
-                NavigateUri="http://www.badmonkeys.net" 
-                RequestNavigate="Hyperlink_RequestNavigate">
-                http://www.badmonkeys.net
-            </Hyperlink>
-        </TextBlock>
-        <TextBlock 
-            TextAlignment="Center">
-            Repository: 
             <Hyperlink 
                 NavigateUri="https://github.com/andydandy74/Monito" 
                 RequestNavigate="Hyperlink_RequestNavigate">

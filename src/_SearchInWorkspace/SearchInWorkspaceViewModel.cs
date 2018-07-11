@@ -8,7 +8,6 @@ using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace Monito
 {
@@ -16,13 +15,11 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
-        private Window dynWindow;
 
-        public SearchInWorkspaceViewModel(ReadyParams p, DynamoViewModel vm, Window dw)
+        public SearchInWorkspaceViewModel(ReadyParams p, DynamoViewModel vm)
         {
             readyParams = p;
             viewModel = vm;
-            dynWindow = dw;
         }
 
         public void Dispose() { }
@@ -253,21 +250,6 @@ namespace Monito
                     foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name)) { searchResults.Add(item); }
                 }               
                 return searchResults;
-            }
-        }
-
-        private string zoomGUID;
-        /// <summary>
-        /// The GUID of the node that was selected from the search results. Triggered by button click.
-        /// </summary>
-        public string ZoomGUID
-        {
-            get { return zoomGUID; }
-            set
-            {
-                zoomGUID = value;
-                var VMU = new ViewModelUtils(readyParams, viewModel, dynWindow);
-                VMU.ZoomToObject(value);
             }
         }
     }
