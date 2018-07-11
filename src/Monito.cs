@@ -1,4 +1,5 @@
-﻿using Dynamo.ViewModels;
+﻿using Dynamo.Models;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.Generic;
@@ -124,7 +125,7 @@ namespace Monito
                                 foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { VM.AddToSelectionCommand.Execute(anno); }
                                 VM.CopyCommand.Execute(null);
                                 VM.NewHomeWorkspaceCommand.Execute(null);
-                                VM.CurrentSpaceViewModel.RunSettingsViewModel.SelectedRunTypeItem.RunType = Dynamo.Models.RunType.Manual;
+                                VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 VM.Model.Paste();
                                 foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { anno.Deselect(); }
                             }
