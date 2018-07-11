@@ -4,7 +4,7 @@ Still very much a work in progress.
 Currently includes the following tools:
 * Manage Dynamo Player Inputs
 * My Graphs (quick access to graph directories)
-* New Graph from Template
+* New Workspace from Template
 * Package Directories
 * Search in Workspace
 
