@@ -52,10 +52,6 @@
                         Content="Group titles" />
                 </StackPanel>
             </Expander>
-            <TextBox
-                Name="clickedGUID" 
-                Text="{Binding ZoomGUID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                Visibility="Collapsed"/>
             <ItemsControl 
                 ItemsSource="{Binding SearchResults}">
                 <ItemsControl.ItemTemplate>

@@ -1,4 +1,5 @@
-﻿using Dynamo.ViewModels;
+﻿using Dynamo.Models;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace Monito
                 monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
                 monitoPlayerInputsMenuItem.Click += (sender, args) =>
                 {
-                    var viewModel = new PlayerInputsViewModel(p, VM, p.DynamoWindow);
+                    var viewModel = new PlayerInputsViewModel(p, VM);
                     var window = new PlayerInputsWindow
                     {
                         playerInputsPanel = { DataContext = viewModel },
@@ -146,7 +147,7 @@ namespace Monito
                                 foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { VM.AddToSelectionCommand.Execute(anno); }
                                 VM.CopyCommand.Execute(null);
                                 VM.NewHomeWorkspaceCommand.Execute(null);
-                                VM.CurrentSpaceViewModel.RunSettingsViewModel.SelectedRunTypeItem.RunType = Dynamo.Models.RunType.Manual;
+                                VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 VM.Model.Paste();
                                 foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { anno.Deselect(); }
                             }
@@ -195,7 +196,7 @@ namespace Monito
                 monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
                 monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
                 {
-                    var viewModel = new SearchInWorkspaceViewModel(p, VM, p.DynamoWindow);
+                    var viewModel = new SearchInWorkspaceViewModel(p, VM);
                     var window = new SearchInWorkspaceWindow
                     {
                         searchPanel = { DataContext = viewModel },
