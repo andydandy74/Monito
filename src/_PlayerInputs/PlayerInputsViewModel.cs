@@ -4,7 +4,6 @@ using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
-using System.Windows;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -14,13 +13,11 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
-        private Window dynWindow;
 
-        public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm, Window dw)
+        public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
         {
             readyParams = p;
             viewModel = vm;
-            dynWindow = dw;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
         }
@@ -82,21 +79,6 @@ namespace Monito
                     }
                 }
                 RaisePropertyChanged(nameof(CurrentInputs));
-            }
-        }
-
-        private string zoomGUID;
-        /// <summary>
-        /// The GUID of the node that was selected from the search results. Triggered by button click.
-        /// </summary>
-        public string ZoomGUID
-        {
-            get { return zoomGUID; }
-            set
-            {
-                zoomGUID = value;
-                var VMU = new ViewModelUtils(readyParams, viewModel, dynWindow);
-                VMU.ZoomToObject(value);
             }
         }
 

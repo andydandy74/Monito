@@ -1,5 +1,4 @@
-﻿using Dynamo.Extensions;
-using Dynamo.ViewModels;
+﻿using Dynamo.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
@@ -11,13 +10,11 @@ namespace Monito
     /// </summary>
     class ViewModelUtils
     {
-        private ReadyParams readyParams;
         private DynamoViewModel viewModel;
         private Window dynWindow;
         
-        public ViewModelUtils(ReadyParams p, DynamoViewModel vm, Window dw)
+        public ViewModelUtils(DynamoViewModel vm, Window dw)
         {
-            readyParams = p;
             viewModel = vm;
             dynWindow = dw;
         }
@@ -26,14 +23,14 @@ namespace Monito
         /// </summary>
         public void ZoomToObject(string guid)
         {
-            bool isNode = readyParams.CurrentWorkspaceModel.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
+            bool isNode = viewModel.Model.CurrentWorkspace.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
             bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
             bool isAnno = viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0;
             double objectCenterX = 0;
             double objectCenterY = 0;
             if (isNode)
             {
-                var zoomNode = readyParams.CurrentWorkspaceModel.Nodes.First(x => x.GUID.ToString() == guid);
+                var zoomNode = viewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == guid);
                 objectCenterX = zoomNode.CenterX;
                 objectCenterY = zoomNode.CenterY;
             }

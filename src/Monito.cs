@@ -56,7 +56,7 @@ namespace Monito
                 monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
                 monitoPlayerInputsMenuItem.Click += (sender, args) =>
                 {
-                    var viewModel = new PlayerInputsViewModel(p, VM, p.DynamoWindow);
+                    var viewModel = new PlayerInputsViewModel(p, VM);
                     var window = new PlayerInputsWindow
                     {
                         playerInputsPanel = { DataContext = viewModel },
@@ -174,7 +174,7 @@ namespace Monito
                 monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
                 monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
                 {
-                    var viewModel = new SearchInWorkspaceViewModel(p, VM, p.DynamoWindow);
+                    var viewModel = new SearchInWorkspaceViewModel(p, VM);
                     var window = new SearchInWorkspaceWindow
                     {
                         searchPanel = { DataContext = viewModel },
