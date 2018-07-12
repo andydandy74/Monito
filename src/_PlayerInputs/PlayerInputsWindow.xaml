@@ -32,7 +32,7 @@
                 Command="{Binding SetSelectedAsInput}"/>
             <TextBlock 
                 TextAlignment="Left" 
-                Text="All Dynamo Player inputs in current workspace:" 
+                Text="{Binding CurrentInputsMsg}" 
                 FontWeight="Bold"/>
             <ItemsControl 
                 ItemsSource="{Binding CurrentInputs}">

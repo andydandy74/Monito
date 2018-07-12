@@ -36,6 +36,17 @@ namespace Monito
             readyParams.CurrentWorkspaceModel.NodeRemoved -= CurrentWorkspaceModel_NodesChanged;
         }
 
+        private string currentInputsMsg;
+        public string CurrentInputsMsg
+        {
+            get
+            {
+                if (currentInputs.Count > 0) { currentInputsMsg = "All Dynamo Player inputs in current workspace:"; }
+                else { currentInputsMsg = "No Dynamo Player inputs in current workspace..."; }
+                return currentInputsMsg;
+            }
+        }
+
         private ObservableCollection<ObjectInWorkspace> currentInputs = new ObservableCollection<ObjectInWorkspace>();
         /// <summary>
         /// The search results as a list representation
@@ -51,6 +62,7 @@ namespace Monito
                 }
                 currentInputs.Clear();
                 foreach (ObjectInWorkspace item in unorderedInputs.OrderBy(x => x.Name)) { currentInputs.Add(item); }
+                RaisePropertyChanged(nameof(CurrentInputsMsg));
                 return currentInputs;
             }
         }
