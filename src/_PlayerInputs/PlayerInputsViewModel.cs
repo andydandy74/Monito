@@ -6,6 +6,8 @@ using Dynamo.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using Dynamo.UI.Commands;
 
 namespace Monito
 {
@@ -13,6 +15,9 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        public ICommand ResetAll { get; set; }
+        public ICommand ResetSelected { get; set; }
+        public ICommand SetSelectedAsInput { get; set; }
 
         public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
         {
@@ -20,6 +25,9 @@ namespace Monito
             viewModel = vm;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
+            ResetAll = new DelegateCommand(OnResetAllClicked);
+            ResetSelected = new DelegateCommand(OnResetSelectedClicked);
+            SetSelectedAsInput = new DelegateCommand(OnSetSelectedAsInputClicked);
         }
 
         public void Dispose()
@@ -47,39 +55,31 @@ namespace Monito
             }
         }
 
-        private string inputAction;
-        /// <summary>
-        /// The action that should be performed on the nodes in the workspace
-        /// </summary>
-        public string InputAction
+        public void OnResetAllClicked(object obj)
         {
-            get { return inputAction; }
-            set
+            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
             {
-                inputAction = value;
-                if (value == "ResetAll")
-                {
-                    foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-                    {
-                        if (node.IsSetAsInput) { node.IsSetAsInput = false; }
-                    }
-                }
-                else if (value == "ResetSelected")
-                {
-                    foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
-                    {
-                        if (item.IsSetAsInput) { item.IsSetAsInput = false; }
-                    }
-                }
-                else if (value == "SetSelectedAsInput")
-                {
-                    foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
-                    {
-                        if (!item.IsSetAsInput) { item.IsSetAsInput = true; }
-                    }
-                }
-                RaisePropertyChanged(nameof(CurrentInputs));
+                if (node.IsSetAsInput) { node.IsSetAsInput = false; }
             }
+            RaisePropertyChanged(nameof(CurrentInputs));
+        }
+
+        public void OnResetSelectedClicked(object obj)
+        {
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
+            {
+                if (item.IsSetAsInput) { item.IsSetAsInput = false; }
+            }
+            RaisePropertyChanged(nameof(CurrentInputs));
+        }
+
+        public void OnSetSelectedAsInputClicked(object obj)
+        {
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
+            {
+                if (!item.IsSetAsInput) { item.IsSetAsInput = true; }
+            }
+            RaisePropertyChanged(nameof(CurrentInputs));
         }
 
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
