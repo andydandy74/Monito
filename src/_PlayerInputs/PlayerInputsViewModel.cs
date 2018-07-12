@@ -82,6 +82,15 @@ namespace Monito
             }
         }
 
+        public void ResetAll()
+        {
+            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+            {
+                if (node.IsSetAsInput) { node.IsSetAsInput = false; }
+            }
+            RaisePropertyChanged(nameof(CurrentInputs));
+        }
+
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
         {
             RaisePropertyChanged(nameof(CurrentInputs));
