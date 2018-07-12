@@ -94,7 +94,17 @@ namespace Monito
                             monitoMyGraphsMenuItem.Items.Add(topDirMenuItem);
                         }
                     }
-                    if (monitoMyGraphsMenuItem != null) { monitoMenuItem.Items.Add(monitoMyGraphsMenuItem); }
+                    if (monitoMyGraphsMenuItem != null)
+                    {
+                        // Still need to figure out waht's the best way to retrieve the IsChecked status of that MenuItem
+                        // (i.e. how to best identify the MenuItem)
+                        MenuItem CheckForAutoExecuteMenuItem = new MenuItem { Header = "Run graph after loading" };
+                        CheckForAutoExecuteMenuItem.ToolTip = new ToolTip { Content = "Check this if you want graphs to be executed automatically after loading..." };
+                        CheckForAutoExecuteMenuItem.IsCheckable = true;
+                        monitoMyGraphsMenuItem.Items.Insert(0, CheckForAutoExecuteMenuItem);
+                        monitoMyGraphsMenuItem.Items.Insert(1, new Separator());
+                        monitoMenuItem.Items.Add(monitoMyGraphsMenuItem);
+                    }
                 }
                     
             }
@@ -251,6 +261,16 @@ namespace Monito
                     {
                         vm.CloseHomeWorkspaceCommand.Execute(null);
                         vm.OpenCommand.Execute(f);
+                        // Need to figure out how to check if this tool is set to auto-execute graphs
+                        try
+                        {
+                            vm.Model.ForceRun();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+                        }
+                        
                     }
                     else { MessageBox.Show("Graph " + graphName + " has been moved, renamed or deleted..."); }
                 };
