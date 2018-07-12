@@ -23,17 +23,13 @@
             Name="playerInputsPanel">
             <Button 
                 Content="Reset all inputs" 
-                Click="click_ResetAll"/>
+                Command="{Binding ResetAll}"/>
             <Button 
                 Content="Reset selected" 
-                Click="click_ResetSelected"/>
+                Command="{Binding ResetSelected}"/>
             <Button 
                 Content="Set selected as input" 
-                Click="click_SetSelectedAsInput"/>
-            <TextBox
-                Name="InputAction"
-                Visibility="Collapsed"
-                Text="{Binding InputAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                Command="{Binding SetSelectedAsInput}"/>
             <TextBlock 
                 TextAlignment="Left" 
                 Text="All Dynamo Player inputs in current workspace:" 
