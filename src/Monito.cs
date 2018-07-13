@@ -54,7 +54,7 @@ namespace Monito
             #region FIND_UNGROUPED
             if (monitoSettingsLoaded && monitoSettings["EnableFindUngrouped"] != null && monitoSettings["EnableFindUngrouped"].Value == "1")
             {
-                monitoFindUngroupedMenuItem = new MenuItem { Header = "Find Ungrouped" };
+                monitoFindUngroupedMenuItem = new MenuItem { Header = "Find and Fix Ungrouped" };
                 monitoFindUngroupedMenuItem.ToolTip = new ToolTip { Content = "Identify nodes and notes that don't belong to a group.." };
                 monitoFindUngroupedMenuItem.Click += (sender, args) =>
                 {
