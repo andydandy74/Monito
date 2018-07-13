@@ -8,7 +8,7 @@
         d:DesignWidth="500" 
         Width="500" 
         Height="500" 
-        Title="DynaMonito - Find Ungrouped">
+        Title="DynaMonito - Find and Fix Ungrouped">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,7 +23,6 @@
             Name="findUngroupedPanel">
             <Button 
                 Content="Fix groupings" 
-                Visibility="Collapsed"
                 Command="{Binding FixUngrouped}"/>
             <TextBlock 
                 TextAlignment="Left" 
