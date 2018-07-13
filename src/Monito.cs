@@ -21,6 +21,7 @@ namespace Monito
         private MenuItem monitoMyGraphsMenuItem;
         private MenuItem monitoMyTemplatesMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
+        private MenuItem monitoPackageUpdatesMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
         private MenuItem monitoAboutMenuItem;
         private ViewStartupParams startupParams;
@@ -164,8 +165,29 @@ namespace Monito
                     }
                 }
                 monitoMenuItem.Items.Add(monitoPackageDirectoriesMenuItem);
-            }          
+            }
             #endregion PACKAGE_DIRECTORIES
+
+            #region PACKAGE_UPDATES
+            if (monitoSettingsLoaded && monitoSettings["EnablePackageUpdates"] != null && monitoSettings["EnablePackageUpdates"].Value == "1")
+            {
+                monitoPackageUpdatesMenuItem = new MenuItem { Header = "Package Updates" };
+                monitoPackageUpdatesMenuItem.ToolTip = new ToolTip { Content = "Search for package updates..." };
+                monitoPackageUpdatesMenuItem.Click += (sender, args) =>
+                {
+                    var viewModel = new PackageUpdatesViewModel(p, VM);
+                    var window = new PackageUpdatesWindow
+                    {
+                        packageUpdatesPanel = { DataContext = viewModel },
+                        Owner = p.DynamoWindow
+                    };
+                    window.Left = window.Owner.Left + 400;
+                    window.Top = window.Owner.Top + 200;
+                    window.Show();
+                };
+                monitoMenuItem.Items.Add(monitoPackageUpdatesMenuItem);
+            }
+            #endregion PACKAGE_UPDATES
 
             #region SEARCH_IN_WORKSPACE
             if (monitoSettingsLoaded && monitoSettings["EnableSearchInWorkspace"] != null && monitoSettings["EnableSearchInWorkspace"].Value == "1")

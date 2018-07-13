@@ -135,6 +135,10 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Monito.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_PackageUpdates\PackageUpdatesViewModel.cs" />
+    <Compile Include="_PackageUpdates\PackageUpdatesWindow.xaml.cs">
+      <DependentUpon>PackageUpdatesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="_PlayerInputs\PlayerInputsViewModel.cs" />
     <Compile Include="_PlayerInputs\PlayerInputsWindow.xaml.cs">
       <DependentUpon>PlayerInputsWindow.xaml</DependentUpon>
@@ -158,6 +162,10 @@
     <Page Include="Shared.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="_PackageUpdates\PackageUpdatesWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="_PlayerInputs\PlayerInputsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
