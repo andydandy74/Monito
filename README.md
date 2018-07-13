@@ -2,7 +2,7 @@ A view extension for the Dynamo visual programming environment.
 
 Still very much a work in progress.
 Currently includes the following tools:
-* Find Ungrouped
+* Find and Fix Ungrouped
 * Manage Dynamo Player Inputs
 * My Graphs (quick access to graph directories)
 * New Workspace from Template
