@@ -23,7 +23,6 @@
             Name="findUngroupedPanel">
             <Button 
                 Content="Fix groupings" 
-                Visibility="Collapsed"
                 Command="{Binding FixUngrouped}"/>
             <TextBlock 
                 TextAlignment="Left" 
