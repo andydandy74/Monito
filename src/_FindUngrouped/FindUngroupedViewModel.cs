@@ -100,10 +100,12 @@ namespace Monito
                             || anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomRight))
                         {
                             // Add node to group here...
-                            MessageBox.Show("Add " + ungroupedNode.NickName + " to " + anno.AnnotationText);
+                            MessageBox.Show("Add [" + ungroupedNode.NickName + "] to [" + anno.AnnotationText + "]");
                             anno.AnnotationModel.Select();
-                            viewModel.AddModelsToGroupModelCommand.Execute(ungroupedNode.GUID);
+                            ungroupedNode.Select();
+                            viewModel.AddModelsToGroupModelCommand.Execute(null);
                             anno.AnnotationModel.Deselect();
+                            ungroupedNode.Deselect();
                         }
                     }
                 }
@@ -118,6 +120,7 @@ namespace Monito
                             || anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomRight))
                         {
                             // Add note to group here...
+                            MessageBox.Show("Add [" + ungroupedNote.Text + "] to [" + anno.AnnotationText + "]");
                             anno.AnnotationModel.Select();
                             ungroupedNote.Select();
                             viewModel.AddModelsToGroupModelCommand.Execute(null);
