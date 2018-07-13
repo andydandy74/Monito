@@ -23,6 +23,7 @@
             Name="findUngroupedPanel">
             <Button 
                 Content="Fix groupings" 
+                ToolTip="Click here to add nodes and notes to the group they intersect with..."
                 Command="{Binding FixUngrouped}"/>
             <TextBlock 
                 TextAlignment="Left" 
