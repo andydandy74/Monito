@@ -8,7 +8,7 @@
         d:DesignWidth="500" 
         Width="500" 
         Height="500" 
-        Title="DynaMonito - Find Ungrouped">
+        Title="DynaMonito - Find and Fix Ungrouped">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -8,8 +8,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Dynamo.UI.Commands;
-using System.Windows;
-using Dynamo.Utilities;
+using Dynamo.Models;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Annotations;
 
 namespace Monito
 {
@@ -25,6 +26,10 @@ namespace Monito
             viewModel = vm;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
+            viewModel.CurrentSpace.NoteAdded += CurrentWorkspaceModel_NotesChanged;
+            viewModel.CurrentSpace.NoteRemoved += CurrentWorkspaceModel_NotesChanged;
+            viewModel.CurrentSpace.AnnotationAdded += CurrentWorkspaceModel_AnnotationChanged;
+            viewModel.CurrentSpace.AnnotationRemoved += CurrentWorkspaceModel_AnnotationChanged;
             FixUngrouped = new DelegateCommand(OnFixUngroupedClicked);
         }
 
@@ -32,6 +37,10 @@ namespace Monito
         {
             readyParams.CurrentWorkspaceModel.NodeAdded -= CurrentWorkspaceModel_NodesChanged;
             readyParams.CurrentWorkspaceModel.NodeRemoved -= CurrentWorkspaceModel_NodesChanged;
+            viewModel.CurrentSpace.NoteAdded -= CurrentWorkspaceModel_NotesChanged;
+            viewModel.CurrentSpace.NoteRemoved -= CurrentWorkspaceModel_NotesChanged;
+            viewModel.CurrentSpace.AnnotationAdded -= CurrentWorkspaceModel_AnnotationChanged;
+            viewModel.CurrentSpace.AnnotationRemoved -= CurrentWorkspaceModel_AnnotationChanged;
         }
 
         private string currentUngroupedMsg;
@@ -85,7 +94,6 @@ namespace Monito
 
         public void OnFixUngroupedClicked(object obj)
         {
-            MessageBox.Show("Fix groupings...");
             RaisePropertyChanged(nameof(CurrentUngrouped));
             foreach (var ungrouped in currentUngrouped)
             {
@@ -99,13 +107,9 @@ namespace Monito
                             || anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomLeft)
                             || anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomRight))
                         {
-                            // Add node to group here...
-                            MessageBox.Show("Add [" + ungroupedNode.NickName + "] to [" + anno.AnnotationText + "]");
                             anno.AnnotationModel.Select();
-                            ungroupedNode.Select();
-                            viewModel.AddModelsToGroupModelCommand.Execute(null);
+                            readyParams.CommandExecutive.ExecuteCommand(new DynamoModel.AddModelToGroupCommand(ungroupedNode.GUID.ToString()), "d8fcfe56-81e0-4e95-84af-d945ebd6478b", "DynaMonito");
                             anno.AnnotationModel.Deselect();
-                            ungroupedNode.Deselect();
                         }
                     }
                 }
@@ -119,13 +123,9 @@ namespace Monito
                             || anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomLeft)
                             || anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomRight))
                         {
-                            // Add note to group here...
-                            MessageBox.Show("Add [" + ungroupedNote.Text + "] to [" + anno.AnnotationText + "]");
                             anno.AnnotationModel.Select();
-                            ungroupedNote.Select();
-                            viewModel.AddModelsToGroupModelCommand.Execute(null);
+                            readyParams.CommandExecutive.ExecuteCommand(new DynamoModel.AddModelToGroupCommand(ungroupedNote.GUID.ToString()), "d8fcfe56-81e0-4e95-84af-d945ebd6478b", "DynaMonito");
                             anno.AnnotationModel.Deselect();
-                            ungroupedNote.Deselect();
                         }
                     }
                 }
@@ -135,6 +135,16 @@ namespace Monito
         }
 
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
+        {
+            RaisePropertyChanged(nameof(CurrentUngrouped));
+        }
+
+        private void CurrentWorkspaceModel_NotesChanged(NoteModel obj)
+        {
+            RaisePropertyChanged(nameof(CurrentUngrouped));
+        }
+
+        private void CurrentWorkspaceModel_AnnotationChanged(AnnotationModel obj)
         {
             RaisePropertyChanged(nameof(CurrentUngrouped));
         }
