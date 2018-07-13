@@ -103,7 +103,7 @@ namespace Monito
                     monitoMyGraphsMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
                     if (topDirs.Length == 1)
                     {
-                        monitoMyGraphsMenuItem = buildMyGraphsMenu(topDirs[0], monitoMyGraphsMenuItem, VM);
+                        monitoMyGraphsMenuItem = buildMyGraphsMenu(topDirs[0], monitoMyGraphsMenuItem, VM, p);
                     }
                     else
                     {
@@ -112,7 +112,7 @@ namespace Monito
                             string topDirName = Path.GetFileName(topDir);
                             MenuItem topDirMenuItem = new MenuItem { Header = topDirName };
                             topDirMenuItem.ToolTip = new ToolTip { Content = topDir };
-                            topDirMenuItem = buildMyGraphsMenu(topDir, topDirMenuItem, VM);
+                            topDirMenuItem = buildMyGraphsMenu(topDir, topDirMenuItem, VM, p);
                             monitoMyGraphsMenuItem.Items.Add(topDirMenuItem);
                         }
                     }
@@ -256,7 +256,7 @@ namespace Monito
         /// Builds a menu structure by recursively parsing a given directory. 
         /// Returns null if the directory doesn't exist or is empty.
         /// </summary>
-        public MenuItem buildMyGraphsMenu(string dir, MenuItem menuItem, DynamoViewModel vm)
+        public MenuItem buildMyGraphsMenu(string dir, MenuItem menuItem, DynamoViewModel vm, ViewLoadedParams p)
         {
             if (!Directory.Exists(dir)) { return null; }
             List<MenuItem> tempMenuItems = new List<MenuItem>();
@@ -267,7 +267,7 @@ namespace Monito
                 {
                     MenuItem dirMenu = new MenuItem { Header = dirName };
                     dirMenu.ToolTip = new ToolTip { Content = d };
-                    dirMenu = buildMyGraphsMenu(d, dirMenu, vm);
+                    dirMenu = buildMyGraphsMenu(d, dirMenu, vm, p);
                     if (dirMenu != null) { tempMenuItems.Add(dirMenu); }
                 }
             }
@@ -283,10 +283,12 @@ namespace Monito
                     {
                         vm.CloseHomeWorkspaceCommand.Execute(null);
                         vm.OpenCommand.Execute(f);
-                        // Need to figure out how to check if this tool is set to auto-execute graphs
                         try
                         {
-                            vm.Model.ForceRun();
+                            if (vm.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType == RunType.Manual)
+                            {
+                                p.CommandExecutive.ExecuteCommand(new DynamoModel.ForceRunCancelCommand(true, false), this.UniqueId, this.Name);
+                            }                         
                         }
                         catch (Exception ex)
                         {
