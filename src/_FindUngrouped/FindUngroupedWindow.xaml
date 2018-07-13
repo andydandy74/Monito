@@ -1,4 +1,4 @@
-﻿<Window x:Class="Monito.PlayerInputsWindow" 
+﻿<Window x:Class="Monito.FindUngroupedWindow" 
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
         d:DesignWidth="500" 
         Width="500" 
         Height="500" 
-        Title="DynaMonito - Manage Dynamo Player Inputs">
+        Title="DynaMonito - Find Ungrouped">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,22 +20,17 @@
         VerticalScrollBarVisibility="Auto">
         <StackPanel 
             Style="{StaticResource MonitoStackPanelMain}"
-            Name="playerInputsPanel">
+            Name="findUngroupedPanel">
             <Button 
-                Content="Reset all inputs" 
-                Command="{Binding ResetAll}"/>
-            <Button 
-                Content="Reset selected" 
-                Command="{Binding ResetSelected}"/>
-            <Button 
-                Content="Set selected as input" 
-                Command="{Binding SetSelectedAsInput}"/>
+                Content="Fix groupings" 
+                Visibility="Collapsed"
+                Command="{Binding FixUngrouped}"/>
             <TextBlock 
                 TextAlignment="Left" 
-                Text="{Binding CurrentInputsMsg}" 
+                Text="{Binding CurrentUngroupedMsg}" 
                 FontWeight="Bold"/>
             <ItemsControl 
-                ItemsSource="{Binding CurrentInputs}">
+                ItemsSource="{Binding CurrentUngrouped}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button

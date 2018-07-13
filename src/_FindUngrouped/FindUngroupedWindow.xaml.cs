@@ -5,11 +5,11 @@ using System.Windows.Controls;
 namespace Monito
 {
     /// <summary>
-    /// Interaction logic for PlayerInputsWindow.xaml
+    /// Interaction logic for FindUngrouped.xaml
     /// </summary>
-    public partial class PlayerInputsWindow : Window
+    public partial class FindUngroupedWindow : Window
     {
-        public PlayerInputsWindow()
+        public FindUngroupedWindow()
         {
             InitializeComponent();
         }
