@@ -107,7 +107,7 @@ namespace Monito
             set
             {
                 zoomGUID = value;
-                var VMU = new ViewModelUtils(readyParams, viewModel, dynWindow);
+                var VMU = new ViewModelUtils(viewModel, dynWindow);
                 VMU.ZoomToObject(value);
             }
         }
