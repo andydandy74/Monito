@@ -22,14 +22,9 @@
             Style="{StaticResource MonitoStackPanelMain}"
             Name="findUngroupedPanel">
             <Button 
-                Content="Reset all inputs" 
-                Command="{Binding ResetAll}"/>
-            <Button 
-                Content="Reset selected" 
-                Command="{Binding ResetSelected}"/>
-            <Button 
-                Content="Set selected as input" 
-                Command="{Binding SetSelectedAsInput}"/>
+                Content="Fix groupings" 
+                Visibility="Collapsed"
+                Command="{Binding FixUngrouped}"/>
             <TextBlock 
                 TextAlignment="Left" 
                 Text="{Binding CurrentUngroupedMsg}" 

@@ -16,9 +16,7 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
-        public ICommand ResetAll { get; set; }
-        public ICommand ResetSelected { get; set; }
-        public ICommand SetSelectedAsInput { get; set; }
+        public ICommand FixUngrouped { get; set; }
 
         public FindUngroupedViewModel(ReadyParams p, DynamoViewModel vm)
         {
@@ -26,9 +24,7 @@ namespace Monito
             viewModel = vm;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
-            ResetAll = new DelegateCommand(OnResetAllClicked);
-            ResetSelected = new DelegateCommand(OnResetSelectedClicked);
-            SetSelectedAsInput = new DelegateCommand(OnSetSelectedAsInputClicked);
+            FixUngrouped = new DelegateCommand(OnFixUngroupedClicked);
         }
 
         public void Dispose()
@@ -69,45 +65,27 @@ namespace Monito
                 {
                     if (!allGroupedObjects.Contains(node.NodeModel.GUID.ToString()))
                     {
-                        unorderedUngrouped.Add(new ObjectInWorkspace(node.NickName.Abbreviate(), node.NodeModel.GUID.ToString()));
+                        unorderedUngrouped.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.NodeModel.GUID.ToString()));
                     }
                 }
                 foreach (var note in viewModel.CurrentSpaceViewModel.Notes)
                 {
-                    if (!allGroupedObjects.Contains(note.Model.GUID.ToString())) { unorderedUngrouped.Add(new ObjectInWorkspace(note.Text.Abbreviate(), note.Model.GUID.ToString())); }
+                    if (!allGroupedObjects.Contains(note.Model.GUID.ToString()))
+                    {
+                        unorderedUngrouped.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Note]", note.Model.GUID.ToString()));
+                    }
                 }
                 currentUngrouped.Clear();
                 foreach (ObjectInWorkspace item in unorderedUngrouped.OrderBy(x => x.Name)) { currentUngrouped.Add(item); }
-                RaisePropertyChanged(nameof(CurrentUngrouped));
+                RaisePropertyChanged(nameof(CurrentUngroupedMsg));
                 return currentUngrouped;
             }
         }
 
-        public void OnResetAllClicked(object obj)
+        public void OnFixUngroupedClicked(object obj)
         {
-            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-            {
-                if (node.IsSetAsInput) { node.IsSetAsInput = false; }
-            }
-            RaisePropertyChanged(nameof(CurrentUngrouped));
-        }
-
-        public void OnResetSelectedClicked(object obj)
-        {
-            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
-            {
-                if (item.IsSetAsInput) { item.IsSetAsInput = false; }
-            }
-            RaisePropertyChanged(nameof(CurrentUngrouped));
-        }
-
-        public void OnSetSelectedAsInputClicked(object obj)
-        {
-            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
-            {
-                if (!item.IsSetAsInput) { item.IsSetAsInput = true; }
-            }
-            RaisePropertyChanged(nameof(CurrentUngrouped));
+            MessageBox.Show("Not yet available...");
+            // RaisePropertyChanged(nameof(CurrentUngrouped));
         }
 
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
