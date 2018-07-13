@@ -2,7 +2,7 @@ A view extension for the Dynamo visual programming environment.
 
 Still very much a work in progress.
 Currently includes the following tools:
-* Find Ungrouped
+* Find and Fix Ungrouped
 * Manage Dynamo Player Inputs
 * My Graphs (quick access to graph directories)
 * New Workspace from Template
@@ -37,4 +37,5 @@ All WIP branches should be built against Dynamo 1.3
 ## Known issues
 
 * Template files need to be saved more or less in the same version as the current Dynamo version used.
+* Ungrouped objects list doesn't update when objects are added to or removed from groups manually
 * Zooming into groups from Search in Workspace or Manage Dynamo Player Inputs does not center the screen exactly on the selected group
