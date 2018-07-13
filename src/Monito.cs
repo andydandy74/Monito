@@ -18,6 +18,7 @@ namespace Monito
     {
         private MenuItem monitoMenuItem;
         private MenuItem monitoIsolateInPreviewMenuItem;
+        private MenuItem monitoFindUngroupedMenuItem;
         private MenuItem monitoPackageDirectoriesMenuItem;
         private MenuItem monitoMyGraphsMenuItem;
         private MenuItem monitoMyTemplatesMenuItem;
@@ -70,6 +71,27 @@ namespace Monito
                 monitoMenuItem.Items.Add(monitoIsolateInPreviewMenuItem);
             }
             #endregion ISOLATE_IN_GEOMETRY_PREVIEW
+
+            #region FIND_UNGROUPED
+            if (monitoSettingsLoaded && monitoSettings["EnableFindUngrouped"] != null && monitoSettings["EnableFindUngrouped"].Value == "1")
+            {
+                monitoFindUngroupedMenuItem = new MenuItem { Header = "Find Ungrouped" };
+                monitoFindUngroupedMenuItem.ToolTip = new ToolTip { Content = "Identify nodes and notes that don't belong to a group.." };
+                monitoFindUngroupedMenuItem.Click += (sender, args) =>
+                {
+                    var viewModel = new FindUngroupedViewModel(p, VM);
+                    var window = new FindUngroupedWindow
+                    {
+                        findUngroupedPanel = { DataContext = viewModel },
+                        Owner = p.DynamoWindow
+                    };
+                    window.Left = window.Owner.Left + 400;
+                    window.Top = window.Owner.Top + 200;
+                    window.Show();
+                };
+                monitoMenuItem.Items.Add(monitoFindUngroupedMenuItem);
+            }
+            #endregion FIND_UNGROUPED
 
             #region PLAYER_INPUTS
             if (monitoSettingsLoaded && monitoSettings["EnablePlayerInputs"] != null && monitoSettings["EnablePlayerInputs"].Value == "1")

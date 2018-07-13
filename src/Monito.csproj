@@ -139,6 +139,10 @@
     <Compile Include="_IsolateInPreview\IsolateInPreviewWindow.xaml.cs">
       <DependentUpon>IsolateInPreviewWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="_FindUngrouped\FindUngroupedViewModel.cs" />
+    <Compile Include="_FindUngrouped\FindUngroupedWindow.xaml.cs">
+      <DependentUpon>FindUngroupedWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="_PlayerInputs\PlayerInputsViewModel.cs" />
     <Compile Include="_PlayerInputs\PlayerInputsWindow.xaml.cs">
       <DependentUpon>PlayerInputsWindow.xaml</DependentUpon>
@@ -164,6 +168,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="_IsolateInPreview\IsolateInPreviewWindow.xaml">
+	  <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="_FindUngrouped\FindUngroupedWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
