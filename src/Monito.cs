@@ -144,12 +144,12 @@ namespace Monito
                                 // Select all nodes and notes
                                 VM.SelectAllCommand.Execute(null);
                                 // Need to copy groups as well
-                                foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { VM.AddToSelectionCommand.Execute(anno); }
+                                foreach (var anno in VM.HomeSpaceViewModel.Annotations) { VM.AddToSelectionCommand.Execute(anno); }
                                 VM.CopyCommand.Execute(null);
                                 VM.NewHomeWorkspaceCommand.Execute(null);
                                 VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 VM.Model.Paste();
-                                foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { anno.Deselect(); }
+                                foreach (var anno in VM.HomeSpaceViewModel.Annotations) { anno.AnnotationModel.Deselect(); }
                             }
                             else { MessageBox.Show("Template " + tplName + " has been moved, renamed or deleted..."); }
                         };

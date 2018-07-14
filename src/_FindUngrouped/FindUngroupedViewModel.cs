@@ -65,7 +65,7 @@ namespace Monito
                 List<string> allGroupedObjects = new List<string>();
                 foreach (var anno in viewModel.CurrentSpaceViewModel.Annotations)
                 {
-                    foreach (var member in anno.AnnotationModel.SelectedModels)
+                    foreach (var member in anno.AnnotationModel.Nodes)
                     {
                         allGroupedObjects.Add(member.GUID.ToString());
                     }
@@ -75,7 +75,7 @@ namespace Monito
                 {
                     if (!allGroupedObjects.Contains(node.NodeModel.GUID.ToString()))
                     {
-                        unorderedUngrouped.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.NodeModel.GUID.ToString()));
+                        unorderedUngrouped.Add(new ObjectInWorkspace(node.Name.Abbreviate() + " [Node]", node.NodeModel.GUID.ToString()));
                     }
                 }
                 foreach (var note in viewModel.CurrentSpaceViewModel.Notes)

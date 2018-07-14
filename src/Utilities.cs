@@ -25,7 +25,7 @@ namespace Monito
         {
             bool isNode = viewModel.Model.CurrentWorkspace.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
             bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
-            bool isAnno = viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0;
+            bool isAnno = viewModel.CurrentSpaceViewModel.Annotations.Count(x => x.AnnotationModel.GUID.ToString() == guid) > 0;
             double objectCenterX = 0;
             double objectCenterY = 0;
             if (isNode)
@@ -42,16 +42,16 @@ namespace Monito
             }
             else if (isAnno)
             {
-                var zoomAnno = viewModel.Model.CurrentWorkspace.Annotations.First(x => x.GUID.ToString() == guid);
-                objectCenterX = zoomAnno.CenterX;
-                objectCenterY = zoomAnno.CenterY;
+                var zoomAnno = viewModel.CurrentSpaceViewModel.Annotations.First(x => x.AnnotationModel.GUID.ToString() == guid);
+                objectCenterX = zoomAnno.AnnotationModel.CenterX;
+                objectCenterY = zoomAnno.AnnotationModel.CenterY;
             }
             var maxZoom = 4d;
             var corrX = -objectCenterX * maxZoom + dynWindow.ActualWidth / 2.2;
             var corrY = -objectCenterY * maxZoom + dynWindow.ActualHeight / 2.2;
-            viewModel.CurrentSpace.Zoom = maxZoom;
-            viewModel.CurrentSpace.X = corrX;
-            viewModel.CurrentSpace.Y = corrY;
+            viewModel.CurrentSpaceViewModel.Zoom = maxZoom;
+            viewModel.CurrentSpaceViewModel.X = corrX;
+            viewModel.CurrentSpaceViewModel.Y = corrY;
             if (objectCenterX != 0 || objectCenterY !=0)
             {
                 viewModel.ZoomInCommand.Execute(null);

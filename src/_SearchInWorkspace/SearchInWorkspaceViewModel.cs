@@ -234,7 +234,7 @@ namespace Monito
                     }
                     if (searchInAnnotations)
                     {
-                        foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
+                        foreach (AnnotationViewModel anno in viewModel.CurrentSpaceViewModel.Annotations)
                         {
                             int rawScore = 0;
                             double weightedScore = 0;
@@ -244,7 +244,7 @@ namespace Monito
                                 if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                             }
                             weightedScore = rawScore / (10d + searchTermParts.Length);
-                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText)); }
+                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.AnnotationModel.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText)); }
                         }
                     }
                     foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name)) { searchResults.Add(item); }
