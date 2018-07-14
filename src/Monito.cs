@@ -123,6 +123,10 @@ namespace Monito
                         MenuItem CheckForAutoExecuteMenuItem = new MenuItem { Header = "Run graph after loading" };
                         CheckForAutoExecuteMenuItem.ToolTip = new ToolTip { Content = "Check this if you want graphs to be executed automatically after loading..." };
                         CheckForAutoExecuteMenuItem.IsCheckable = true;
+                        if (monitoSettingsLoaded && monitoSettings["MyGraphsAutoExecuteOnLoad"] != null && monitoSettings["MyGraphsAutoExecuteOnLoad"].Value == "1")
+                        {
+                            CheckForAutoExecuteMenuItem.IsCheckable = true;
+                        }
                         monitoMyGraphsMenuItem.Items.Insert(0, CheckForAutoExecuteMenuItem);
                         monitoMyGraphsMenuItem.Items.Insert(1, new Separator());
                         monitoMenuItem.Items.Add(monitoMyGraphsMenuItem);
