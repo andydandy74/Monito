@@ -15,9 +15,12 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
-        public ICommand ResetAll { get; set; }
-        public ICommand ResetSelected { get; set; }
+        public ICommand ResetAllInputs { get; set; }
+        public ICommand ResetSelectedInputs { get; set; }
         public ICommand SetSelectedAsInput { get; set; }
+        public ICommand ResetAllOutputs { get; set; }
+        public ICommand ResetSelectedOutputs { get; set; }
+        public ICommand SetSelectedAsOutput { get; set; }
 
         public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
         {
@@ -25,9 +28,12 @@ namespace Monito
             viewModel = vm;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
-            ResetAll = new DelegateCommand(OnResetAllClicked);
-            ResetSelected = new DelegateCommand(OnResetSelectedClicked);
+            ResetAllInputs = new DelegateCommand(OnResetAllInputsClicked);
+            ResetSelectedInputs = new DelegateCommand(OnResetSelectedInputsClicked);
             SetSelectedAsInput = new DelegateCommand(OnSetSelectedAsInputClicked);
+            ResetAllOutputs = new DelegateCommand(OnResetAllOutputsClicked);
+            ResetSelectedOutputs = new DelegateCommand(OnResetSelectedOutputsClicked);
+            SetSelectedAsOutput = new DelegateCommand(OnSetSelectedAsOutputClicked);
         }
 
         public void Dispose()
@@ -44,6 +50,17 @@ namespace Monito
                 if (currentInputs.Count > 0) { currentInputsMsg = "All Dynamo Player inputs in current workspace:"; }
                 else { currentInputsMsg = "No Dynamo Player inputs in current workspace..."; }
                 return currentInputsMsg;
+            }
+        }
+
+        private string currentOutputsMsg;
+        public string CurrentOutputsMsg
+        {
+            get
+            {
+                if (currentOutputs.Count > 0) { currentOutputsMsg = "All Dynamo Player outputs in current workspace:"; }
+                else { currentOutputsMsg = "No Dynamo Player outputs in current workspace..."; }
+                return currentOutputsMsg;
             }
         }
 
@@ -67,7 +84,27 @@ namespace Monito
             }
         }
 
-        public void OnResetAllClicked(object obj)
+        private ObservableCollection<ObjectInWorkspace> currentOutputs = new ObservableCollection<ObjectInWorkspace>();
+        /// <summary>
+        /// The search results as a list representation
+        /// </summary>
+        public ObservableCollection<ObjectInWorkspace> CurrentOutputs
+        {
+            get
+            {
+                List<ObjectInWorkspace> unorderedOutputs = new List<ObjectInWorkspace>();
+                foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+                {
+                    if (node.IsSetAsOutput) { unorderedOutputs.Add(new ObjectInWorkspace(node.Name, node.GUID.ToString())); }
+                }
+                currentOutputs.Clear();
+                foreach (ObjectInWorkspace item in unorderedOutputs.OrderBy(x => x.Name)) { currentOutputs.Add(item); }
+                RaisePropertyChanged(nameof(CurrentOutputsMsg));
+                return currentOutputs;
+            }
+        }
+
+        public void OnResetAllInputsClicked(object obj)
         {
             foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
             {
@@ -76,7 +113,7 @@ namespace Monito
             RaisePropertyChanged(nameof(CurrentInputs));
         }
 
-        public void OnResetSelectedClicked(object obj)
+        public void OnResetSelectedInputsClicked(object obj)
         {
             foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
             {
@@ -94,9 +131,37 @@ namespace Monito
             RaisePropertyChanged(nameof(CurrentInputs));
         }
 
+        public void OnResetAllOutputsClicked(object obj)
+        {
+            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+            {
+                if (node.IsSetAsOutput) { node.IsSetAsOutput = false; }
+            }
+            RaisePropertyChanged(nameof(CurrentOutputs));
+        }
+
+        public void OnResetSelectedOutputsClicked(object obj)
+        {
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
+            {
+                if (item.IsSetAsOutput) { item.IsSetAsOutput = false; }
+            }
+            RaisePropertyChanged(nameof(CurrentOutputs));
+        }
+
+        public void OnSetSelectedAsOutputClicked(object obj)
+        {
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
+            {
+                if (!item.IsSetAsOutput) { item.IsSetAsOutput = true; }
+            }
+            RaisePropertyChanged(nameof(CurrentOutputs));
+        }
+
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
         {
             RaisePropertyChanged(nameof(CurrentInputs));
+            RaisePropertyChanged(nameof(CurrentOutputs));
         }
     }
 }

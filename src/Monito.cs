@@ -74,8 +74,8 @@ namespace Monito
             #region PLAYER_INPUTS
             if (monitoSettingsLoaded && monitoSettings["EnablePlayerInputs"] != null && monitoSettings["EnablePlayerInputs"].Value == "1")
             {
-                monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
-                monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
+                monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs and Outputs" };
+                monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input and output nodes should be displayed by Dynamo Player..." };
                 monitoPlayerInputsMenuItem.Click += (sender, args) =>
                 {
                     var viewModel = new PlayerInputsViewModel(p, VM);

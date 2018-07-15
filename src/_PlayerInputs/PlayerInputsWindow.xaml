@@ -4,11 +4,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
-        d:DesignHeight="500" 
-        d:DesignWidth="500" 
-        Width="500" 
-        Height="500" 
-        Title="DynaMonito - Manage Dynamo Player Inputs">
+        d:DesignHeight="650" 
+        d:DesignWidth="450" 
+        Width="650" 
+        Height="450" 
+        Title="DynaMonito - Manage Dynamo Player Inputs and Outputs">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,34 +18,70 @@
     </Window.Resources>
     <ScrollViewer 
         VerticalScrollBarVisibility="Auto">
-        <StackPanel 
-            Style="{StaticResource MonitoStackPanelMain}"
+        <Grid
             Name="playerInputsPanel">
-            <Button 
-                Content="Reset all inputs" 
-                Command="{Binding ResetAll}"/>
-            <Button 
-                Content="Reset selected" 
-                Command="{Binding ResetSelected}"/>
-            <Button 
-                Content="Set selected as input" 
-                Command="{Binding SetSelectedAsInput}"/>
-            <TextBlock 
-                TextAlignment="Left" 
-                Text="{Binding CurrentInputsMsg}" 
-                FontWeight="Bold"/>
-            <ItemsControl 
-                ItemsSource="{Binding CurrentInputs}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button
-                            Tag="{Binding Path=GUID}"
-                            Style="{StaticResource MonitoButtonResults}"
-                            Click="button_Click"
-                            Content="{Binding Path=Name}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel 
+                Grid.Column="0"
+                Style="{StaticResource MonitoStackPanelMain}">
+                <Button 
+                    Content="Reset all inputs" 
+                    Command="{Binding ResetAllInputs}"/>
+                <Button 
+                    Content="Reset selected inputs" 
+                    Command="{Binding ResetSelectedInputs}"/>
+                <Button 
+                    Content="Set selected as input" 
+                    Command="{Binding SetSelectedAsInput}"/>
+                <TextBlock 
+                    TextAlignment="Left" 
+                    Text="{Binding CurrentInputsMsg}" 
+                    FontWeight="Bold"/>
+                <ItemsControl 
+                    ItemsSource="{Binding CurrentInputs}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Tag="{Binding Path=GUID}"
+                                Style="{StaticResource MonitoButtonResults}"
+                                Click="button_Click"
+                                Content="{Binding Path=Name}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <StackPanel 
+                Grid.Column="1"
+                Style="{StaticResource MonitoStackPanelMain}">
+                <Button 
+                    Content="Reset all outputs" 
+                    Command="{Binding ResetAllOutputs}"/>
+                <Button 
+                    Content="Reset selected outputs" 
+                    Command="{Binding ResetSelectedOutputs}"/>
+                <Button 
+                    Content="Set selected as output" 
+                    Command="{Binding SetSelectedAsOutput}"/>
+                <TextBlock 
+                    TextAlignment="Left" 
+                    Text="{Binding CurrentOutputsMsg}" 
+                    FontWeight="Bold"/>
+                <ItemsControl 
+                    ItemsSource="{Binding CurrentOutputs}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Tag="{Binding Path=GUID}"
+                                Style="{StaticResource MonitoButtonResults}"
+                                Click="button_Click"
+                                Content="{Binding Path=Name}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </Window>
