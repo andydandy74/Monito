@@ -1,0 +1,48 @@
+﻿<Window x:Class="Monito.IsolateInPreviewWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        d:DesignHeight="500" 
+        d:DesignWidth="500" 
+        Width="500" 
+        Height="500" 
+        Title="DynaMonito - Isolate In Geometry Preview">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Monito;component/Shared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <ScrollViewer 
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel 
+            Style="{StaticResource MonitoStackPanelMain}"
+            Name="isolatePreviewPanel">
+            <Button 
+                Content="Enable geometry preview for ALL nodes" 
+                Command="{Binding ResetAll}"/>
+            <Button 
+                Content="Isolate selected in geometry preview" 
+                Command="{Binding IsolateSelected}"/>
+            <TextBlock 
+                TextAlignment="Left" 
+                Text="{Binding CurrentPreviewsMsg}" 
+                FontWeight="Bold"/>
+            <ItemsControl 
+                ItemsSource="{Binding CurrentPreviews}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Tag="{Binding Path=GUID}"
+                            Style="{StaticResource MonitoButtonResults}"
+                            Click="button_Click"
+                            Content="{Binding Path=Name}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
