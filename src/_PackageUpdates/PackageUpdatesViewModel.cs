@@ -1,6 +1,7 @@
 ﻿using System;
 using Dynamo.Core;
 using Dynamo.Extensions;
+using Dynamo.PackageManager;
 using Dynamo.Graph.Nodes;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
@@ -15,11 +16,17 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        private PackageManagerExtension PkgMngr;
 
         public PackageUpdatesViewModel(ReadyParams p, DynamoViewModel vm)
         {
             readyParams = p;
             viewModel = vm;
+            var extensions = viewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
+            if (extensions.Any())
+            {
+                PkgMngr = extensions.First() as PackageManagerExtension;
+            }
         }
 
         public void Dispose() { }
@@ -29,12 +36,6 @@ namespace Monito
         {
             get
             {
-                currentInputsMsg = "";
-                var extList = viewModel.Model.ExtensionManager.Extensions;
-                foreach (var ext in extList)
-                {
-                    currentInputsMsg += ext.Name + "\n";
-                }
                 return currentInputsMsg;
             }
         }
