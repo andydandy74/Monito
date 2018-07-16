@@ -23,6 +23,7 @@
             Name="searchPanel">
             <TextBox 
                 Style="{StaticResource MonitoTextBox}"
+                ToolTip="Enter your search term..."
                 Name="searchQuery" 
                 Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Expander
