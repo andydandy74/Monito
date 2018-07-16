@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Dynamo.UI.Commands;
+using System.Windows.Input;
 
 namespace Monito
 {
@@ -15,6 +17,8 @@ namespace Monito
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
         private Window dynWindow;
+        public ICommand ResetAll { get; set; }
+        public ICommand IsolateSelected { get; set; }
 
         public IsolateInPreviewViewModel(ReadyParams p, DynamoViewModel vm, Window dw)
         {
@@ -23,12 +27,25 @@ namespace Monito
             dynWindow = dw;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
+            ResetAll = new DelegateCommand(OnResetAllClicked);
+            IsolateSelected = new DelegateCommand(OnIsolateSelectedClicked);
         }
 
         public void Dispose()
         {
             readyParams.CurrentWorkspaceModel.NodeAdded -= CurrentWorkspaceModel_NodesChanged;
             readyParams.CurrentWorkspaceModel.NodeRemoved -= CurrentWorkspaceModel_NodesChanged;
+        }
+
+        private string currentPreviewsMsg;
+        public string CurrentPreviewsMsg
+        {
+            get
+            {
+                if (currentPreviews.Count > 0) { currentPreviewsMsg = "All nodes with active geometry preview in current workspace:"; }
+                else { currentPreviewsMsg = "No nodes with active geometry preview in current workspace..."; }
+                return currentPreviewsMsg;
+            }
         }
 
         private ObservableCollection<ObjectInWorkspace> currentPreviews = new ObservableCollection<ObjectInWorkspace>();
@@ -42,10 +59,9 @@ namespace Monito
                 List<ObjectInWorkspace> unorderedInputs = new List<ObjectInWorkspace>();
                 foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
                 {
-                    if (node.IsPreviewInsetVisible)
+                    if (node.NodeModel.IsVisible)
                     {
                         unorderedInputs.Add(new ObjectInWorkspace(node.NickName, node.NodeModel.GUID.ToString()));
-                        //node.IsUpstreamVisible
                     }
                 }
                 currentPreviews.Clear();
@@ -53,63 +69,46 @@ namespace Monito
                 {
                     currentPreviews.Add(item);
                 }
+                RaisePropertyChanged(nameof(CurrentPreviewsMsg));
                 return currentPreviews;
             }
         }
 
-        private string inputAction;
-        /// <summary>
-        /// The action that should be performed on the nodes in the workspace
-        /// </summary>
-        public string InputAction
+        public void OnResetAllClicked(object obj)
         {
-            get
+            foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
             {
-                return inputAction;
+                if (!node.IsVisible) { node.ToggleIsVisibleCommand.Execute(null); }
             }
-            set
-            {
-                inputAction = value;
-                if (value == "PreviewAll")
-                {
-                    foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-                    {
-                        if (node.IsSetAsInput)
-                        {
-                            node.IsSetAsInput = false;
-                        }
-                    }
-                }
-                else if (value == "PreviewSelected")
-                {
-                    foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
-                    {
-                        if (item.IsSetAsInput)
-                        {
-                            item.IsSetAsInput = false;
-                        }
-                    }
-                }
-                RaisePropertyChanged(nameof(CurrentPreviews));
-            }
+            RaisePropertyChanged(nameof(CurrentPreviews));
         }
 
-        private string zoomGUID;
-        /// <summary>
-        /// The GUID of the node that was selected from the search results. Triggered by button click.
-        /// </summary>
-        public string ZoomGUID
+        public void OnIsolateSelectedClicked(object obj)
         {
-            get
+            List<string> selectedGUIDs = new List<string>();
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
             {
-                return zoomGUID;
+                selectedGUIDs.Add(item.GUID.ToString());
             }
-            set
+            foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
             {
-                zoomGUID = value;
-                var VMU = new ViewModelUtils(viewModel, dynWindow);
-                VMU.ZoomToObject(value);
+                if (selectedGUIDs.Contains(node.NodeModel.GUID.ToString()))
+                {
+                    if (!node.IsVisible)
+                    {
+                        node.ToggleIsVisibleCommand.Execute(null);
+                    }
+                }
+                else
+                {
+                    if (node.IsVisible)
+                    {
+                        node.ToggleIsVisibleCommand.Execute(null);
+                    }
+                }
+                
             }
+            RaisePropertyChanged(nameof(CurrentPreviews));
         }
 
         private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)

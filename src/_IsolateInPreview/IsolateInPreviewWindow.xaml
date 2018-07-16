@@ -23,21 +23,13 @@
             Name="isolatePreviewPanel">
             <Button 
                 Content="Enable geometry preview for ALL nodes" 
-                Click="click_PreviewAll"/>
+                Command="{Binding ResetAll}"/>
             <Button 
                 Content="Isolate selected in geometry preview" 
-                Click="click_PreviewSelected"/>
-            <TextBox
-                Name="InputAction"
-                Visibility="Collapsed"
-                Text="{Binding InputAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox
-                Name="clickedGUID" 
-                Text="{Binding ZoomGUID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                Visibility="Collapsed"/>
+                Command="{Binding IsolateSelected}"/>
             <TextBlock 
                 TextAlignment="Left" 
-                Text="All nodes currently enabled for geometry preview in current workspace:" 
+                Text="{Binding CurrentPreviewsMsg}" 
                 FontWeight="Bold"/>
             <ItemsControl 
                 ItemsSource="{Binding CurrentPreviews}">
