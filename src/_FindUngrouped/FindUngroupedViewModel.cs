@@ -48,8 +48,8 @@ namespace Monito
         {
             get
             {
-                if (currentUngrouped.Count > 0) { currentUngroupedMsg = "All ungrouped nodes and notes in current workspace:"; }
-                else { currentUngroupedMsg = "No ungrouped nodes and notes in current workspace..."; }
+                if (currentUngrouped.Count > 0) { currentUngroupedMsg = "All ungrouped nodes and text notes in current workspace:"; }
+                else { currentUngroupedMsg = "No ungrouped nodes or text notes in current workspace..."; }
                 return currentUngroupedMsg;
             }
         }
