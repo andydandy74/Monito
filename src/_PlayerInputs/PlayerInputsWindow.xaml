@@ -27,18 +27,18 @@
             <StackPanel 
                 Grid.Column="0"
                 Style="{StaticResource MonitoStackPanelMain}">
-                <Button 
-                    Content="Reset all inputs" 
-                    ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
-                    Command="{Binding ResetAllInputs}"/>
+				<Button 
+                    Content="Set selected as input" 
+                    ToolTip="Click here to set all *selected* input nodes in the workspace as Dynamo Player inputs..."
+                    Command="{Binding SetSelectedAsInput}"/>
                 <Button 
                     Content="Reset selected inputs" 
                     ToolTip="Click here to disable all *selected* input nodes in the workspace for Dynamo Player..."
                     Command="{Binding ResetSelectedInputs}"/>
                 <Button 
-                    Content="Set selected as input" 
-                    ToolTip="Click here to set all *selected* input nodes in the workspace as Dynamo Player inputs..."
-                    Command="{Binding SetSelectedAsInput}"/>
+                    Content="Reset ALL inputs" 
+                    ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
+                    Command="{Binding ResetAllInputs}"/>
                 <TextBlock 
                     TextAlignment="Left" 
                     Text="{Binding CurrentInputsMsg}" 
@@ -59,18 +59,18 @@
             <StackPanel 
                 Grid.Column="1"
                 Style="{StaticResource MonitoStackPanelMain}">
-                <Button 
-                    Content="Reset all outputs" 
-                    ToolTip="Click here to disable all output nodes in the workspace for Dynamo Player..."
-                    Command="{Binding ResetAllOutputs}"/>
-                <Button 
+				<Button 
+                    Content="Set selected as output" 
+                    ToolTip="Click here to set all *selected* output nodes in the workspace as Dynamo Player outputs..."
+                    Command="{Binding SetSelectedAsOutput}"/>
+				<Button 
                     Content="Reset selected outputs" 
                     ToolTip="Click here to disable all *selected* output nodes in the workspace for Dynamo Player..."
                     Command="{Binding ResetSelectedOutputs}"/>
                 <Button 
-                    Content="Set selected as output" 
-                    ToolTip="Click here to set all *selected* output nodes in the workspace as Dynamo Player outputs..."
-                    Command="{Binding SetSelectedAsOutput}"/>
+                    Content="Reset ALL outputs" 
+                    ToolTip="Click here to disable all output nodes in the workspace for Dynamo Player..."
+                    Command="{Binding ResetAllOutputs}"/>
                 <TextBlock 
                     TextAlignment="Left" 
                     Text="{Binding CurrentOutputsMsg}" 
