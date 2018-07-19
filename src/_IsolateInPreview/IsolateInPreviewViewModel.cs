@@ -65,7 +65,7 @@ namespace Monito
                 {
                     if (node.NodeModel.IsVisible)
                     {
-                        unorderedInputs.Add(new ObjectInWorkspace(node.NickName, node.NodeModel.GUID.ToString()));
+                        unorderedInputs.Add(new ObjectInWorkspace(node.Name, node.NodeModel.GUID.ToString()));
                     }
                 }
                 currentPreviews.Clear();
