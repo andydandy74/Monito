@@ -18,6 +18,8 @@ namespace Monito
         private DynamoViewModel viewModel;
         private Window dynWindow;
         public ICommand ResetAll { get; set; }
+        public ICommand AddSelected { get; set; }
+        public ICommand RemoveSelected { get; set; }
         public ICommand IsolateSelected { get; set; }
 
         public IsolateInPreviewViewModel(ReadyParams p, DynamoViewModel vm, Window dw)
@@ -28,6 +30,8 @@ namespace Monito
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
             ResetAll = new DelegateCommand(OnResetAllClicked);
+            AddSelected = new DelegateCommand(OnAddSelectedClicked);
+            RemoveSelected = new DelegateCommand(OnRemoveSelectedClicked);
             IsolateSelected = new DelegateCommand(OnIsolateSelectedClicked);
         }
 
@@ -79,6 +83,46 @@ namespace Monito
             foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
             {
                 if (!node.IsVisible) { node.ToggleIsVisibleCommand.Execute(null); }
+            }
+            RaisePropertyChanged(nameof(CurrentPreviews));
+        }
+
+        public void OnAddSelectedClicked(object obj)
+        {
+            List<string> selectedGUIDs = new List<string>();
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
+            {
+                selectedGUIDs.Add(item.GUID.ToString());
+            }
+            foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
+            {
+                if (selectedGUIDs.Contains(node.NodeModel.GUID.ToString()))
+                {
+                    if (!node.IsVisible)
+                    {
+                        node.ToggleIsVisibleCommand.Execute(null);
+                    }
+                }
+            }
+            RaisePropertyChanged(nameof(CurrentPreviews));
+        }
+
+        public void OnRemoveSelectedClicked(object obj)
+        {
+            List<string> selectedGUIDs = new List<string>();
+            foreach (var item in readyParams.CurrentWorkspaceModel.CurrentSelection)
+            {
+                selectedGUIDs.Add(item.GUID.ToString());
+            }
+            foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
+            {
+                if (selectedGUIDs.Contains(node.NodeModel.GUID.ToString()))
+                {
+                    if (node.IsVisible)
+                    {
+                        node.ToggleIsVisibleCommand.Execute(null);
+                    }
+                }
             }
             RaisePropertyChanged(nameof(CurrentPreviews));
         }
