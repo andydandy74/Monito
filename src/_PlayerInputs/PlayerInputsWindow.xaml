@@ -22,17 +22,17 @@
             Style="{StaticResource MonitoStackPanelMain}"
             Name="playerInputsPanel">
             <Button 
-                Content="Reset all inputs" 
-                ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
-                Command="{Binding ResetAll}"/>
+                Content="Set selected as input" 
+                ToolTip="Click here to set all *selected* input nodes in the workspace as Dynamo Player inputs..."
+                Command="{Binding SetSelectedAsInput}"/>
             <Button 
                 Content="Reset selected" 
                 ToolTip="Click here to disable all *selected* input nodes in the workspace for Dynamo Player..."
                 Command="{Binding ResetSelected}"/>
             <Button 
-                Content="Set selected as input" 
-                ToolTip="Click here to set all *selected* input nodes in the workspace as Dynamo Player inputs..."
-                Command="{Binding SetSelectedAsInput}"/>
+                Content="Reset ALL inputs" 
+                ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
+                Command="{Binding ResetAll}"/>
             <TextBlock 
                 TextAlignment="Left" 
                 Text="{Binding CurrentInputsMsg}" 
