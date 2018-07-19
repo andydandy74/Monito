@@ -9,7 +9,6 @@
     </Style>
     <Style TargetType="TextBox" x:Key="MonitoTextBox">
         <Setter Property="Margin" Value="5,5,5,0"/>
-        <Setter Property="Height" Value="20"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Background" Value="#000000"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
