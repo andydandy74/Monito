@@ -22,11 +22,17 @@
             Style="{StaticResource MonitoStackPanelMain}"
             Name="isolatePreviewPanel">
             <Button 
-                Content="Enable geometry preview for ALL nodes" 
-                Command="{Binding ResetAll}"/>
-            <Button 
                 Content="Isolate selected in geometry preview" 
                 Command="{Binding IsolateSelected}"/>
+            <Button 
+                Content="Add selected to geometry preview" 
+                Command="{Binding AddSelected}"/>
+            <Button 
+                Content="Remove selected from geometry preview" 
+                Command="{Binding RemoveSelected}"/>
+            <Button 
+                Content="Enable geometry preview for ALL nodes" 
+                Command="{Binding ResetAll}"/>
             <TextBlock 
                 TextAlignment="Left" 
                 Text="{Binding CurrentPreviewsMsg}" 
