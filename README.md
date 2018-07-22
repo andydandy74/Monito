@@ -1,4 +1,4 @@
-A view extension for the Dynamo visual programming environment. 
+DynaMonito is a view extension for the Dynamo visual programming environment. 
 
 Still very much a work in progress.
 
