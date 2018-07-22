@@ -2,6 +2,8 @@ A view extension for the Dynamo visual programming environment.
 
 Still very much a work in progress.
 
+![](https://raw.githubusercontent.com/andydandy74/Monito/master/documentation/MonitoMenu.png)
+
 ## More info on the wiki
 
 - [Tools overview](https://github.com/andydandy74/Monito/wiki/Tools-Overview)
