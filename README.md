@@ -2,7 +2,7 @@ A view extension for the Dynamo visual programming environment.
 
 Still very much a work in progress.
 
-For known issues please refer to the issues section of this reporsitory.
+For known issues and planned enhancements please refer to the issues section of this repository.
 
 Feedback and contributions welcome.
 
