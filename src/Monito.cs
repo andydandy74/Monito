@@ -163,6 +163,7 @@ namespace Monito
                             {
                                 VM.CloseHomeWorkspaceCommand.Execute(null);
                                 VM.OpenCommand.Execute(t);
+                                VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 // Select all nodes and notes
                                 VM.SelectAllCommand.Execute(null);
                                 // Need to copy groups as well
