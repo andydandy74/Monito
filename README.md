@@ -11,6 +11,6 @@ Feedback and contributions welcome.
 ## More info on the wiki
 
 - [Tools Overview](https://github.com/andydandy74/Monito/wiki/Tools-Overview)
-- [Download, Installation & Configuration](https://github.com/andydandy74/Monito/wiki/Download-Installation-&-Configuration)
+- [Download, Installation & Configuration](https://github.com/andydandy74/Monito/wiki/Download,-Installation-&-Configuration)
 - [Version History](https://github.com/andydandy74/Monito/wiki/Version-history)
 - [Building from Source](https://github.com/andydandy74/Monito/wiki/Building-from-Source)
