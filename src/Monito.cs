@@ -35,15 +35,17 @@ namespace Monito
         public void Startup(ViewStartupParams p)
         {
             startupParams = p;
-            string configPath = this.GetType().Assembly.Location;
-            try
+            string configPath = this.GetType().Assembly.Location + ".config";
+            if (!File.Exists(configPath)) { configPath = configPath.Replace("bin\\Monito", "extra\\Monito"); }
+            if (File.Exists(configPath))
             {
-                Configuration myDllConfig = ConfigurationManager.OpenExeConfiguration(configPath);
+                var map = new ExeConfigurationFileMap() { ExeConfigFilename = configPath };
+                Configuration myDllConfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
                 AppSettingsSection myDllConfigAppSettings = (AppSettingsSection)myDllConfig.GetSection("appSettings");
                 monitoSettings = myDllConfigAppSettings.Settings;
                 monitoSettingsLoaded = true;
             }
-            catch { MessageBox.Show("Couldn't find, load or read DynaMonito config file at " + configPath); }
+            else { MessageBox.Show("Couldn't find, load or read DynaMonito config file at " + configPath); }
         }
 
         public void Loaded(ViewLoadedParams p)
