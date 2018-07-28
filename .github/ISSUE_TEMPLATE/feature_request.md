@@ -4,10 +4,10 @@ about: Suggest future improvements for DynaMonito
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
+**What is the problem that needs solving?**
 (Please fill in. A clear and concise description of what the problem is. Ex. I'm always frustrated when [...])
 
-**Describe the solution you'd like**
+**How would you like to see it solved?**
 (Please fill in. A clear and concise description of what you want to happen.)
 
 **Describe alternatives you've considered**
