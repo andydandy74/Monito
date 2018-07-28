@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help me improve
+about: Report bugs here to help improve DynaMonito
 
 ---
 
@@ -18,7 +18,7 @@ about: Create a report to help me improve
 - Dynamo version: ................
 - DynaMonito version ................
 
-** Housekeeping
+**Housekeeping**
 Please **make sure these boxes are checked** before submitting your issue:
 - [ ] I am running the *latest available version* of DynaMonito
 - [ ] My installed version of DynaMonito matches the Dynamo version it's installed for
