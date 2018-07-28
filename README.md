@@ -10,7 +10,7 @@ Feedback and contributions welcome.
 
 ## More info on the wiki
 
-- [Tools overview](https://github.com/andydandy74/Monito/wiki/Tools-Overview)
-- [Installation & configuration](https://github.com/andydandy74/Monito/wiki/Installation-&-Configuration)
-- [Version history](https://github.com/andydandy74/Monito/wiki/Version-history)
-- [Building from source](https://github.com/andydandy74/Monito/wiki/Building-from-Source)
+- [Tools Overview](https://github.com/andydandy74/Monito/wiki/Tools-Overview)
+- [Download, Installation & Configuration](https://github.com/andydandy74/Monito/wiki/Download,-Installation-&-Configuration)
+- [Version History](https://github.com/andydandy74/Monito/wiki/Version-history)
+- [Building from Source](https://github.com/andydandy74/Monito/wiki/Building-from-Source)
