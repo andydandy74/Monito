@@ -8,6 +8,7 @@
         d:DesignWidth="500" 
         Width="500" 
         Height="500" 
+        Icon="/Monito;component/Resources/MonitoLogo.ico"
         Title="DynaMonito - Manage Dynamo Player Inputs">
     <Window.Resources>
         <ResourceDictionary>
