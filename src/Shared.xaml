@@ -31,6 +31,7 @@
         <Setter Property="Padding" Value="10"/>
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
     </Style>
     <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
         <Setter Property="Foreground" Value="White"/>
