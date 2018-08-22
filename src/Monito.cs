@@ -52,7 +52,7 @@ namespace Monito
             var VM = p.DynamoWindow.DataContext as DynamoViewModel;
 
             #region FIND_UNGROUPED
-            if (monitoSettingsLoaded && monitoSettings["EnableFindUngrouped"] != null && monitoSettings["EnableFindUngrouped"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableFindUngrouped"))
             {
                 monitoFindUngroupedMenuItem = new MenuItem { Header = "Find and Fix Ungrouped" };
                 monitoFindUngroupedMenuItem.ToolTip = new ToolTip { Content = "Identify nodes and notes that don't belong to a group.." };
@@ -73,7 +73,7 @@ namespace Monito
             #endregion FIND_UNGROUPED
 
             #region ISOLATE_IN_GEOMETRY_PREVIEW
-            if (monitoSettingsLoaded && monitoSettings["EnableIsolateInGeometryPreview"] != null && monitoSettings["EnableIsolateInGeometryPreview"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableIsolateInGeometryPreview"))
             {
                 monitoIsolateInPreviewMenuItem = new MenuItem { Header = "Isolate in Geometry Preview" };
                 monitoIsolateInPreviewMenuItem.ToolTip = new ToolTip { Content = "Quickly isolate the current selection in geometry preview..." };
@@ -94,7 +94,7 @@ namespace Monito
             #endregion ISOLATE_IN_GEOMETRY_PREVIEW
 
             #region PLAYER_INPUTS
-            if (monitoSettingsLoaded && monitoSettings["EnablePlayerInputs"] != null && monitoSettings["EnablePlayerInputs"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnablePlayerInputs"))
             {
                 monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs" };
                 monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input nodes should be displayed by Dynamo Player..." };
@@ -115,7 +115,7 @@ namespace Monito
             #endregion PLAYER INPUTS
 
             #region MY_GRAPHS
-            if (monitoSettingsLoaded && monitoSettings["EnableMyGraphs"] != null && monitoSettings["EnableMyGraphs"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableMyGraphs"))
             {
                 
                 var topDirs = monitoSettings["MyGraphsDirectoryPaths"].Value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -145,7 +145,7 @@ namespace Monito
             #endregion MY_GRAPHS
 
             #region MY_TEMPLATES
-            if (monitoSettingsLoaded && monitoSettings["EnableMyTemplates"] != null && monitoSettings["EnableMyTemplates"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableMyTemplates"))
             {
                 var tplDir = monitoSettings["MyTemplatesDirectoryPath"].Value;
                 if (Directory.Exists(tplDir))
@@ -190,7 +190,7 @@ namespace Monito
             #endregion MY_TEMPLATES
 
             #region PACKAGE_DIRECTORIES
-            if (monitoSettingsLoaded && monitoSettings["EnablePackageDirectories"] != null && monitoSettings["EnablePackageDirectories"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnablePackageDirectories"))
             {
                 monitoPackageDirectoriesMenuItem = new MenuItem { Header = "Package Directories" };
                 monitoPackageDirectoriesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your package directories..." };
@@ -213,13 +213,13 @@ namespace Monito
             #endregion PACKAGE_DIRECTORIES
 
             #region SEARCH_IN_WORKSPACE
-            if (monitoSettingsLoaded && monitoSettings["EnableSearchInWorkspace"] != null && monitoSettings["EnableSearchInWorkspace"].Value == "1")
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableSearchInWorkspace"))
             {
                 monitoSearchInWorkspaceMenuItem = new MenuItem { Header = "Search in Workspace" };
                 monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
                 monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
                 {
-                    var viewModel = new SearchInWorkspaceViewModel(p, VM);
+                    var viewModel = new SearchInWorkspaceViewModel(p, VM, monitoSettings);
                     var window = new SearchInWorkspaceWindow
                     {
                         searchPanel = { DataContext = viewModel },

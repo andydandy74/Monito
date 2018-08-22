@@ -8,6 +8,7 @@ using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace Monito
 {
@@ -15,16 +16,30 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        private string searchTerm;
+        private bool searchInNicknames;
+        private bool searchInOriginalNames;
+        private bool searchInCategories;
+        private bool searchInDescriptions;
+        private bool searchInTags;
+        private bool searchInNotes;
+        private bool searchInAnnotations;
 
-        public SearchInWorkspaceViewModel(ReadyParams p, DynamoViewModel vm)
+        public SearchInWorkspaceViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms)
         {
             readyParams = p;
             viewModel = vm;
+            searchInNicknames = ms.GetLoadedSettingAsBoolean("SearchInNodeNicknames");
+            searchInOriginalNames = ms.GetLoadedSettingAsBoolean("SearchInOriginalNodeNames");
+            searchInCategories = ms.GetLoadedSettingAsBoolean("SearchInNodeCategories");
+            searchInDescriptions = ms.GetLoadedSettingAsBoolean("SearchInNodeDescriptions");
+            searchInTags = ms.GetLoadedSettingAsBoolean("SearchInNodeTags");
+            searchInNotes = ms.GetLoadedSettingAsBoolean("SearchInTextNotes");
+            searchInAnnotations = ms.GetLoadedSettingAsBoolean("SearchInGroupTitles");
         }
 
         public void Dispose() { }
-
-        private string searchTerm;
+        
         /// <summary>
         /// The search term. Changes in the search field will trigger searchInCanvas().
         /// </summary>
@@ -38,7 +53,6 @@ namespace Monito
             }
         }
 
-        private bool searchInNicknames = true;
         /// <summary>
         /// Include node nicknames in search?
         /// </summary>
@@ -52,7 +66,6 @@ namespace Monito
             }
         }
 
-        private bool searchInOriginalNames = true;
         /// <summary>
         /// Include original node names in search?
         /// </summary>
@@ -66,7 +79,6 @@ namespace Monito
             }
         }
 
-        private bool searchInCategories = true;
         /// <summary>
         /// Include node categories in search?
         /// </summary>
@@ -80,7 +92,6 @@ namespace Monito
             }
         }
 
-        private bool searchInDescriptions = true;
         /// <summary>
         /// Include node descriptions in search?
         /// </summary>
@@ -94,7 +105,6 @@ namespace Monito
             }
         }
 
-        private bool searchInTags = true;
         /// <summary>
         /// Include node tags in search?
         /// </summary>
@@ -108,7 +118,6 @@ namespace Monito
             }
         }
 
-        private bool searchInNotes = true;
         /// <summary>
         /// Include text notes in search?
         /// </summary>
@@ -122,7 +131,6 @@ namespace Monito
             }
         }
 
-        private bool searchInAnnotations = true;
         /// <summary>
         /// Include group titles in search?
         /// </summary>
