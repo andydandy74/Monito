@@ -1,5 +1,6 @@
 ﻿using Dynamo.ViewModels;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Windows;
 
@@ -72,6 +73,12 @@ namespace Monito
                 str = str.Substring(0, 60) + "...";
             }
             return str;
+        }
+
+        public static bool GetLoadedSettingAsBoolean(this KeyValueConfigurationCollection loadedsettings, string key)
+        {
+            if (loadedsettings[key] != null && loadedsettings[key].Value == "1") { return true; }
+            else { return false; }
         }
     }
 
