@@ -35,13 +35,15 @@ namespace Monito
         public void Startup(ViewStartupParams p)
         {
             startupParams = p;
+            // Try loading the package config file
+            // We need this to determine which tools to load (and also settings for some of the tools)
             string configPath = this.GetType().Assembly.Location;
             try
             {
                 Configuration myDllConfig = ConfigurationManager.OpenExeConfiguration(configPath);
                 AppSettingsSection myDllConfigAppSettings = (AppSettingsSection)myDllConfig.GetSection("appSettings");
                 monitoSettings = myDllConfigAppSettings.Settings;
-                monitoSettingsLoaded = true;
+                monitoSettingsLoaded = true; 
             }
             catch { MessageBox.Show("Couldn't find, load or read DynaMonito config file at " + configPath); }
         }
@@ -117,7 +119,7 @@ namespace Monito
             #region MY_GRAPHS
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableMyGraphs"))
             {
-                
+                // Read list of graph directories from config
                 var topDirs = monitoSettings["MyGraphsDirectoryPaths"].Value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 if (topDirs.Length > 0)
                 {
@@ -150,6 +152,7 @@ namespace Monito
                 var tplDir = monitoSettings["MyTemplatesDirectoryPath"].Value;
                 if (Directory.Exists(tplDir))
                 {
+                    // Create a menu item for each template
                     List<MenuItem> tempMenuItems = new List<MenuItem>();
                     var templates = Directory.GetFiles(tplDir, "*.dyn");
                     foreach (string t in templates)
@@ -161,14 +164,15 @@ namespace Monito
                         {
                             if (File.Exists(t))
                             {
+                                // Close current home workspace, open template and set to manual mode
                                 VM.CloseHomeWorkspaceCommand.Execute(null);
                                 VM.OpenCommand.Execute(t);
                                 VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
-                                // Select all nodes and notes
+                                // Select all nodes and notes as well as annotations and copy everything
                                 VM.SelectAllCommand.Execute(null);
-                                // Need to copy groups as well
                                 foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { VM.AddToSelectionCommand.Execute(anno); }
                                 VM.CopyCommand.Execute(null);
+                                // Create new home workspace, set to manual mode and paste template content
                                 VM.NewHomeWorkspaceCommand.Execute(null);
                                 VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 VM.Model.Paste();
@@ -178,10 +182,11 @@ namespace Monito
                         };
                         tempMenuItems.Add(tplMenu);
                     }
-                    monitoMyTemplatesMenuItem = new MenuItem { Header = "New Workspace from Template" };
-                    monitoMyTemplatesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your templates..." };
+                    // Only show the templates menu item if templates exist
                     if (tempMenuItems.Count > 0)
                     {
+                        monitoMyTemplatesMenuItem = new MenuItem { Header = "New Workspace from Template" };
+                        monitoMyTemplatesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your templates..." };
                         foreach (MenuItem tempMenuItem in tempMenuItems) { monitoMyTemplatesMenuItem.Items.Add(tempMenuItem); }
                         monitoMenuItem.Items.Add(monitoMyTemplatesMenuItem);
                     }
