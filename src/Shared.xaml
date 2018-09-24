@@ -14,9 +14,24 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Foreground" Value="LightGray"/>
     </Style>
+    <Style TargetType="TextBox" x:Key="MonitoMultilineTextBox">
+        <Setter Property="Margin" Value="5,5,5,5"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="Height" Value="100"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
     <Style TargetType="Expander">
         <Setter Property="Margin" Value="5,5,5,0"/>
         <Setter Property="Background" Value="LightGray"/>
+    </Style>
+    <Style TargetType="CheckBox" x:Key="MonitoCheckBox">
+        <Setter Property="Margin" Value="5,5,5,0"/>
+        <Setter Property="Foreground" Value="LightGray"/>
     </Style>
     <Style TargetType="Button">
         <Setter Property="Margin" Value="5,5,5,0"/>
@@ -28,7 +43,12 @@
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
     </Style>
     <Style TargetType="TextBlock">
-        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+    </Style>
+    <Style TargetType="TextBlock" x:Key="MonitoTextUnpadded">
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="Foreground" Value="LightGray"/>
         <Setter Property="TextWrapping" Value="WrapWithOverflow"/>

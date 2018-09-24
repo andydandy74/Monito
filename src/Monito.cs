@@ -24,6 +24,7 @@ namespace Monito
         private MenuItem monitoMyTemplatesMenuItem;
         private MenuItem monitoPlayerInputsMenuItem;
         private MenuItem monitoSearchInWorkspaceMenuItem;
+        private MenuItem monitoUnfancifyMenuItem;
         private MenuItem monitoAboutMenuItem;
         private ViewStartupParams startupParams;
         private KeyValueConfigurationCollection monitoSettings;
@@ -237,6 +238,27 @@ namespace Monito
                 monitoMenuItem.Items.Add(monitoSearchInWorkspaceMenuItem);
             }
             #endregion SEARCH_IN_WORKSPACE
+
+            #region UNFANCIFY
+            if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableUnfancify"))
+            {
+                monitoUnfancifyMenuItem = new MenuItem { Header = "Unfancify" };
+                monitoUnfancifyMenuItem.ToolTip = new ToolTip { Content = "Simplify your graph..." };
+                monitoUnfancifyMenuItem.Click += (sender, args) =>
+                {
+                    var viewModel = new UnfancifyViewModel(p, VM, monitoSettings);
+                    var window = new UnfancifyWindow
+                    {
+                        unfancifyPanel = { DataContext = viewModel },
+                        Owner = p.DynamoWindow
+                    };
+                    window.Left = window.Owner.Left + 400;
+                    window.Top = window.Owner.Top + 200;
+                    window.Show();
+                };
+                monitoMenuItem.Items.Add(monitoUnfancifyMenuItem);
+            }
+            #endregion UNFANCIFY
 
             #region ABOUT
             monitoAboutMenuItem = new MenuItem { Header = "About DynaMonito" };

@@ -161,6 +161,10 @@
     <Compile Include="_About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="_Unfancify\UnfancifyViewModel.cs" />
+    <Compile Include="_Unfancify\UnfancifyWindow.xaml.cs">
+      <DependentUpon>UnfancifyWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">
@@ -193,6 +197,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="_About\AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="_Unfancify\UnfancifyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
