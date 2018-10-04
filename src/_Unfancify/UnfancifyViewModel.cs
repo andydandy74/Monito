@@ -90,15 +90,14 @@ namespace Monito
 
         public void OnUnfancifyClicked(object obj)
         {
+            // Create three lists for storing guids of groups, nodes and text notes that we want to keep
             List<String> groupsToKeep = new List<String>();
             List<String> nodesToKeep = new List<String>();
             List<String> textNotesToKeep = new List<String>();
             // Identify all groups to keep/ungroup
             if (ungroupAll)
             {
-                List<String> groupIgnoreList = new List<String>();
-                groupIgnoreList.Add("XXX");
-                // var groupIgnoreList = ignoreGroupPrefixes.Split(new char[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                var groupIgnoreList = ignoreGroupPrefixes.Split(new [] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
                 {
                     foreach (string ignoreTerm in groupIgnoreList)
@@ -110,25 +109,21 @@ namespace Monito
                             // Identify all nodes and text notes within those groups
                             foreach (var element in anno.SelectedModels)
                             {
-                                if (element.ToString() == "Dynamo.Graph.Notes.NoteModel") { textNotesToKeep.Add(element.GUID.ToString()); }
+                                if (element.GetType() == typeof(NoteModel)) { textNotesToKeep.Add(element.GUID.ToString()); }
                                 else { nodesToKeep.Add(element.GUID.ToString()); }
                             }
                         }
-                        // Ungroup the rest
-                        else if (!groupsToKeep.Contains(anno.GUID.ToString()))
-                        {
-                            anno.Select();
-                            viewModel.UngroupAnnotationCommand.Execute(null);
-                        }
                     }
+                    // Add all obsolete groups to selection
+                    if (!groupsToKeep.Contains(anno.GUID.ToString())) { viewModel.AddToSelectionCommand.Execute(anno); }
                 }
+                // Ungroup all obsolete groups
+                viewModel.UngroupAnnotationCommand.Execute(null);
             }
             // Identify all text notes to keep/delete
             if (deleteTextNotes)
             {
-                List<String> textNoteIgnoreList = new List<String>();
-                textNoteIgnoreList.Add("XXX");
-                // var textNoteIgnoreList = ignoreTextNotePrefixes.Split(new char[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                var textNoteIgnoreList = ignoreTextNotePrefixes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
                 {
                     foreach (string ignoreTerm in textNoteIgnoreList)
@@ -138,30 +133,40 @@ namespace Monito
                         {
                             textNotesToKeep.Add(note.GUID.ToString());
                         }
-                        // delete the rest
-                        else if (!textNotesToKeep.Contains(note.GUID.ToString()))
-                        {
-                            MessageBox.Show(note.Text);
-                            //viewModel.AddToSelectionCommand.Execute(note.GUID.ToString());
-                            note.Select();
-                            viewModel.DeleteCommand.Execute(null);
-                        }
                     }
+                    // Add all obsolete text notes to selection
+                    if (!textNotesToKeep.Contains(note.GUID.ToString())) { viewModel.AddToSelectionCommand.Execute(note); }
+                }
+                // Delete all obsolete text notes
+                viewModel.DeleteCommand.Execute(null);
+            }
+            // Select all obsolete nodes and pre-process string nodes
+            foreach (NodeModel node in viewModel.Model.CurrentWorkspace.Nodes)
+            {
+                if (!nodesToKeep.Contains(node.GUID.ToString()))
+                {
+                    // Pre-Processing
+                    // Temporary fix for https://github.com/DynamoDS/Dynamo/issues/9117 (Escape backslashes in string nodes)
+                    // Temporary fix for https://github.com/DynamoDS/Dynamo/issues/9120 (Escape double quotes in string nodes)
+                    if (node.GetType() == typeof(CoreNodeModels.Input.StringInput))
+                    {
+                        // StringInput inputNode = (StringInput)node;
+                        // string nodeval = inputNode.Value;
+                        string nodeVal = node.PrintExpression().ToString();
+                        nodeVal = nodeVal.Remove(nodeVal.Length - 1).Substring(1);
+                        nodeVal = nodeVal.Replace("\\", "\\\\").Replace("\"", "\\\"");
+                        var updateVal = new UpdateValueParams("Value", nodeVal);
+                        node.UpdateValue(updateVal);
+                    }
+                    viewModel.AddToSelectionCommand.Execute(node);
                 }
             }
-            // Selection
-            // viewModel.SelectAllCommand.Execute(null);
-            // ToDo: Replace this later with a better selection method that omits nodes from ignored groups
             // Node to code
-            // ToDo: Provide a temporary fix for https://github.com/DynamoDS/Dynamo/issues/9117 here
-            // by finding all string nodes that end on a single backslash
-            // and escaping that backslash before calling node to code
-            // viewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
-            // Possible future improvement: eplace comments in code blocks with empty comments
-            // This may also include deleting code blocks that only contain comments
-            
+            viewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
             // Auto layout
-            // viewModel.GraphAutoLayoutCommand.Execute(null);
+            viewModel.SelectAllCommand.Execute(null);
+            // ToDo: Better clear the selection entirely
+            viewModel.GraphAutoLayoutCommand.Execute(null);
         }
     }
 }
