@@ -2,17 +2,13 @@
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
-using System.Collections.ObjectModel;
 using Dynamo.ViewModels;
-using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Windows.Input;
 using Dynamo.UI.Commands;
-using Dynamo.Models;
-using System.Windows;
 using Dynamo.Graph;
 
 namespace Monito
@@ -25,7 +21,9 @@ namespace Monito
         private bool deleteTextNotes;
         private string ignoreGroupPrefixes;
         private string ignoreTextNotePrefixes;
-        public ICommand UnfancifyGraph { get; set; }
+        private string unfancifyMsg = "";
+        public ICommand UnfancifyCurrentGraph { get; set; }
+        public ICommand BatchUnfancify { get; set; }
 
         public UnfancifyViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms)
         {
@@ -35,7 +33,8 @@ namespace Monito
             deleteTextNotes = ms.GetLoadedSettingAsBoolean("UnfancifyDeleteTextNotes");
             ignoreGroupPrefixes = ms["UnfancifyIgnoreGroupPrefixes"].Value.Replace(";", Environment.NewLine);
             ignoreTextNotePrefixes = ms["UnfancifyIgnoreTextNotePrefixes"].Value.Replace(";", Environment.NewLine);
-            UnfancifyGraph = new DelegateCommand(OnUnfancifyClicked);
+            UnfancifyCurrentGraph = new DelegateCommand(OnUnfancifyCurrentClicked);
+            BatchUnfancify = new DelegateCommand(OnBatchUnfancifyClicked);
         }
 
         public void Dispose() { }
@@ -88,7 +87,33 @@ namespace Monito
             }
         }
 
-        public void OnUnfancifyClicked(object obj)
+        /// <summary>
+        /// Text note prefixes that should be ignored
+        /// </summary>
+        public string UnfancifyMsg
+        {
+            get { return unfancifyMsg; }
+        }
+
+        public void OnUnfancifyCurrentClicked(object obj)
+        {
+            UnfancifyGraph();
+            unfancifyMsg = "Current graph successfully unfancified!";
+            RaisePropertyChanged("UnfancifyMsg");
+        }
+
+        public void OnBatchUnfancifyClicked(object obj)
+        {
+            // ToDo: Read directory contents
+            // ToDo: Loop the floowing
+            //      ToDo: Open graph
+            //      UnfancifyGraph();
+            //      ToDo: Save graph
+            //      ToDo: Close graph
+            //      ToDo: Output success to window
+        }
+
+        public void UnfancifyGraph()
         {
             // Create three lists for storing guids of groups, nodes and text notes that we want to keep
             List<String> groupsToKeep = new List<String>();
@@ -97,7 +122,7 @@ namespace Monito
             // Identify all groups to keep/ungroup
             if (ungroupAll)
             {
-                var groupIgnoreList = ignoreGroupPrefixes.Split(new [] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var groupIgnoreList = ignoreGroupPrefixes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (AnnotationModel anno in viewModel.Model.CurrentWorkspace.Annotations)
                 {
                     foreach (string ignoreTerm in groupIgnoreList)
@@ -163,9 +188,8 @@ namespace Monito
             }
             // Node to code
             viewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
-            // Auto layout
-            viewModel.SelectAllCommand.Execute(null);
-            // ToDo: Better clear the selection entirely
+            // Auto layout          
+            GeneralUtils.ClearSelection();
             viewModel.GraphAutoLayoutCommand.Execute(null);
         }
     }

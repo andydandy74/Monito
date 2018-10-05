@@ -7,7 +7,7 @@
         d:DesignHeight="500" 
         d:DesignWidth="500" 
         Width="500" 
-        Height="420" 
+        Height="450" 
         Icon="/Monito;component/Resources/MonitoLogo.ico"
         Title="DynaMonito - Unfancify">
     <Window.Resources>
@@ -59,9 +59,13 @@
                 IsEnabled="{Binding IsChecked, ElementName=checkDeleteTextNotes, Mode=OneWay}"
                 Text="{Binding IgnoreTextNotePrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button 
-                Content="Unfancify!" 
+                Content="Unfancify this graph" 
                 ToolTip="Click here to unfancify your graph..."
-                Command="{Binding UnfancifyGraph}"/>
+                Command="{Binding UnfancifyCurrentGraph}"/>
+            <TextBlock 
+                TextAlignment="Left" 
+                FontWeight="Bold"
+                Text="{Binding UnfancifyMsg}" />
         </StackPanel>
     </ScrollViewer>
 </Window>
