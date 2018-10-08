@@ -22,7 +22,7 @@
         <Setter Property="Foreground" Value="LightGray"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="AcceptsReturn" Value="True"/>
-        <Setter Property="Height" Value="100"/>
+        <Setter Property="Height" Value="50"/>
         <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
     </Style>
     <Style TargetType="Expander">

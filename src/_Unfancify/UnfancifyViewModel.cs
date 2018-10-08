@@ -10,6 +10,8 @@ using System.Configuration;
 using System.Windows.Input;
 using Dynamo.UI.Commands;
 using Dynamo.Graph;
+using Dynamo.Models;
+using CoreNodeModels.Input;
 
 namespace Monito
 {
@@ -23,7 +25,6 @@ namespace Monito
         private string ignoreTextNotePrefixes;
         private string unfancifyMsg = "";
         public ICommand UnfancifyCurrentGraph { get; set; }
-        public ICommand BatchUnfancify { get; set; }
 
         public UnfancifyViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms)
         {
@@ -34,7 +35,6 @@ namespace Monito
             ignoreGroupPrefixes = ms["UnfancifyIgnoreGroupPrefixes"].Value.Replace(";", Environment.NewLine);
             ignoreTextNotePrefixes = ms["UnfancifyIgnoreTextNotePrefixes"].Value.Replace(";", Environment.NewLine);
             UnfancifyCurrentGraph = new DelegateCommand(OnUnfancifyCurrentClicked);
-            BatchUnfancify = new DelegateCommand(OnBatchUnfancifyClicked);
         }
 
         public void Dispose() { }
@@ -52,7 +52,7 @@ namespace Monito
         }
 
         /// <summary>
-        /// Delete all text notes
+        /// Delete all text notes?
         /// </summary>
         public bool DeleteTextNotes
         {
@@ -87,9 +87,6 @@ namespace Monito
             }
         }
 
-        /// <summary>
-        /// Text note prefixes that should be ignored
-        /// </summary>
         public string UnfancifyMsg
         {
             get { return unfancifyMsg; }
@@ -102,23 +99,34 @@ namespace Monito
             RaisePropertyChanged("UnfancifyMsg");
         }
 
-        public void OnBatchUnfancifyClicked(object obj)
+        public void OnBatchUnfancifyClicked(string directoryPath)
         {
-            // ToDo: Read directory contents
-            // ToDo: Loop the floowing
-            //      ToDo: Open graph
-            //      UnfancifyGraph();
-            //      ToDo: Save graph
-            //      ToDo: Close graph
-            //      ToDo: Output success to window
+            // Read directory contents
+            var graphs = System.IO.Directory.EnumerateFiles(directoryPath);
+            int graphCount = 0;
+            foreach (var graph in graphs)
+            {
+                var ext = System.IO.Path.GetExtension(graph);
+                if (ext == ".dyn")
+                {
+                    unfancifyMsg += "Unfancifying " + graph + "\n";
+                    RaisePropertyChanged("UnfancifyMsg");
+                    viewModel.OpenCommand.Execute(graph);
+                    viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
+                    UnfancifyGraph();
+                    viewModel.SaveAsCommand.Execute(graph);
+                    viewModel.CloseHomeWorkspaceCommand.Execute(null);
+                    graphCount += 1;
+                }
+            }
+            unfancifyMsg += "Unfancified " + graphCount.ToString() + " graphs...";
+            RaisePropertyChanged("UnfancifyMsg");
         }
 
         public void UnfancifyGraph()
         {
-            // Create three lists for storing guids of groups, nodes and text notes that we want to keep
-            List<String> groupsToKeep = new List<String>();
-            List<String> nodesToKeep = new List<String>();
-            List<String> textNotesToKeep = new List<String>();
+            // Create a list for storing guids of groups, nodes and text notes that we want to keep
+            List<System.String> stuffToKeep = new List<System.String>();
             // Identify all groups to keep/ungroup
             if (ungroupAll)
             {
@@ -128,19 +136,15 @@ namespace Monito
                     foreach (string ignoreTerm in groupIgnoreList)
                     {
                         // Identify keepers
-                        if (anno.AnnotationText.StartsWith(ignoreTerm) && !groupsToKeep.Contains(anno.GUID.ToString()))
+                        if (anno.AnnotationText.StartsWith(ignoreTerm) && !stuffToKeep.Contains(anno.GUID.ToString()))
                         {
-                            groupsToKeep.Add(anno.GUID.ToString());
+                            stuffToKeep.Add(anno.GUID.ToString());
                             // Identify all nodes and text notes within those groups
-                            foreach (var element in anno.SelectedModels)
-                            {
-                                if (element.GetType() == typeof(NoteModel)) { textNotesToKeep.Add(element.GUID.ToString()); }
-                                else { nodesToKeep.Add(element.GUID.ToString()); }
-                            }
+                            foreach (var element in anno.SelectedModels) { stuffToKeep.Add(element.GUID.ToString()); }
                         }
                     }
                     // Add all obsolete groups to selection
-                    if (!groupsToKeep.Contains(anno.GUID.ToString())) { viewModel.AddToSelectionCommand.Execute(anno); }
+                    if (!stuffToKeep.Contains(anno.GUID.ToString())) { viewModel.AddToSelectionCommand.Execute(anno); }
                 }
                 // Ungroup all obsolete groups
                 viewModel.UngroupAnnotationCommand.Execute(null);
@@ -154,13 +158,13 @@ namespace Monito
                     foreach (string ignoreTerm in textNoteIgnoreList)
                     {
                         // Identify keepers
-                        if (note.Text.StartsWith(ignoreTerm) && !textNotesToKeep.Contains(note.GUID.ToString()))
+                        if (note.Text.StartsWith(ignoreTerm) && !stuffToKeep.Contains(note.GUID.ToString()))
                         {
-                            textNotesToKeep.Add(note.GUID.ToString());
+                            stuffToKeep.Add(note.GUID.ToString());
                         }
                     }
                     // Add all obsolete text notes to selection
-                    if (!textNotesToKeep.Contains(note.GUID.ToString())) { viewModel.AddToSelectionCommand.Execute(note); }
+                    if (!stuffToKeep.Contains(note.GUID.ToString())) { viewModel.AddToSelectionCommand.Execute(note); }
                 }
                 // Delete all obsolete text notes
                 viewModel.DeleteCommand.Execute(null);
@@ -168,17 +172,15 @@ namespace Monito
             // Select all obsolete nodes and pre-process string nodes
             foreach (NodeModel node in viewModel.Model.CurrentWorkspace.Nodes)
             {
-                if (!nodesToKeep.Contains(node.GUID.ToString()))
+                if (!stuffToKeep.Contains(node.GUID.ToString()))
                 {
                     // Pre-Processing
                     // Temporary fix for https://github.com/DynamoDS/Dynamo/issues/9117 (Escape backslashes in string nodes)
                     // Temporary fix for https://github.com/DynamoDS/Dynamo/issues/9120 (Escape double quotes in string nodes)
-                    if (node.GetType() == typeof(CoreNodeModels.Input.StringInput))
+                    if (node.GetType() == typeof(StringInput))
                     {
-                        // StringInput inputNode = (StringInput)node;
-                        // string nodeval = inputNode.Value;
-                        string nodeVal = node.PrintExpression().ToString();
-                        nodeVal = nodeVal.Remove(nodeVal.Length - 1).Substring(1);
+                        StringInput inputNode = (StringInput)node;
+                        string nodeVal = inputNode.Value;
                         nodeVal = nodeVal.Replace("\\", "\\\\").Replace("\"", "\\\"");
                         var updateVal = new UpdateValueParams("Value", nodeVal);
                         node.UpdateValue(updateVal);

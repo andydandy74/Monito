@@ -7,7 +7,7 @@
         d:DesignHeight="500" 
         d:DesignWidth="500" 
         Width="500" 
-        Height="450" 
+        Height="500" 
         Icon="/Monito;component/Resources/MonitoLogo.ico"
         Title="DynaMonito - Unfancify">
     <Window.Resources>
@@ -58,10 +58,24 @@
                 ToolTip="Enter ignore prefixes for text notes here..."
                 IsEnabled="{Binding IsChecked, ElementName=checkDeleteTextNotes, Mode=OneWay}"
                 Text="{Binding IgnoreTextNotePrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button 
-                Content="Unfancify this graph" 
-                ToolTip="Click here to unfancify your graph..."
-                Command="{Binding UnfancifyCurrentGraph}"/>
+            <Grid
+                Name="unfancifyButtons">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button 
+                    Grid.Column="0"
+                    Content="Unfancify this graph" 
+                    ToolTip="Click here to unfancify your graph..."
+                    Command="{Binding UnfancifyCurrentGraph}"/>
+                <Button 
+                    Grid.Column="1"
+                    Name="SelectedSource"
+                    Content="Batch-unfancify"
+                    ToolTip="Click here to batch-unfancify all graphs in selected directory..."
+                    Click="selectSource_Click"/>
+            </Grid>
             <TextBlock 
                 TextAlignment="Left" 
                 FontWeight="Bold"
