@@ -205,13 +205,17 @@ namespace Monito
                             if (rawScore > 0)
                             {
                                 string toolTip = "Search score: " + weightedScore.ToString();
-                                if (searchInOriginalNames && node.GetType().Name == "DSFunction" && node.CreationName != node.Name && node.CreationName != "")
+                                if (searchInOriginalNames)
                                 {
-                                    toolTip += "\nOriginal name: " + node.CreationName;
-                                }
-                                else if (searchInOriginalNames && node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.Name && node.GetType().Name != "")
-                                {
-                                    toolTip += "\nOriginal name: " + node.GetType().Name;
+                                    if (node.GetType().Name == "DSFunction" && node.CreationName != node.Name && node.CreationName != "")
+                                    {
+                                        toolTip += "\nOriginal name: " + node.CreationName;
+                                    }
+                                    else if (node.GetType().Name != "DSFunction" && node.GetType().Name != "Function" && node.GetType().Name != node.Name && node.GetType().Name != "")
+                                    {
+                                        toolTip += "\nOriginal name: " + node.GetType().Name;
+                                    }
+                                    // In all other cases the original or type name is either equal to the nickname or empty in which case we won't need to display it
                                 }
                                 if (searchInCategories && node.Category != "") { toolTip += "\nCategory: " + node.Category; }
                                 if (searchInDescriptions && node.Description != "") { toolTip += "\nDescription: " + node.Description; }
