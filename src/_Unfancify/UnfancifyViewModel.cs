@@ -12,6 +12,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Graph;
 using Dynamo.Models;
 using CoreNodeModels.Input;
+using System.Windows;
 
 namespace Monito
 {
@@ -21,6 +22,8 @@ namespace Monito
         private DynamoViewModel viewModel;
         private bool ungroupAll;
         private bool deleteTextNotes;
+        private bool disableGeometryPreview;
+        private bool disablePreviewBubbles;
         private string ignoreGroupPrefixes;
         private string ignoreTextNotePrefixes;
         private string unfancifyMsg = "";
@@ -32,6 +35,8 @@ namespace Monito
             viewModel = vm;
             ungroupAll = ms.GetLoadedSettingAsBoolean("UnfancifyUngroupAll");
             deleteTextNotes = ms.GetLoadedSettingAsBoolean("UnfancifyDeleteTextNotes");
+            disableGeometryPreview = ms.GetLoadedSettingAsBoolean("UnfancifyDisableGeometryPreview");
+            disablePreviewBubbles = ms.GetLoadedSettingAsBoolean("UnfancifyDisablePreviewBubbles");
             ignoreGroupPrefixes = ms["UnfancifyIgnoreGroupPrefixes"].Value.Replace(";", Environment.NewLine);
             ignoreTextNotePrefixes = ms["UnfancifyIgnoreTextNotePrefixes"].Value.Replace(";", Environment.NewLine);
             UnfancifyCurrentGraph = new DelegateCommand(OnUnfancifyCurrentClicked);
@@ -60,6 +65,30 @@ namespace Monito
             set
             {
                 deleteTextNotes = value;
+            }
+        }
+
+        /// <summary>
+        /// Disable geometry preview for all nodes?
+        /// </summary>
+        public bool DisableGeometryPreview
+        {
+            get { return disableGeometryPreview; }
+            set
+            {
+                disableGeometryPreview = value;
+            }
+        }
+
+        /// <summary>
+        /// Disable preview bubbles for all nodes?
+        /// </summary>
+        public bool DisablePreviewBubbles
+        {
+            get { return disablePreviewBubbles; }
+            set
+            {
+                disablePreviewBubbles = value;
             }
         }
 
@@ -169,9 +198,10 @@ namespace Monito
                 // Delete all obsolete text notes
                 viewModel.DeleteCommand.Execute(null);
             }
-            // Select all obsolete nodes and pre-process string nodes
+            // Process nodes
             foreach (NodeModel node in viewModel.Model.CurrentWorkspace.Nodes)
             {
+                // Select all obsolete nodes and pre-process string nodes
                 if (!stuffToKeep.Contains(node.GUID.ToString()))
                 {
                     // Pre-Processing
@@ -187,9 +217,39 @@ namespace Monito
                     }
                     viewModel.AddToSelectionCommand.Execute(node);
                 }
+                // ToDo: Delete downstream Watch & Watch 3D nodes
             }
             // Node to code
             viewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
+            // Process remaining nodes
+            if (disableGeometryPreview || disablePreviewBubbles)
+            {
+                foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
+                {
+                    // Turn off geometry preview
+                    if (disableGeometryPreview)
+                    {
+                        if (node.IsVisible) { node.ToggleIsVisibleCommand.Execute(null); }
+                    }
+                    // Turn off preview bubbles
+                    if (disablePreviewBubbles)
+                    {
+                        if (node.PreviewPinned)
+                        {
+                            // ToDo: Find out why this doesn't work
+                            //node.PreviewPinned = false;
+                            Dynamo.UI.Controls.PreviewControl(node);
+                            node.PreviewControl.TransitionToState();
+                        }
+                    }
+                    // Delete Watch nodes
+                    string nodeType = node.NodeModel.GetType().ToString();
+                    if (nodeType == "CoreNodeModels.Watch" || nodeType == "Watch3DNodeModels.Watch3D")
+                    {
+                        //MessageBox.Show(node.NodeModel.OutputNodes.ToString());
+                    }
+                }
+            }
             // Auto layout          
             GeneralUtils.ClearSelection();
             viewModel.GraphAutoLayoutCommand.Execute(null);

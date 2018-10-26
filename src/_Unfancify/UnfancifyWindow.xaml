@@ -33,6 +33,15 @@
                 IsEnabled="False"
                 Content="Auto layout"/>
             <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding DisablePreviewBubbles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="Collapsed"
+                Content="Disable preview bubbles"/>
+            <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding DisableGeometryPreview, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Content="Disable geometry preview"/>
+            <CheckBox
                 x:Name="checkUngroup"
                 Style="{StaticResource MonitoCheckBox}"
                 IsChecked="{Binding UngroupAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
