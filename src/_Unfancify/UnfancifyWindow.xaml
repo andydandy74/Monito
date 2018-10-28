@@ -1,0 +1,93 @@
+﻿<Window x:Class="Monito.UnfancifyWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        d:DesignHeight="500" 
+        d:DesignWidth="500" 
+        Width="500" 
+        Height="500" 
+        Icon="/Monito;component/Resources/MonitoLogo.ico"
+        Title="DynaMonito - Unfancify">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Monito;component/Shared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <ScrollViewer 
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel 
+            Style="{StaticResource MonitoStackPanelMain}"
+            Name="unfancifyPanel">
+            <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="True"
+                IsEnabled="False"
+                Content="Node to code"/>
+            <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="True"
+                IsEnabled="False"
+                Content="Auto layout"/>
+            <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding DisableGeometryPreview, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Content="Disable geometry preview"/>
+            <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding DeleteWatchNodes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Content="Delete all Watch nodes (Watch, Watch Image &amp; Watch 3D)"/>
+            <CheckBox
+                x:Name="checkUngroup"
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding UngroupAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Content="Ungroup all"/>
+            <TextBlock 
+                TextAlignment="Left" 
+                Text="Ignore groups with these prefixes:" />
+            <TextBox 
+                Style="{StaticResource MonitoMultilineTextBox}"
+                ToolTip="Enter ignore prefixes for groups here..."
+                IsEnabled="{Binding IsChecked, ElementName=checkUngroup, Mode=OneWay}"
+                Text="{Binding IgnoreGroupPrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox
+                x:Name="checkDeleteTextNotes"
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding DeleteTextNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Content="Delete all text notes" />
+            <TextBlock 
+                TextAlignment="Left" 
+                Text="Ignore text notes with these prefixes:" />
+            <TextBox 
+                Style="{StaticResource MonitoMultilineTextBox}"
+                ToolTip="Enter ignore prefixes for text notes here..."
+                IsEnabled="{Binding IsChecked, ElementName=checkDeleteTextNotes, Mode=OneWay}"
+                Text="{Binding IgnoreTextNotePrefixes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid
+                Name="unfancifyButtons">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button 
+                    Grid.Column="0"
+                    Content="Unfancify this graph" 
+                    ToolTip="Click here to unfancify your graph..."
+                    Command="{Binding UnfancifyCurrentGraph}"/>
+                <Button 
+                    Grid.Column="1"
+                    Name="SelectedSource"
+                    Content="Batch-unfancify"
+                    ToolTip="Click here to batch-unfancify all graphs in selected directory..."
+                    Click="selectSource_Click"/>
+            </Grid>
+            <TextBlock 
+                TextAlignment="Left" 
+                FontWeight="Bold"
+                Text="{Binding UnfancifyMsg}" />
+        </StackPanel>
+    </ScrollViewer>
+</Window>

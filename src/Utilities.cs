@@ -1,7 +1,9 @@
-﻿using Dynamo.ViewModels;
+﻿using Dynamo.Models;
+using Dynamo.ViewModels;
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 
 namespace Monito
@@ -79,6 +81,14 @@ namespace Monito
         {
             if (loadedsettings[key] != null && loadedsettings[key].Value == "1") { return true; }
             else { return false; }
+        }
+
+        public static void ClearSelection()
+        {
+            var dynamoSelection = typeof(DynamoModel).Assembly.GetType("Dynamo.Selection.DynamoSelection");
+            var selectionInstance = dynamoSelection.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+            var clearMethod = dynamoSelection.GetMethod("ClearSelection", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            clearMethod.Invoke(selectionInstance.GetValue(null), null);
         }
     }
 
