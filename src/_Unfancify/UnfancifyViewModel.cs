@@ -177,6 +177,7 @@ namespace Monito
             // Identify all text notes to keep/delete
             if (deleteTextNotes)
             {
+                GeneralUtils.ClearSelection();
                 var textNoteIgnoreList = ignoreTextNotePrefixes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
                 {
@@ -258,7 +259,12 @@ namespace Monito
             }
             // Auto layout          
             GeneralUtils.ClearSelection();
-            viewModel.GraphAutoLayoutCommand.Execute(null);  
+            /*viewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            foreach (AnnotationModel anno in viewModel.CurrentSpace.Annotations)
+            {
+                viewModel.AddToSelectionCommand.Execute(anno);
+            }*/
+            viewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
         }
     }
 }
