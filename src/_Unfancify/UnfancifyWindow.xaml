@@ -43,7 +43,7 @@
             <CheckBox
                 Style="{StaticResource MonitoCheckBox}"
                 IsChecked="{Binding DeleteWatchNodes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Content="Delete all Watch nodes (Watch, Watch Image &amp; Watch 3D)"/>
+                Content="Delete all downstream Watch nodes (Watch, Watch Image &amp; Watch 3D)"/>
             <CheckBox
                 x:Name="checkUngroup"
                 Style="{StaticResource MonitoCheckBox}"
