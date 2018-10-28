@@ -35,12 +35,15 @@
             <CheckBox
                 Style="{StaticResource MonitoCheckBox}"
                 IsChecked="{Binding DisablePreviewBubbles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Visibility="Collapsed"
-                Content="Disable preview bubbles"/>
+                Content="Disable preview bubbles (only takes effect after saving and re-opening)"/>
             <CheckBox
                 Style="{StaticResource MonitoCheckBox}"
                 IsChecked="{Binding DisableGeometryPreview, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Content="Disable geometry preview"/>
+            <CheckBox
+                Style="{StaticResource MonitoCheckBox}"
+                IsChecked="{Binding DeleteWatchNodes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Content="Delete all Watch nodes (Watch, Watch Image &amp; Watch 3D)"/>
             <CheckBox
                 x:Name="checkUngroup"
                 Style="{StaticResource MonitoCheckBox}"

@@ -22,6 +22,7 @@ namespace Monito
         private DynamoViewModel viewModel;
         private bool ungroupAll;
         private bool deleteTextNotes;
+        private bool deleteWatchNodes;
         private bool disableGeometryPreview;
         private bool disablePreviewBubbles;
         private string ignoreGroupPrefixes;
@@ -35,6 +36,7 @@ namespace Monito
             viewModel = vm;
             ungroupAll = ms.GetLoadedSettingAsBoolean("UnfancifyUngroupAll");
             deleteTextNotes = ms.GetLoadedSettingAsBoolean("UnfancifyDeleteTextNotes");
+            deleteWatchNodes = ms.GetLoadedSettingAsBoolean("UnfancifyDeleteWatchNodes");
             disableGeometryPreview = ms.GetLoadedSettingAsBoolean("UnfancifyDisableGeometryPreview");
             disablePreviewBubbles = ms.GetLoadedSettingAsBoolean("UnfancifyDisablePreviewBubbles");
             ignoreGroupPrefixes = ms["UnfancifyIgnoreGroupPrefixes"].Value.Replace(";", Environment.NewLine);
@@ -65,6 +67,18 @@ namespace Monito
             set
             {
                 deleteTextNotes = value;
+            }
+        }
+
+        /// <summary>
+        /// Delete all watch nodes?
+        /// </summary>
+        public bool DeleteWatchNodes
+        {
+            get { return deleteWatchNodes; }
+            set
+            {
+                deleteWatchNodes = value;
             }
         }
 
@@ -217,12 +231,12 @@ namespace Monito
                     }
                     viewModel.AddToSelectionCommand.Execute(node);
                 }
-                // ToDo: Delete downstream Watch & Watch 3D nodes
             }
             // Node to code
             viewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
             // Process remaining nodes
-            if (disableGeometryPreview || disablePreviewBubbles)
+            List<NodeModel> nodesToDelete = new List<NodeModel>();
+            if (disableGeometryPreview || disablePreviewBubbles || deleteWatchNodes)
             {
                 foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
                 {
@@ -231,28 +245,38 @@ namespace Monito
                     {
                         if (node.IsVisible) { node.ToggleIsVisibleCommand.Execute(null); }
                     }
-                    // Turn off preview bubbles
+                    // Turn off preview bubbles (only works after file has been saved and re-opened)
                     if (disablePreviewBubbles)
                     {
                         if (node.PreviewPinned)
                         {
-                            // ToDo: Find out why this doesn't work
-                            //node.PreviewPinned = false;
-                            Dynamo.UI.Controls.PreviewControl(node);
-                            node.PreviewControl.TransitionToState();
+                            node.PreviewPinned = false;
                         }
                     }
-                    // Delete Watch nodes
-                    string nodeType = node.NodeModel.GetType().ToString();
-                    if (nodeType == "CoreNodeModels.Watch" || nodeType == "Watch3DNodeModels.Watch3D")
+                    // Identify Watch nodes
+                    if (deleteWatchNodes)
                     {
-                        //MessageBox.Show(node.NodeModel.OutputNodes.ToString());
+                        string nodeType = node.NodeModel.GetType().ToString();
+                        if (nodeType == "CoreNodeModels.Watch" || nodeType == "Watch3DNodeModels.Watch3D" || nodeType == "CoreNodeModels.WatchImageCore")
+                        {
+                            if (node.NodeModel.OutputNodes.Count == 0) { nodesToDelete.Add(node.NodeModel); }
+                        }
                     }
                 }
             }
+            // Delete Watch nodes
+            if (deleteWatchNodes && nodesToDelete.Count > 0)
+            {
+                GeneralUtils.ClearSelection();
+                foreach (NodeModel deletionCandidate in nodesToDelete)
+                {
+                    viewModel.AddToSelectionCommand.Execute(deletionCandidate);
+                }
+                viewModel.DeleteCommand.Execute(null);
+            }
             // Auto layout          
             GeneralUtils.ClearSelection();
-            viewModel.GraphAutoLayoutCommand.Execute(null);
+            viewModel.GraphAutoLayoutCommand.Execute(null);  
         }
     }
 }
