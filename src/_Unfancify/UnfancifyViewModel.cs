@@ -50,10 +50,7 @@ namespace Monito
         public bool UngroupAll
         {
             get { return ungroupAll; }
-            set
-            {
-                ungroupAll = value;
-            }
+            set { ungroupAll = value; }
         }
 
         /// <summary>
@@ -62,10 +59,7 @@ namespace Monito
         public bool DeleteTextNotes
         {
             get { return deleteTextNotes; }
-            set
-            {
-                deleteTextNotes = value;
-            }
+            set { deleteTextNotes = value; }
         }
 
         /// <summary>
@@ -74,10 +68,7 @@ namespace Monito
         public bool DeleteWatchNodes
         {
             get { return deleteWatchNodes; }
-            set
-            {
-                deleteWatchNodes = value;
-            }
+            set { deleteWatchNodes = value; }
         }
 
         /// <summary>
@@ -86,10 +77,7 @@ namespace Monito
         public bool DisableGeometryPreview
         {
             get { return disableGeometryPreview; }
-            set
-            {
-                disableGeometryPreview = value;
-            }
+            set { disableGeometryPreview = value; }
         }
 
         /// <summary>
@@ -98,10 +86,7 @@ namespace Monito
         public string IgnoreGroupPrefixes
         {
             get { return ignoreGroupPrefixes; }
-            set
-            {
-                ignoreGroupPrefixes = value;
-            }
+            set { ignoreGroupPrefixes = value; }
         }
 
         /// <summary>
@@ -110,26 +95,28 @@ namespace Monito
         public string IgnoreTextNotePrefixes
         {
             get { return ignoreTextNotePrefixes; }
-            set
-            {
-                ignoreTextNotePrefixes = value;
-            }
+            set { ignoreTextNotePrefixes = value; }
         }
 
         public string UnfancifyMsg
         {
             get { return unfancifyMsg; }
+            set
+            {
+                unfancifyMsg = value;
+                RaisePropertyChanged("UnfancifyMsg");
+            }
         }
 
         public void OnUnfancifyCurrentClicked(object obj)
         {
             UnfancifyGraph();
-            unfancifyMsg = "Current graph successfully unfancified!";
-            RaisePropertyChanged("UnfancifyMsg");
+            UnfancifyMsg = "Current graph successfully unfancified!";
         }
 
         public void OnBatchUnfancifyClicked(string directoryPath)
         {
+            UnfancifyMsg = "";
             // Read directory contents
             var graphs = System.IO.Directory.EnumerateFiles(directoryPath);
             int graphCount = 0;
@@ -138,8 +125,7 @@ namespace Monito
                 var ext = System.IO.Path.GetExtension(graph);
                 if (ext == ".dyn")
                 {
-                    unfancifyMsg += "Unfancifying " + graph + "\n";
-                    RaisePropertyChanged("UnfancifyMsg");
+                    UnfancifyMsg += "Unfancifying " + graph + "\n";
                     viewModel.OpenCommand.Execute(graph);
                     viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                     UnfancifyGraph();
@@ -148,8 +134,7 @@ namespace Monito
                     graphCount += 1;
                 }
             }
-            unfancifyMsg += "Unfancified " + graphCount.ToString() + " graphs...";
-            RaisePropertyChanged("UnfancifyMsg");
+            UnfancifyMsg += "Unfancified " + graphCount.ToString() + " graphs...";
         }
 
         public void UnfancifyGraph()
