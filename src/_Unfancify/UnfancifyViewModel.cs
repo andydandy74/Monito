@@ -3,7 +3,6 @@ using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.ViewModels;
-using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using System.Collections.Generic;
 using System.Configuration;
