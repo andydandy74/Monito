@@ -13,6 +13,7 @@ using Dynamo.Graph;
 using Dynamo.Models;
 using CoreNodeModels.Input;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Monito
 {
@@ -20,6 +21,7 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
+        private Window dynWindow;
         private bool ungroupAll;
         private bool deleteTextNotes;
         private bool deleteWatchNodes;
@@ -29,10 +31,11 @@ namespace Monito
         private string unfancifyMsg = "";
         public ICommand UnfancifyCurrentGraph { get; set; }
 
-        public UnfancifyViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms)
+        public UnfancifyViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms, Window dw)
         {
             readyParams = p;
             viewModel = vm;
+            dynWindow = dw;
             ungroupAll = ms.GetLoadedSettingAsBoolean("UnfancifyUngroupAll");
             deleteTextNotes = ms.GetLoadedSettingAsBoolean("UnfancifyDeleteTextNotes");
             deleteWatchNodes = ms.GetLoadedSettingAsBoolean("UnfancifyDeleteWatchNodes");
@@ -125,13 +128,13 @@ namespace Monito
                 var ext = System.IO.Path.GetExtension(graph);
                 if (ext == ".dyn")
                 {
-                    UnfancifyMsg += "Unfancifying " + graph + "\n";
                     viewModel.OpenCommand.Execute(graph);
                     viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                     UnfancifyGraph();
                     viewModel.SaveAsCommand.Execute(graph);
                     viewModel.CloseHomeWorkspaceCommand.Execute(null);
                     graphCount += 1;
+                    UnfancifyMsg += "Unfancified " + graph + "\n";
                 }
             }
             UnfancifyMsg += "Unfancified " + graphCount.ToString() + " graphs...";
@@ -166,6 +169,7 @@ namespace Monito
             // Identify all text notes to keep/delete
             if (deleteTextNotes)
             {
+                GeneralUtils.ClearSelection();
                 var textNoteIgnoreList = ignoreTextNotePrefixes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
                 {
@@ -239,7 +243,10 @@ namespace Monito
             }
             // Auto layout          
             GeneralUtils.ClearSelection();
-            viewModel.GraphAutoLayoutCommand.Execute(null);  
+            dynWindow.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
+            {
+                viewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
+            }));
         }
     }
 }
