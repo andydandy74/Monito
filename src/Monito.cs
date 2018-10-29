@@ -246,7 +246,7 @@ namespace Monito
                 monitoUnfancifyMenuItem.ToolTip = new ToolTip { Content = "Simplify your graph..." };
                 monitoUnfancifyMenuItem.Click += (sender, args) =>
                 {
-                    var viewModel = new UnfancifyViewModel(p, VM, monitoSettings);
+                    var viewModel = new UnfancifyViewModel(p, VM, monitoSettings, p.DynamoWindow);
                     var window = new UnfancifyWindow
                     {
                         unfancifyPanel = { DataContext = viewModel },
