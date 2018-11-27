@@ -177,8 +177,10 @@ namespace Monito
                                 VM.NewHomeWorkspaceCommand.Execute(null);
                                 VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 VM.Model.Paste();
-                                foreach (var anno in VM.HomeSpaceViewModel.Model.Annotations) { anno.Deselect(); }
-                            }
+								GeneralUtils.ClearSelection();
+								VM.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
+								VM.FitViewCommand.Execute(null);
+							}
                             else { MessageBox.Show("Template " + tplName + " has been moved, renamed or deleted..."); }
                         };
                         tempMenuItems.Add(tplMenu);
