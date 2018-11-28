@@ -8,10 +8,10 @@ using System.Windows;
 
 namespace Monito
 {
-    /// <summary>
-    /// Shared utility functions for view models
-    /// </summary>
-    class ViewModelUtils
+	/// <summary>
+	/// Shared utility functions for view models
+	/// </summary>
+	class ViewModelUtils
     {
         private DynamoViewModel viewModel;
         private Window dynWindow;
@@ -26,40 +26,28 @@ namespace Monito
         /// </summary>
         public void ZoomToObject(string guid)
         {
-            bool isNode = viewModel.Model.CurrentWorkspace.Nodes.Count(x => x.GUID.ToString() == guid) > 0;
-            bool isNote = viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0;
-            bool isAnno = viewModel.CurrentSpaceViewModel.Annotations.Count(x => x.AnnotationModel.GUID.ToString() == guid) > 0;
-            double objectCenterX = 0;
-            double objectCenterY = 0;
-            if (isNode)
-            {
-                var zoomNode = viewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == guid);
-                objectCenterX = zoomNode.CenterX;
-                objectCenterY = zoomNode.CenterY;
-            }
-            else if (isNote)
-            {
-                var zoomNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
-                objectCenterX = zoomNote.CenterX;
-                objectCenterY = zoomNote.CenterY;
-            }
-            else if (isAnno)
-            {
-                var zoomAnno = viewModel.CurrentSpaceViewModel.Annotations.First(x => x.AnnotationModel.GUID.ToString() == guid);
-                objectCenterX = zoomAnno.AnnotationModel.CenterX;
-                objectCenterY = zoomAnno.AnnotationModel.CenterY;
-            }
-            var maxZoom = 4d;
-            var corrX = -objectCenterX * maxZoom + dynWindow.ActualWidth / 2.2;
-            var corrY = -objectCenterY * maxZoom + dynWindow.ActualHeight / 2.2;
-            viewModel.CurrentSpaceViewModel.Zoom = maxZoom;
-            viewModel.CurrentSpaceViewModel.X = corrX;
-            viewModel.CurrentSpaceViewModel.Y = corrY;
-            if (objectCenterX != 0 || objectCenterY !=0)
-            {
-                viewModel.ZoomInCommand.Execute(null);
-            }           
-        }
+			GeneralUtils.ClearSelection();
+			viewModel.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
+			if (viewModel.Model.CurrentWorkspace.Nodes.Count(x => x.GUID.ToString() == guid) > 0)
+			{
+				var zoomObject = viewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == guid);
+				viewModel.AddToSelectionCommand.Execute(zoomObject);
+			}
+            else if (viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == guid) > 0)
+			{
+				var zoomObject = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
+				viewModel.AddToSelectionCommand.Execute(zoomObject);
+			}
+			// CurrentWorkspace.Annotations has a deprecation warning
+			// but for now this seems like the only simple way of adding annotation to the current selection.
+            else if (viewModel.Model.CurrentWorkspace.Annotations.Count(x => x.GUID.ToString() == guid) > 0)
+			{
+				var zoomObject = viewModel.Model.CurrentWorkspace.Annotations.First(x => x.GUID.ToString() == guid);
+				viewModel.AddToSelectionCommand.Execute(zoomObject);
+			}
+			viewModel.FitViewCommand.Execute(null);
+			GeneralUtils.ClearSelection();
+		}
     }
 
     /// <summary>

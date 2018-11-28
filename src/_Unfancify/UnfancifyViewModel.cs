@@ -112,7 +112,8 @@ namespace Monito
 
         public void OnUnfancifyCurrentClicked(object obj)
         {
-            UnfancifyGraph();
+			UnfancifyMsg = "";
+			UnfancifyGraph();
             UnfancifyMsg = "Current graph successfully unfancified!";
         }
 
@@ -142,14 +143,15 @@ namespace Monito
         public void UnfancifyGraph()
         {
             // Create a list for storing guids of groups, nodes and text notes that we want to keep
-            List<System.String> stuffToKeep = new List<System.String>();
-            // Identify all groups to keep/ungroup
-            if (ungroupAll)
+            var stuffToKeep = new List<string>();
+			GeneralUtils.ClearSelection();
+			// Identify all groups to keep/ungroup
+			if (ungroupAll)
             {
                 var groupIgnoreList = ignoreGroupPrefixes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (AnnotationViewModel anno in viewModel.CurrentSpaceViewModel.Annotations)
+				foreach (var anno in viewModel.CurrentSpaceViewModel.Annotations)
                 {
-                    foreach (string ignoreTerm in groupIgnoreList)
+                    foreach (var ignoreTerm in groupIgnoreList)
                     {
                         // Identify keepers
                         if (anno.AnnotationText.StartsWith(ignoreTerm) && !stuffToKeep.Contains(anno.AnnotationModel.GUID.ToString()))
@@ -168,11 +170,10 @@ namespace Monito
             // Identify all text notes to keep/delete
             if (deleteTextNotes)
             {
-                GeneralUtils.ClearSelection();
                 var textNoteIgnoreList = ignoreTextNotePrefixes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (NoteModel note in viewModel.Model.CurrentWorkspace.Notes)
+                foreach (var note in viewModel.Model.CurrentWorkspace.Notes)
                 {
-                    foreach (string ignoreTerm in textNoteIgnoreList)
+                    foreach (var ignoreTerm in textNoteIgnoreList)
                     {
                         // Identify keepers
                         if (note.Text.StartsWith(ignoreTerm) && !stuffToKeep.Contains(note.GUID.ToString()))
@@ -187,7 +188,7 @@ namespace Monito
                 viewModel.DeleteCommand.Execute(null);
             }
             // Process nodes
-            foreach (NodeModel node in viewModel.Model.CurrentWorkspace.Nodes)
+            foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
             {
                 // Select all obsolete nodes and pre-process string nodes
                 if (!stuffToKeep.Contains(node.GUID.ToString()))
@@ -208,41 +209,33 @@ namespace Monito
             }
             // Node to code
             viewModel.CurrentSpaceViewModel.NodeToCodeCommand.Execute(null);
-            // Process remaining nodes
-            List<NodeModel> nodesToDelete = new List<NodeModel>();
+			GeneralUtils.ClearSelection();
+			// Process remaining nodes
+			var nodesToDelete = new List<NodeModel>();
             if (disableGeometryPreview || deleteWatchNodes)
             {
-                foreach (NodeViewModel node in viewModel.CurrentSpaceViewModel.Nodes)
+                foreach (var node in viewModel.CurrentSpaceViewModel.Nodes)
                 {
                     // Turn off geometry preview
                     if (disableGeometryPreview)
                     {
                         if (node.IsVisible) { node.ToggleIsVisibleCommand.Execute(null); }
                     }
-                    // Identify Watch nodes
+					// Identify Watch nodes
                     if (deleteWatchNodes)
                     {
                         string nodeType = node.NodeModel.GetType().ToString();
                         if (nodeType == "CoreNodeModels.Watch" || nodeType == "Watch3DNodeModels.Watch3D" || nodeType == "CoreNodeModels.WatchImageCore")
                         {
-                            if (node.NodeModel.OutputNodes.Count == 0) { nodesToDelete.Add(node.NodeModel); }
-                        }
+							if (node.NodeModel.OutputNodes.Count == 0) { viewModel.AddToSelectionCommand.Execute(node.NodeModel); }
+						}
                     }
                 }
             }
             // Delete Watch nodes
-            if (deleteWatchNodes && nodesToDelete.Count > 0)
-            {
-                GeneralUtils.ClearSelection();
-                foreach (NodeModel deletionCandidate in nodesToDelete)
-                {
-                    viewModel.AddToSelectionCommand.Execute(deletionCandidate);
-                }
-                viewModel.DeleteCommand.Execute(null);
-            }
+            if (deleteWatchNodes) { viewModel.DeleteCommand.Execute(null); }
             // Auto layout          
-            GeneralUtils.ClearSelection();
-            dynWindow.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
+            dynWindow.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 viewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
             }));

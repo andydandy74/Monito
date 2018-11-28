@@ -16,20 +16,9 @@ namespace Monito
     /// </summary>
     public class MonitoViewExtension : IViewExtension
     {
-        private MenuItem monitoMenuItem;
-        private MenuItem monitoIsolateInPreviewMenuItem;
-        private MenuItem monitoFindUngroupedMenuItem;
-        private MenuItem monitoPackageDirectoriesMenuItem;
-        private MenuItem monitoMyGraphsMenuItem;
-        private MenuItem monitoMyTemplatesMenuItem;
-        private MenuItem monitoPlayerInputsMenuItem;
-        private MenuItem monitoSearchInWorkspaceMenuItem;
-        private MenuItem monitoUnfancifyMenuItem;
-        private MenuItem monitoAboutMenuItem;
         private ViewStartupParams startupParams;
         private KeyValueConfigurationCollection monitoSettings;
         private bool monitoSettingsLoaded = false;
-        private List<string> myGraphsRaw = new List<string>();
 
         public void Dispose() { }
 
@@ -53,15 +42,16 @@ namespace Monito
 
         public void Loaded(ViewLoadedParams p)
         {
-            monitoMenuItem = new MenuItem { Header = "DynaMonito" };
+            var monitoMenuItem = new MenuItem { Header = "DynaMonito" };
             var VM = p.DynamoWindow.DataContext as DynamoViewModel;
+			MenuItem subMenuItem;
 
             #region FIND_UNGROUPED
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableFindUngrouped"))
             {
-                monitoFindUngroupedMenuItem = new MenuItem { Header = "Find and Fix Ungrouped" };
-                monitoFindUngroupedMenuItem.ToolTip = new ToolTip { Content = "Identify nodes and notes that don't belong to a group.." };
-                monitoFindUngroupedMenuItem.Click += (sender, args) =>
+				subMenuItem = new MenuItem { Header = "Find and Fix Ungrouped" };
+				subMenuItem.ToolTip = new ToolTip { Content = "Identify nodes and notes that don't belong to a group.." };
+				subMenuItem.Click += (sender, args) =>
                 {
                     var viewModel = new FindUngroupedViewModel(p, VM);
                     var window = new FindUngroupedWindow
@@ -73,16 +63,16 @@ namespace Monito
                     window.Top = window.Owner.Top + 200;
                     window.Show();
                 };
-                monitoMenuItem.Items.Add(monitoFindUngroupedMenuItem);
+                monitoMenuItem.Items.Add(subMenuItem);
             }
             #endregion FIND_UNGROUPED
 
             #region ISOLATE_IN_GEOMETRY_PREVIEW
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableIsolateInGeometryPreview"))
             {
-                monitoIsolateInPreviewMenuItem = new MenuItem { Header = "Isolate in Geometry Preview" };
-                monitoIsolateInPreviewMenuItem.ToolTip = new ToolTip { Content = "Quickly isolate the current selection in geometry preview..." };
-                monitoIsolateInPreviewMenuItem.Click += (sender, args) =>
+				subMenuItem = new MenuItem { Header = "Isolate in Geometry Preview" };
+				subMenuItem.ToolTip = new ToolTip { Content = "Quickly isolate the current selection in geometry preview..." };
+				subMenuItem.Click += (sender, args) =>
                 {
                     var viewModel = new IsolateInPreviewViewModel(p, VM, p.DynamoWindow);
                     var window = new IsolateInPreviewWindow
@@ -94,17 +84,17 @@ namespace Monito
                     window.Top = window.Owner.Top + 200;
                     window.Show();
                 };
-                monitoMenuItem.Items.Add(monitoIsolateInPreviewMenuItem);
+                monitoMenuItem.Items.Add(subMenuItem);
             }
             #endregion ISOLATE_IN_GEOMETRY_PREVIEW
 
             #region PLAYER_INPUTS
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnablePlayerInputs"))
             {
-                monitoPlayerInputsMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs and Outputs" };
-                monitoPlayerInputsMenuItem.ToolTip = new ToolTip { Content = "Manage which input and output nodes should be displayed by Dynamo Player..." };
-                monitoPlayerInputsMenuItem.Click += (sender, args) =>
-                {
+				subMenuItem = new MenuItem { Header = "Manage Dynamo Player Inputs and Outputs" };
+				subMenuItem.ToolTip = new ToolTip { Content = "Manage which input and output nodes should be displayed by Dynamo Player..." };
+				subMenuItem.Click += (sender, args) =>
+				{
                     var viewModel = new PlayerInputsViewModel(p, VM);
                     var window = new PlayerInputsWindow
                     {
@@ -115,7 +105,7 @@ namespace Monito
                     window.Top = window.Owner.Top + 200;
                     window.Show();
                 };
-                monitoMenuItem.Items.Add(monitoPlayerInputsMenuItem);
+                monitoMenuItem.Items.Add(subMenuItem);
             }
             #endregion PLAYER INPUTS
 
@@ -126,11 +116,11 @@ namespace Monito
                 var topDirs = monitoSettings["MyGraphsDirectoryPaths"].Value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 if (topDirs.Length > 0)
                 {
-                    monitoMyGraphsMenuItem = new MenuItem { Header = "My Graphs" };
-                    monitoMyGraphsMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
+					subMenuItem = new MenuItem { Header = "My Graphs" };
+					subMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your graphs..." };
                     if (topDirs.Length == 1)
                     {
-                        monitoMyGraphsMenuItem = buildMyGraphsMenu(topDirs[0], monitoMyGraphsMenuItem, VM);
+						subMenuItem = BuildMyGraphsMenu(topDirs[0], subMenuItem, VM);
                     }
                     else
                     {
@@ -139,11 +129,11 @@ namespace Monito
                             string topDirName = Path.GetFileName(topDir);
                             MenuItem topDirMenuItem = new MenuItem { Header = topDirName };
                             topDirMenuItem.ToolTip = new ToolTip { Content = topDir };
-                            topDirMenuItem = buildMyGraphsMenu(topDir, topDirMenuItem, VM);
-                            monitoMyGraphsMenuItem.Items.Add(topDirMenuItem);
+                            topDirMenuItem = BuildMyGraphsMenu(topDir, topDirMenuItem, VM);
+							subMenuItem.Items.Add(topDirMenuItem);
                         }
                     }
-                    if (monitoMyGraphsMenuItem != null) { monitoMenuItem.Items.Add(monitoMyGraphsMenuItem); }
+                    if (subMenuItem != null) { monitoMenuItem.Items.Add(subMenuItem); }
                 }
                     
             }
@@ -180,19 +170,21 @@ namespace Monito
                                 VM.NewHomeWorkspaceCommand.Execute(null);
                                 VM.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
                                 VM.Model.Paste();
-                                foreach (var anno in VM.HomeSpaceViewModel.Annotations) { anno.AnnotationModel.Deselect(); }
-                            }
-                            else { MessageBox.Show("Template " + tplName + " has been moved, renamed or deleted..."); }
+								GeneralUtils.ClearSelection();
+								VM.CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(null);
+								VM.FitViewCommand.Execute(null);
+							}
+							else { MessageBox.Show("Template " + tplName + " has been moved, renamed or deleted..."); }
                         };
                         tempMenuItems.Add(tplMenu);
                     }
                     // Only show the templates menu item if templates exist
                     if (tempMenuItems.Count > 0)
                     {
-                        monitoMyTemplatesMenuItem = new MenuItem { Header = "New Workspace from Template" };
-                        monitoMyTemplatesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your templates..." };
-                        foreach (MenuItem tempMenuItem in tempMenuItems) { monitoMyTemplatesMenuItem.Items.Add(tempMenuItem); }
-                        monitoMenuItem.Items.Add(monitoMyTemplatesMenuItem);
+						subMenuItem = new MenuItem { Header = "New Workspace from Template" };
+						subMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your templates..." };
+                        foreach (MenuItem tempMenuItem in tempMenuItems) { subMenuItem.Items.Add(tempMenuItem); }
+                        monitoMenuItem.Items.Add(subMenuItem);
                     }
                 }
             }
@@ -201,8 +193,8 @@ namespace Monito
             #region PACKAGE_DIRECTORIES
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnablePackageDirectories"))
             {
-                monitoPackageDirectoriesMenuItem = new MenuItem { Header = "Package Directories" };
-                monitoPackageDirectoriesMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your package directories..." };
+				subMenuItem = new MenuItem { Header = "Package Directories" };
+				subMenuItem.ToolTip = new ToolTip { Content = "Quick access to all your package directories..." };
                 foreach (string packageDir in startupParams.Preferences.CustomPackageFolders)
                 {
                     if (Directory.Exists(packageDir))
@@ -214,19 +206,19 @@ namespace Monito
                             if (Directory.Exists(packageDir)) { Process.Start(@"" + packageDir); }
                             else { MessageBox.Show("Directory " + packageDir + " has been moved, renamed or deleted..."); }
                         };
-                        monitoPackageDirectoriesMenuItem.Items.Add(monitoPackageDirMenuItem);
+						subMenuItem.Items.Add(monitoPackageDirMenuItem);
                     }
                 }
-                monitoMenuItem.Items.Add(monitoPackageDirectoriesMenuItem);
+                monitoMenuItem.Items.Add(subMenuItem);
             }          
             #endregion PACKAGE_DIRECTORIES
 
             #region SEARCH_IN_WORKSPACE
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableSearchInWorkspace"))
             {
-                monitoSearchInWorkspaceMenuItem = new MenuItem { Header = "Search in Workspace" };
-                monitoSearchInWorkspaceMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
-                monitoSearchInWorkspaceMenuItem.Click += (sender, args) =>
+				subMenuItem = new MenuItem { Header = "Search in Workspace" };
+				subMenuItem.ToolTip = new ToolTip { Content = "Search for nodes, notes and groups in the current workspace..." };
+				subMenuItem.Click += (sender, args) =>
                 {
                     var viewModel = new SearchInWorkspaceViewModel(p, VM, monitoSettings);
                     var window = new SearchInWorkspaceWindow
@@ -238,16 +230,16 @@ namespace Monito
                     window.Top = window.Owner.Top + 200;
                     window.Show();
                 };
-                monitoMenuItem.Items.Add(monitoSearchInWorkspaceMenuItem);
+                monitoMenuItem.Items.Add(subMenuItem);
             }
             #endregion SEARCH_IN_WORKSPACE
 
             #region UNFANCIFY
             if (monitoSettingsLoaded && monitoSettings.GetLoadedSettingAsBoolean("EnableUnfancify"))
             {
-                monitoUnfancifyMenuItem = new MenuItem { Header = "Unfancify" };
-                monitoUnfancifyMenuItem.ToolTip = new ToolTip { Content = "Simplify your graph..." };
-                monitoUnfancifyMenuItem.Click += (sender, args) =>
+				subMenuItem = new MenuItem { Header = "Unfancify" };
+				subMenuItem.ToolTip = new ToolTip { Content = "Simplify your graph..." };
+				subMenuItem.Click += (sender, args) =>
                 {
                     var viewModel = new UnfancifyViewModel(p, VM, monitoSettings, p.DynamoWindow);
                     var window = new UnfancifyWindow
@@ -259,13 +251,13 @@ namespace Monito
                     window.Top = window.Owner.Top + 200;
                     window.Show();
                 };
-                monitoMenuItem.Items.Add(monitoUnfancifyMenuItem);
+                monitoMenuItem.Items.Add(subMenuItem);
             }
-            #endregion UNFANCIFY
+			#endregion UNFANCIFY
 
-            #region ABOUT
-            monitoAboutMenuItem = new MenuItem { Header = "About DynaMonito" };
-            monitoAboutMenuItem.Click += (sender, args) =>
+			#region ABOUT
+			subMenuItem = new MenuItem { Header = "About DynaMonito" };
+			subMenuItem.Click += (sender, args) =>
             {
                 var window = new AboutWindow
                 {
@@ -277,7 +269,7 @@ namespace Monito
                 window.Show();
             };
             if (monitoMenuItem.Items.Count > 0) { monitoMenuItem.Items.Add(new Separator()); }
-            monitoMenuItem.Items.Add(monitoAboutMenuItem);
+            monitoMenuItem.Items.Add(subMenuItem);
             #endregion ABOUT
 
             p.dynamoMenu.Items.Add(monitoMenuItem);
@@ -299,7 +291,7 @@ namespace Monito
         /// Builds a menu structure by recursively parsing a given directory. 
         /// Returns null if the directory doesn't exist or is empty.
         /// </summary>
-        public MenuItem buildMyGraphsMenu(string dir, MenuItem menuItem, DynamoViewModel vm)
+        public MenuItem BuildMyGraphsMenu(string dir, MenuItem menuItem, DynamoViewModel vm)
         {
             if (!Directory.Exists(dir)) { return null; }
             List<MenuItem> tempMenuItems = new List<MenuItem>();
@@ -310,7 +302,7 @@ namespace Monito
                 {
                     MenuItem dirMenu = new MenuItem { Header = dirName };
                     dirMenu.ToolTip = new ToolTip { Content = d };
-                    dirMenu = buildMyGraphsMenu(d, dirMenu, vm);
+                    dirMenu = BuildMyGraphsMenu(d, dirMenu, vm);
                     if (dirMenu != null) { tempMenuItems.Add(dirMenu); }
                 }
             }
