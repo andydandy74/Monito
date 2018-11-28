@@ -29,7 +29,7 @@
         <TextBlock 
             TextAlignment="Center"
             FontSize="18" 
-            Text="DynaMonito"/>
+            Text="DynaMonito 2.1.1"/>
         <TextBlock 
             TextAlignment="Center" >
             <Run 
