@@ -31,7 +31,7 @@
                 Style="{StaticResource MonitoCheckBox}"
                 IsChecked="True"
                 IsEnabled="False"
-                Content="Auto layout"/>
+                Content="Auto layout (single graph mode only)"/>
             <CheckBox
                 Style="{StaticResource MonitoCheckBox}"
                 IsChecked="{Binding DisablePreviewBubbles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
