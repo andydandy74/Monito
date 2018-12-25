@@ -3,7 +3,7 @@
 
 ![](https://raw.githubusercontent.com/andydandy74/Monito/master/logo/MonitoLogoWithText.png)
 
-**DynaMonito** is a view extension for the Dynamo visual programming environment. Still very much a work in progress. For known issues and planned enhancements please refer to the issues section of this repository.
+**DynaMonito** is a view extension for the [Dynamo](http://www.dynamobim.com) visual programming environment. Still very much a work in progress. For known issues and planned enhancements please refer to the issues section of this repository.
 
 ![](https://raw.githubusercontent.com/andydandy74/Monito/master/documentation/MonitoMenu.png)
 
