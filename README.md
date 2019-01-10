@@ -12,3 +12,5 @@
 - [Download, Installation & Configuration](https://github.com/andydandy74/Monito/wiki/Download,-Installation-&-Configuration)
 - [Version History](https://github.com/andydandy74/Monito/wiki/Version-history)
 - [Building from Source](https://github.com/andydandy74/Monito/wiki/Building-from-Source)
+
+[![Bad Monkeys logo](https://www.badmonkeys.net/wp-content/uploads/2016/12/BadMonkey_finalLogo-01.png)](http://www.badmonkeys.net/)
