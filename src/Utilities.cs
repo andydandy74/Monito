@@ -38,9 +38,7 @@ namespace Monito
 				var zoomObject = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == guid);
 				viewModel.AddToSelectionCommand.Execute(zoomObject);
 			}
-			// CurrentWorkspace.Annotations has a deprecation warning
-			// but for now this seems like the only simple way of adding annotation to the current selection.
-            else if (viewModel.CurrentSpaceViewModel.Annotations.Count(x => x.AnnotationModel.GUID.ToString() == guid) > 0)
+			else if (viewModel.CurrentSpaceViewModel.Annotations.Count(x => x.AnnotationModel.GUID.ToString() == guid) > 0)
 			{
 				var zoomObject = viewModel.CurrentSpaceViewModel.Annotations.First(x => x.AnnotationModel.GUID.ToString() == guid);
 				viewModel.AddToSelectionCommand.Execute(zoomObject.AnnotationModel);

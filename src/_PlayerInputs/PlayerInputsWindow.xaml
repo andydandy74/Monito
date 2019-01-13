@@ -39,7 +39,7 @@
                 <Button 
                     Content="Reset ALL inputs" 
                     ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
-                    Command="{Binding ResetAllInputs}"/>
+                    Command="{Binding ResetAllInputsCommand}"/>
                 <Button 
                     Name="SelectedSourceInputs"
                     Content="Batch-reset ALL inputs"
@@ -76,7 +76,7 @@
                 <Button 
                     Content="Reset ALL outputs" 
                     ToolTip="Click here to disable all output nodes in the workspace for Dynamo Player..."
-                    Command="{Binding ResetAllOutputs}"/>
+                    Command="{Binding ResetAllOutputsCommand}"/>
                 <Button 
                     Name="SelectedSourceOutputs"
                     Content="Batch-reset ALL outputs"
