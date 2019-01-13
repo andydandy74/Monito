@@ -225,7 +225,7 @@ namespace Monito
                                     toolTip = toolTip.TrimEnd();
                                     if (toolTip[toolTip.Length-1] == ',') { toolTip = toolTip.Remove(toolTip.Length - 1); }
                                 }
-                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.GUID.ToString(), weightedScore, toolTip));
+                                unorderedResults.Add(new ObjectInWorkspace(node.NickName.Abbreviate(), node.GUID.ToString(), weightedScore, toolTip, "Node"));
                             }
                         }
                     }
@@ -241,7 +241,7 @@ namespace Monito
                                 if (note.Text.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                             }
                             weightedScore = rawScore / (10d + searchTermParts.Length);
-                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Text Note]", note.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + note.Text)); }
+                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(note.Text.Abbreviate(), note.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + note.Text, "Text Note")); }
                         }
                     }
                     if (searchInAnnotations)
@@ -256,7 +256,7 @@ namespace Monito
                                 if (anno.AnnotationText.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                             }
                             weightedScore = rawScore / (10d + searchTermParts.Length);
-                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate() + " [Group]", anno.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText)); }
+                            if (rawScore > 0) { unorderedResults.Add(new ObjectInWorkspace(anno.AnnotationText.Abbreviate(), anno.GUID.ToString(), weightedScore, "Search score: " + weightedScore.ToString() + "\n\n" + anno.AnnotationText, "Group")); }
                         }
                     }
                     foreach (ObjectInWorkspace item in unorderedResults.OrderByDescending(x => x.Score).ThenBy(x => x.Name)) { searchResults.Add(item); }

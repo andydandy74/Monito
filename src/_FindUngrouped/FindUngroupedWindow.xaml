@@ -34,11 +34,22 @@
                 ItemsSource="{Binding CurrentUngrouped}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button
-                            Tag="{Binding Path=GUID}"
-                            Style="{StaticResource MonitoButtonResults}"
-                            Click="button_Click"
-                            Content="{Binding Path=Name}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Grid.Column="0"
+                                Style="{StaticResource MonitoButtonResultTypes}"
+                                Content="{Binding Path=Type}"/>
+                            <Button
+                                Grid.Column="1"
+                                Tag="{Binding Path=GUID}"
+                                Style="{StaticResource MonitoButtonResults}"
+                                Click="button_Click"
+                                Content="{Binding Path=Name}"/>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

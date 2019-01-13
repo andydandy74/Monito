@@ -75,14 +75,14 @@ namespace Monito
                 {
                     if (!allGroupedObjects.Contains(node.NodeModel.GUID.ToString()))
                     {
-                        unorderedUngrouped.Add(new ObjectInWorkspace(node.NickName.Abbreviate() + " [Node]", node.NodeModel.GUID.ToString()));
+                        unorderedUngrouped.Add(new ObjectInWorkspace(node.NickName.Abbreviate(), node.NodeModel.GUID.ToString(), 0, "", "Node"));
                     }
                 }
                 foreach (var note in viewModel.CurrentSpaceViewModel.Notes)
                 {
                     if (!allGroupedObjects.Contains(note.Model.GUID.ToString()))
                     {
-                        unorderedUngrouped.Add(new ObjectInWorkspace(note.Text.Abbreviate() + " [Note]", note.Model.GUID.ToString()));
+                        unorderedUngrouped.Add(new ObjectInWorkspace(note.Text.Abbreviate(), note.Model.GUID.ToString(), 0, "", "Text Note"));
                     }
                 }
                 currentUngrouped.Clear();
