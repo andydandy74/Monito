@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Dynamo.UI.Commands;
+using Dynamo.Models;
 
 namespace Monito
 {
@@ -15,23 +16,25 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
-        public ICommand ResetAllInputs { get; set; }
+        public ICommand ResetAllInputsCommand { get; set; }
         public ICommand ResetSelectedInputs { get; set; }
         public ICommand SetSelectedAsInput { get; set; }
-        public ICommand ResetAllOutputs { get; set; }
+        public ICommand ResetAllOutputsCommand { get; set; }
         public ICommand ResetSelectedOutputs { get; set; }
         public ICommand SetSelectedAsOutput { get; set; }
+		private string batchProcessInputsResults = "";
+		private string batchProcessOutputsResults = "";
 
-        public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
+		public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
         {
             readyParams = p;
             viewModel = vm;
             p.CurrentWorkspaceModel.NodeAdded += CurrentWorkspaceModel_NodesChanged;
             p.CurrentWorkspaceModel.NodeRemoved += CurrentWorkspaceModel_NodesChanged;
-            ResetAllInputs = new DelegateCommand(OnResetAllInputsClicked);
+            ResetAllInputsCommand = new DelegateCommand(OnResetAllInputsClicked);
             ResetSelectedInputs = new DelegateCommand(OnResetSelectedInputsClicked);
             SetSelectedAsInput = new DelegateCommand(OnSetSelectedAsInputClicked);
-            ResetAllOutputs = new DelegateCommand(OnResetAllOutputsClicked);
+            ResetAllOutputsCommand = new DelegateCommand(OnResetAllOutputsClicked);
             ResetSelectedOutputs = new DelegateCommand(OnResetSelectedOutputsClicked);
             SetSelectedAsOutput = new DelegateCommand(OnSetSelectedAsOutputClicked);
         }
@@ -47,7 +50,12 @@ namespace Monito
         {
             get
             {
-                if (currentInputs.Count > 0) { currentInputsMsg = "All Dynamo Player inputs in current workspace:"; }
+				if (batchProcessInputsResults != "")
+				{
+					currentInputsMsg = batchProcessInputsResults;
+					batchProcessInputsResults = "";
+				}
+				else if (currentInputs.Count > 0) { currentInputsMsg = "All Dynamo Player inputs in current workspace:"; }
                 else { currentInputsMsg = "No Dynamo Player inputs in current workspace..."; }
                 return currentInputsMsg;
             }
@@ -58,7 +66,12 @@ namespace Monito
         {
             get
             {
-                if (currentOutputs.Count > 0) { currentOutputsMsg = "All Dynamo Player outputs in current workspace:"; }
+				if (batchProcessOutputsResults != "")
+				{
+					currentOutputsMsg = batchProcessOutputsResults;
+					batchProcessOutputsResults = "";
+				}
+				else if (currentOutputs.Count > 0) { currentOutputsMsg = "All Dynamo Player outputs in current workspace:"; }
                 else { currentOutputsMsg = "No Dynamo Player outputs in current workspace..."; }
                 return currentOutputsMsg;
             }
@@ -106,11 +119,8 @@ namespace Monito
 
         public void OnResetAllInputsClicked(object obj)
         {
-            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-            {
-                if (node.IsSetAsInput) { node.IsSetAsInput = false; }
-            }
-            RaisePropertyChanged(nameof(CurrentInputs));
+			ResetAllInputs();
+			RaisePropertyChanged(nameof(CurrentInputs));
         }
 
         public void OnResetSelectedInputsClicked(object obj)
@@ -133,10 +143,7 @@ namespace Monito
 
         public void OnResetAllOutputsClicked(object obj)
         {
-            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-            {
-                if (node.IsSetAsOutput) { node.IsSetAsOutput = false; }
-            }
+			ResetAllOutputs();
             RaisePropertyChanged(nameof(CurrentOutputs));
         }
 
@@ -158,7 +165,67 @@ namespace Monito
             RaisePropertyChanged(nameof(CurrentOutputs));
         }
 
-        private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
+		public void ResetAllInputs()
+		{
+			foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+			{
+				if (node.IsSetAsInput) { node.IsSetAsInput = false; }
+			}
+		}
+
+		public void ResetAllOutputs()
+		{
+			foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+			{
+				if (node.IsSetAsOutput) { node.IsSetAsOutput = false; }
+			}
+		}
+
+		public void OnBatchResetInputsClicked(string directoryPath)
+		{
+			// Read directory contents
+			var graphs = System.IO.Directory.EnumerateFiles(directoryPath);
+			int graphCount = 0;
+			foreach (var graph in graphs)
+			{
+				var ext = System.IO.Path.GetExtension(graph);
+				if (ext == ".dyn")
+				{
+					viewModel.OpenCommand.Execute(graph);
+					viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
+					ResetAllInputs();
+					viewModel.SaveAsCommand.Execute(graph);
+					viewModel.CloseHomeWorkspaceCommand.Execute(null);
+					graphCount += 1;
+				}
+			}
+			batchProcessInputsResults = "Reset all inputs in " + graphCount.ToString() + " graphs...";
+			RaisePropertyChanged(nameof(CurrentInputs));
+		}
+
+		public void OnBatchResetOutputsClicked(string directoryPath)
+		{
+			// Read directory contents
+			var graphs = System.IO.Directory.EnumerateFiles(directoryPath);
+			int graphCount = 0;
+			foreach (var graph in graphs)
+			{
+				var ext = System.IO.Path.GetExtension(graph);
+				if (ext == ".dyn")
+				{
+					viewModel.OpenCommand.Execute(graph);
+					viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
+					ResetAllOutputs();
+					viewModel.SaveAsCommand.Execute(graph);
+					viewModel.CloseHomeWorkspaceCommand.Execute(null);
+					graphCount += 1;
+				}
+			}
+			batchProcessOutputsResults = "Reset all outputs in " + graphCount.ToString() + " graphs...";
+			RaisePropertyChanged(nameof(CurrentOutputs));
+		}
+
+		private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
         {
             RaisePropertyChanged(nameof(CurrentInputs));
             RaisePropertyChanged(nameof(CurrentOutputs));

@@ -28,7 +28,7 @@
             <StackPanel 
                 Grid.Column="0"
                 Style="{StaticResource MonitoStackPanelMain}">
-				<Button 
+                <Button 
                     Content="Set selected as input" 
                     ToolTip="Click here to set all *selected* input nodes in the workspace as Dynamo Player inputs..."
                     Command="{Binding SetSelectedAsInput}"/>
@@ -40,6 +40,11 @@
                     Content="Reset ALL inputs" 
                     ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
                     Command="{Binding ResetAllInputs}"/>
+                <Button 
+                    Name="SelectedSourceInputs"
+                    Content="Batch-reset ALL inputs"
+                    ToolTip="Click here to batch-disable all input nodes for all graphs in selected directory..."
+                    Click="selectSourceInputs_Click"/>
                 <TextBlock 
                     TextAlignment="Left" 
                     Text="{Binding CurrentInputsMsg}" 
@@ -60,11 +65,11 @@
             <StackPanel 
                 Grid.Column="1"
                 Style="{StaticResource MonitoStackPanelMain}">
-				<Button 
+                <Button 
                     Content="Set selected as output" 
                     ToolTip="Click here to set all *selected* output nodes in the workspace as Dynamo Player outputs..."
                     Command="{Binding SetSelectedAsOutput}"/>
-				<Button 
+                <Button 
                     Content="Reset selected outputs" 
                     ToolTip="Click here to disable all *selected* output nodes in the workspace for Dynamo Player..."
                     Command="{Binding ResetSelectedOutputs}"/>
@@ -72,6 +77,11 @@
                     Content="Reset ALL outputs" 
                     ToolTip="Click here to disable all output nodes in the workspace for Dynamo Player..."
                     Command="{Binding ResetAllOutputs}"/>
+                <Button 
+                    Name="SelectedSourceOutputs"
+                    Content="Batch-reset ALL outputs"
+                    ToolTip="Click here to batch-disable all output nodes for all graphs in selected directory..."
+                    Click="selectSourceOutputs_Click"/>
                 <TextBlock 
                     TextAlignment="Left" 
                     Text="{Binding CurrentOutputsMsg}" 
