@@ -18,9 +18,10 @@ namespace Monito
     {
         private ReadyParams readyParams;
         private DynamoViewModel viewModel;
-        public ICommand FixUngrouped { get; set; }
+        public ICommand FixUngroupedCommand { get; set; }
+		private string batchProcessResults = "";
 
-        public FindUngroupedViewModel(ReadyParams p, DynamoViewModel vm)
+		public FindUngroupedViewModel(ReadyParams p, DynamoViewModel vm)
         {
             readyParams = p;
             viewModel = vm;
@@ -30,7 +31,7 @@ namespace Monito
             viewModel.CurrentSpace.NoteRemoved += CurrentWorkspaceModel_NotesChanged;
             viewModel.CurrentSpace.AnnotationAdded += CurrentWorkspaceModel_AnnotationChanged;
             viewModel.CurrentSpace.AnnotationRemoved += CurrentWorkspaceModel_AnnotationChanged;
-            FixUngrouped = new DelegateCommand(OnFixUngroupedClicked);
+            FixUngroupedCommand = new DelegateCommand(OnFixUngroupedClicked);
         }
 
         public void Dispose()
@@ -48,7 +49,12 @@ namespace Monito
         {
             get
             {
-                if (currentUngrouped.Count > 0) { currentUngroupedMsg = "All ungrouped nodes and text notes in current workspace:"; }
+				if (batchProcessResults != "")
+				{
+					currentUngroupedMsg = batchProcessResults;
+					batchProcessResults = "";
+				}
+				else if (currentUngrouped.Count > 0) { currentUngroupedMsg = "All ungrouped nodes and text notes in current workspace:"; }
                 else { currentUngroupedMsg = "No ungrouped nodes or text notes in current workspace..."; }
                 return currentUngroupedMsg;
             }
@@ -92,49 +98,76 @@ namespace Monito
             }
         }
 
+		public void FixUngrouped()
+		{
+			foreach (var ungrouped in currentUngrouped)
+			{
+				if (viewModel.Model.CurrentWorkspace.Nodes.Count(x => x.GUID.ToString() == ungrouped.GUID) > 0)
+				{
+					var ungroupedNode = viewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == ungrouped.GUID);
+					foreach (var anno in viewModel.CurrentSpaceViewModel.Annotations)
+					{
+						if (anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.TopLeft)
+							|| anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.TopRight)
+							|| anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomLeft)
+							|| anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomRight))
+						{
+							anno.AnnotationModel.Select();
+							readyParams.CommandExecutive.ExecuteCommand(new DynamoModel.AddModelToGroupCommand(ungroupedNode.GUID.ToString()), "d8fcfe56-81e0-4e95-84af-d945ebd6478b", "DynaMonito");
+							anno.AnnotationModel.Deselect();
+						}
+					}
+				}
+				else if (viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == ungrouped.GUID) > 0)
+				{
+					var ungroupedNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == ungrouped.GUID);
+					foreach (var anno in viewModel.CurrentSpaceViewModel.Annotations)
+					{
+						if (anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.TopLeft)
+							|| anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.TopRight)
+							|| anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomLeft)
+							|| anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomRight))
+						{
+							anno.AnnotationModel.Select();
+							readyParams.CommandExecutive.ExecuteCommand(new DynamoModel.AddModelToGroupCommand(ungroupedNote.GUID.ToString()), "d8fcfe56-81e0-4e95-84af-d945ebd6478b", "DynaMonito");
+							anno.AnnotationModel.Deselect();
+						}
+					}
+				}
+
+			}
+		}
+
         public void OnFixUngroupedClicked(object obj)
         {
             RaisePropertyChanged(nameof(CurrentUngrouped));
-            foreach (var ungrouped in currentUngrouped)
-            {
-                if (viewModel.Model.CurrentWorkspace.Nodes.Count(x => x.GUID.ToString() == ungrouped.GUID) > 0)
-                {
-                    var ungroupedNode = viewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == ungrouped.GUID);
-                    foreach (var anno in viewModel.CurrentSpaceViewModel.Annotations)
-                    {
-                        if (anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.TopLeft)
-                            || anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.TopRight)
-                            || anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomLeft)
-                            || anno.AnnotationModel.Rect.Contains(ungroupedNode.Rect.BottomRight))
-                        {
-                            anno.AnnotationModel.Select();
-                            readyParams.CommandExecutive.ExecuteCommand(new DynamoModel.AddModelToGroupCommand(ungroupedNode.GUID.ToString()), "d8fcfe56-81e0-4e95-84af-d945ebd6478b", "DynaMonito");
-                            anno.AnnotationModel.Deselect();
-                        }
-                    }
-                }
-                else if (viewModel.Model.CurrentWorkspace.Notes.Count(x => x.GUID.ToString() == ungrouped.GUID) > 0)
-                {
-                    var ungroupedNote = viewModel.Model.CurrentWorkspace.Notes.First(x => x.GUID.ToString() == ungrouped.GUID);
-                    foreach (var anno in viewModel.CurrentSpaceViewModel.Annotations)
-                    {
-                        if (anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.TopLeft)
-                            || anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.TopRight)
-                            || anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomLeft)
-                            || anno.AnnotationModel.Rect.Contains(ungroupedNote.Rect.BottomRight))
-                        {
-                            anno.AnnotationModel.Select();
-                            readyParams.CommandExecutive.ExecuteCommand(new DynamoModel.AddModelToGroupCommand(ungroupedNote.GUID.ToString()), "d8fcfe56-81e0-4e95-84af-d945ebd6478b", "DynaMonito");
-                            anno.AnnotationModel.Deselect();
-                        }
-                    }
-                }
-                
-            }
+			FixUngrouped();
             RaisePropertyChanged(nameof(CurrentUngrouped));
         }
 
-        private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
+		public void OnBatchFixUngroupedClicked(string directoryPath)
+		{
+			// Read directory contents
+			var graphs = System.IO.Directory.EnumerateFiles(directoryPath);
+			int graphCount = 0;
+			foreach (var graph in graphs)
+			{
+				var ext = System.IO.Path.GetExtension(graph);
+				if (ext == ".dyn")
+				{
+					viewModel.OpenCommand.Execute(graph);
+					viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
+					FixUngrouped();
+					viewModel.SaveAsCommand.Execute(graph);
+					viewModel.CloseHomeWorkspaceCommand.Execute(null);
+					graphCount += 1;
+				}
+			}
+			batchProcessResults = "Fixed all missing groupings in " + graphCount.ToString() + " graphs...";
+			RaisePropertyChanged(nameof(CurrentUngrouped));
+		}
+
+		private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
         {
             RaisePropertyChanged(nameof(CurrentUngrouped));
         }

@@ -22,10 +22,24 @@
         <StackPanel 
             Style="{StaticResource MonitoStackPanelMain}"
             Name="findUngroupedPanel">
-            <Button 
-                Content="Fix groupings" 
-                ToolTip="Click here to add nodes and notes to the group they intersect with..."
-                Command="{Binding FixUngrouped}"/>
+            <Grid
+                Name="findUngroupedButtons">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button 
+                    Grid.Column="0"
+                    Content="Fix groupings" 
+                    ToolTip="Click here to add nodes and notes to the group they intersect with..."
+                    Command="{Binding FixUngrouped}"/>
+                <Button 
+                    Grid.Column="1"
+                    Name="SelectedSource"
+                    Content="Batch-fix groupings"
+                    ToolTip="Click here to batch-fix groupings for all graphs in selected directory..."
+                    Click="selectSource_Click"/>
+            </Grid>
             <TextBlock 
                 TextAlignment="Left" 
                 Text="{Binding CurrentUngroupedMsg}" 

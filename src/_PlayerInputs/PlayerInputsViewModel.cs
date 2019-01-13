@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Dynamo.UI.Commands;
+using Dynamo.Models;
 
 namespace Monito
 {
@@ -18,8 +19,9 @@ namespace Monito
         public ICommand ResetAll { get; set; }
         public ICommand ResetSelected { get; set; }
         public ICommand SetSelectedAsInput { get; set; }
+		private string batchProcessResults = "";
 
-        public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
+		public PlayerInputsViewModel(ReadyParams p, DynamoViewModel vm)
         {
             readyParams = p;
             viewModel = vm;
@@ -41,7 +43,12 @@ namespace Monito
         {
             get
             {
-                if (currentInputs.Count > 0) { currentInputsMsg = "All Dynamo Player inputs in current workspace:"; }
+				if (batchProcessResults != "")
+				{
+					currentInputsMsg = batchProcessResults;
+					batchProcessResults = "";
+				}
+				else if (currentInputs.Count > 0) { currentInputsMsg = "All Dynamo Player inputs in current workspace:"; }
                 else { currentInputsMsg = "No Dynamo Player inputs in current workspace..."; }
                 return currentInputsMsg;
             }
@@ -69,11 +76,8 @@ namespace Monito
 
         public void OnResetAllClicked(object obj)
         {
-            foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
-            {
-                if (node.IsSetAsInput) { node.IsSetAsInput = false; }
-            }
-            RaisePropertyChanged(nameof(CurrentInputs));
+			ResetAllInputs();
+			RaisePropertyChanged(nameof(CurrentInputs));
         }
 
         public void OnResetSelectedClicked(object obj)
@@ -94,7 +98,37 @@ namespace Monito
             RaisePropertyChanged(nameof(CurrentInputs));
         }
 
-        private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
+		public void ResetAllInputs()
+		{
+			foreach (NodeModel node in readyParams.CurrentWorkspaceModel.Nodes)
+			{
+				if (node.IsSetAsInput) { node.IsSetAsInput = false; }
+			}
+		}
+
+		public void OnBatchResetInputsClicked(string directoryPath)
+		{
+			// Read directory contents
+			var graphs = System.IO.Directory.EnumerateFiles(directoryPath);
+			int graphCount = 0;
+			foreach (var graph in graphs)
+			{
+				var ext = System.IO.Path.GetExtension(graph);
+				if (ext == ".dyn")
+				{
+					viewModel.OpenCommand.Execute(graph);
+					viewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType = RunType.Manual;
+					ResetAllInputs();
+					viewModel.SaveAsCommand.Execute(graph);
+					viewModel.CloseHomeWorkspaceCommand.Execute(null);
+					graphCount += 1;
+				}
+			}
+			batchProcessResults = "Reset all inputs in " + graphCount.ToString() + " graphs...";
+			RaisePropertyChanged(nameof(CurrentInputs));
+		}
+
+		private void CurrentWorkspaceModel_NodesChanged(NodeModel obj)
         {
             RaisePropertyChanged(nameof(CurrentInputs));
         }
