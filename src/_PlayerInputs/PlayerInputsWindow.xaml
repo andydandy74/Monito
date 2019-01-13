@@ -24,16 +24,30 @@
             Name="playerInputsPanel">
             <Button 
                 Content="Set selected as input" 
-                ToolTip="Click here to set all *selected* input nodes in the workspace as Dynamo Player inputs..."
+                ToolTip="Click here to set all *selected* input nodes in the current workspace as Dynamo Player inputs..."
                 Command="{Binding SetSelectedAsInput}"/>
             <Button 
                 Content="Reset selected" 
-                ToolTip="Click here to disable all *selected* input nodes in the workspace for Dynamo Player..."
+                ToolTip="Click here to disable all *selected* input nodes in the current workspace for Dynamo Player..."
                 Command="{Binding ResetSelected}"/>
-            <Button 
-                Content="Reset ALL inputs" 
-                ToolTip="Click here to disable all input nodes in the workspace for Dynamo Player..."
-                Command="{Binding ResetAll}"/>
+            <Grid
+                Name="resetInputsButtons">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button 
+                    Grid.Column="0"
+                    Content="Reset ALL inputs" 
+                    ToolTip="Click here to disable all input nodes in the current workspace for Dynamo Player..."
+                    Command="{Binding ResetAll}"/>
+                <Button 
+                    Grid.Column="1"
+                    Name="SelectedSourceInputs"
+                    Content="Batch-reset ALL inputs"
+                    ToolTip="Click here to batch-disable all in put nodes for all graphs in selected directory..."
+                    Click="selectSourceInputs_Click"/>
+            </Grid>
             <TextBlock 
                 TextAlignment="Left" 
                 Text="{Binding CurrentInputsMsg}" 
