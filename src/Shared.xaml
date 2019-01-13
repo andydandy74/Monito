@@ -42,6 +42,11 @@
         <Setter Property="Foreground" Value="LightGray"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
     </Style>
+    <Style TargetType="Button" x:Key="MonitoButtonResultTypes" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="#2d2d2d"/>
+        <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="Margin" Value="5,5,0,0"/>
+    </Style>
     <Style TargetType="TextBlock">
         <Setter Property="Padding" Value="5"/>
         <Setter Property="FontFamily" Value="Arial"/>

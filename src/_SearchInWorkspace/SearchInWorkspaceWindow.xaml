@@ -58,21 +58,32 @@
                 ItemsSource="{Binding SearchResults}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button
-                            Tag="{Binding Path=GUID}"
-                            Click="button_Click"
-                            Style="{StaticResource MonitoButtonResults}"
-                            Content="{Binding Path=Name}">
-                            <Button.ToolTip>
-                                <ToolTip 
-                                    MaxWidth="400">
-                                    <TextBlock
-                                        TextWrapping="Wrap"
-                                        Text="{Binding Path=Details}">
-                                    </TextBlock>
-                                </ToolTip>
-                            </Button.ToolTip>
-                        </Button>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Grid.Column="0"
+                                Style="{StaticResource MonitoButtonResultTypes}"
+                                Content="{Binding Path=Type}"/>
+                            <Button
+                                Grid.Column="1"
+                                Tag="{Binding Path=GUID}"
+                                Click="button_Click"
+                                Style="{StaticResource MonitoButtonResults}"
+                                Content="{Binding Path=Name}">
+                                <Button.ToolTip>
+                                    <ToolTip 
+                                        MaxWidth="400">
+                                        <TextBlock
+                                            TextWrapping="Wrap"
+                                            Text="{Binding Path=Details}">
+                                        </TextBlock>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
