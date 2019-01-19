@@ -10,6 +10,7 @@ using Dynamo.Graph.Notes;
 using System.Collections.Generic;
 using System.Configuration;
 using CoreNodeModels.Input;
+using ProtoCore;
 
 namespace Monito
 {
@@ -213,6 +214,16 @@ namespace Monito
 								{
 									StringInput inputNode = (StringInput)node;
 									nodeVal = inputNode.Value;
+									if (nodeVal.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 2; }
+									foreach (string part in searchTermParts)
+									{
+										if (nodeVal.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
+									}
+								}
+								else if (node.GetType() == typeof(CodeBlockNodeModel))
+								{
+									CodeBlockNodeModel codeBlock = (CodeBlockNodeModel)node;
+									nodeVal = codeBlock.Code;
 									if (nodeVal.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 2; }
 									foreach (string part in searchTermParts)
 									{
