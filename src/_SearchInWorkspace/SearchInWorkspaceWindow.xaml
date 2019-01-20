@@ -47,6 +47,9 @@
                         IsChecked="{Binding SearchInTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Content="Node tags" />
                     <CheckBox 
+                        IsChecked="{Binding SearchInValues, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Content="Node values" />
+                    <CheckBox 
                         IsChecked="{Binding SearchInNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Content="Text notes" />
                     <CheckBox 

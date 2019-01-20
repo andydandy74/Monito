@@ -9,6 +9,8 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using System.Collections.Generic;
 using System.Configuration;
+using CoreNodeModels.Input;
+using ProtoCore;
 
 namespace Monito
 {
@@ -24,8 +26,9 @@ namespace Monito
         private bool searchInTags;
         private bool searchInNotes;
         private bool searchInAnnotations;
+		private bool searchInValues;
 
-        public SearchInWorkspaceViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms)
+		public SearchInWorkspaceViewModel(ReadyParams p, DynamoViewModel vm, KeyValueConfigurationCollection ms)
         {
             readyParams = p;
             viewModel = vm;
@@ -36,7 +39,8 @@ namespace Monito
             searchInTags = ms.GetLoadedSettingAsBoolean("SearchInNodeTags");
             searchInNotes = ms.GetLoadedSettingAsBoolean("SearchInTextNotes");
             searchInAnnotations = ms.GetLoadedSettingAsBoolean("SearchInGroupTitles");
-        }
+			searchInValues = ms.GetLoadedSettingAsBoolean("SearchInNodeValues");
+		}
 
         public void Dispose() { }
         
@@ -144,7 +148,20 @@ namespace Monito
             }
         }
 
-        private ObservableCollection<ObjectInWorkspace> searchResults = new ObservableCollection<ObjectInWorkspace>();
+		/// <summary>
+		/// Include group titles in search?
+		/// </summary>
+		public bool SearchInValues
+		{
+			get { return searchInValues; }
+			set
+			{
+				searchInValues = value;
+				RaisePropertyChanged(nameof(SearchResults));
+			}
+		}
+
+		private ObservableCollection<ObjectInWorkspace> searchResults = new ObservableCollection<ObjectInWorkspace>();
         /// <summary>
         /// The search results as a list representation
         /// </summary>
@@ -170,6 +187,7 @@ namespace Monito
                             // ToDo: search in tags and input values
                             int rawScore = 0;
                             double weightedScore = 0;
+							string nodeVal = "";
                             if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                             if (searchInCategories && node.Category.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 10; }
                             if (searchInOriginalNames)
@@ -189,7 +207,30 @@ namespace Monito
                                         if (tag.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
                                     }
                                 }
-                            }   
+                            }
+							if (searchInValues)
+							{
+								if (node.GetType() == typeof(StringInput))
+								{
+									StringInput inputNode = (StringInput)node;
+									nodeVal = inputNode.Value;
+									if (nodeVal.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 2; }
+									foreach (string part in searchTermParts)
+									{
+										if (nodeVal.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
+									}
+								}
+								else if (node.GetType() == typeof(CodeBlockNodeModel))
+								{
+									CodeBlockNodeModel codeBlock = (CodeBlockNodeModel)node;
+									nodeVal = codeBlock.Code;
+									if (nodeVal.ToLowerInvariant().Contains(searchTerm.ToLowerInvariant())) { rawScore += 2; }
+									foreach (string part in searchTermParts)
+									{
+										if (nodeVal.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 1; }
+									}
+								}
+							}
                             foreach (string part in searchTermParts)
                             {
                                 if (searchInNicknames && node.NickName.ToLowerInvariant().Contains(part.ToLowerInvariant())) { rawScore += 2; }
@@ -219,9 +260,10 @@ namespace Monito
                                 }
                                 if (searchInCategories && node.Category != "") { toolTip += "\nCategory: " + node.Category; }
                                 if (searchInDescriptions && node.Description != "") { toolTip += "\nDescription: " + node.Description; }
-                                if (searchInTags && node.Tags.Count > 0)
+								if (searchInValues && nodeVal != "") { toolTip += "\nValue: " + nodeVal; }
+								if (searchInTags && node.Tags.Count > 0)
                                 {
-                                    toolTip += "\nTags: " + String.Join(", ", node.Tags.ToArray());
+                                    toolTip += "\nTags: " + System.String.Join(", ", node.Tags.ToArray());
                                     toolTip = toolTip.TrimEnd();
                                     if (toolTip[toolTip.Length-1] == ',') { toolTip = toolTip.Remove(toolTip.Length - 1); }
                                 }
