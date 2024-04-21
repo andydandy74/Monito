@@ -1,4 +1,4 @@
-![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg) 
+![Maintained](https://img.shields.io/badge/maintained-not%20right%20now-yellow.svg)
 [![Current version](https://img.shields.io/github/v/release/andydandy74/Monito?label=Current%20version&color=brightgreen)](https://github.com/andydandy74/Monito/releases)
 [![Open issues](https://img.shields.io/github/issues-raw/andydandy74/Monito?label=Open%20issues&color=brightgreen)](https://github.com/andydandy74/Monito/issues?q=is%3Aopen+is%3Aissue)
 [![Closed issues](https://img.shields.io/github/issues-closed-raw/andydandy74/Monito?label=Closed%20issues&color=brightgreen)](https://github.com/andydandy74/Monito/issues?q=is%3Aissue+is%3Aclosed)
