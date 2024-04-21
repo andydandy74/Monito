@@ -1,4 +1,10 @@
-![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg) [![Current version](https://img.shields.io/badge/current%202.x%20version-2.1.1-brightgreen.svg)](http://dynamopackages.com/) [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/andydandy74/Monito/blob/master/.github/CONTRIBUTING.md) [![Follow me on LinkedIn for updates](https://img.shields.io/badge/LinkedIn-0077B5?style=social&logo=linkedin)](https://www.linkedin.com/in/andreasdieckmann) 
+![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen.svg) 
+[![Current version](https://img.shields.io/github/v/release/andydandy74/Monito?label=Current%20version&color=brightgreen)](https://github.com/andydandy74/Monito/releases)
+[![Open issues](https://img.shields.io/github/issues-raw/andydandy74/Monito?label=Open%20issues&color=brightgreen)](https://github.com/andydandy74/Monito/issues?q=is%3Aopen+is%3Aissue)
+[![Closed issues](https://img.shields.io/github/issues-closed-raw/andydandy74/Monito?label=Closed%20issues&color=brightgreen)](https://github.com/andydandy74/Monito/issues?q=is%3Aissue+is%3Aclosed)
+[![Commits since last release](https://img.shields.io/github/commits-since/andydandy74/Monito/latest?label=Commits%20since%20last%20release&color=brightgreen)](https://github.com/andydandy74/Monito/commits/master/)
+[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/andydandy74/Monito/blob/master/.github/CONTRIBUTING.md) 
+[![Follow me on LinkedIn for updates](https://img.shields.io/badge/LinkedIn-0077B5?style=social&logo=linkedin)](https://www.linkedin.com/in/andreasdieckmann) 
 
 ![DynaMonito logo](https://raw.githubusercontent.com/andydandy74/Monito/master/logo/MonitoLogoWithText.png)
 
